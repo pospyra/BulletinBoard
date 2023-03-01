@@ -45,7 +45,7 @@ namespace Otiva.AppServeces.Service.Subcategory
             var existingCategory = await _subcategoryRepository.FindById(Id);
             existingCategory.Name = name;
             existingCategory.CategoryId = CategoryId;
-            await _subcategoryRepository.EditAdAsync(existingCategory);
+            await _subcategoryRepository.EditSubcategoryAsync(existingCategory);
 
             return _mapper.Map<InfoSubcategory>(existingCategory);
         }

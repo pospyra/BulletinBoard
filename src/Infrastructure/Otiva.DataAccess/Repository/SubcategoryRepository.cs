@@ -1,4 +1,5 @@
-﻿using Otiva.Domain;
+﻿using Otiva.AppServeces.IRepository;
+using Otiva.Domain;
 using Otiva.Infrastructure.BaseRepository;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Otiva.DataAccess.Repository
 {
-    public class SubcategoryRepository
+    public class SubcategoryRepository : ISubcategoryRepository
     {
         public readonly IBaseRepository<Subcategory> _baseRepository;
 

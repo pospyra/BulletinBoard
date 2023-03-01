@@ -3,6 +3,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Otiva.AppServeces.IRepository;
 using Otiva.AppServeces.MapProfile;
 using Otiva.AppServeces.Service.Ad;
+using Otiva.AppServeces.Service.Category;
+using Otiva.AppServeces.Service.Subcategory;
+using Otiva.AppServeces.Service.User;
 using Otiva.DataAccess.DataBase;
 using Otiva.DataAccess.Repository;
 using Otiva.Infrastructure.BaseRepository;
@@ -34,8 +37,14 @@ namespace Otiva.Registrar
             services.AddTransient<IAdService, AdService>();
             services.AddTransient<IAdRepository, AdRepository>();
 
+            services.AddTransient<IUserService, UserService>();
             services.AddTransient<IUserRepository, UserRepository>();
 
+            services.AddTransient<ISubcategoryService, SubcategoryService>();
+            services.AddTransient<ISubcategoryRepository, SubcategoryRepository>();
+
+            services.AddTransient<ICategoryService, CategoryService>();
+            services.AddTransient<ICategoryRepository, CategoryRepository>();
             return services;
         }
     }

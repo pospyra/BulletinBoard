@@ -22,6 +22,14 @@ namespace Otiva.API.Controllers
             return Ok(result);
         }
 
+        [HttpGet("category/getById/{id}")]
+        [ProducesResponseType(typeof(IReadOnlyCollection<InfoCategoryResponse>), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> GetByIdCategory(Guid id)
+        {
+            var result = await _categoryService.GetByIdAsync(id);
+            return Ok(result);
+        }
+
         [HttpPost("category/create")]
         [ProducesResponseType(typeof(IReadOnlyCollection<InfoCategoryResponse>), (int)HttpStatusCode.Created)]
         public async Task<IActionResult> CreateCategoryAsync(string name)
@@ -39,7 +47,7 @@ namespace Otiva.API.Controllers
             return NoContent();
         }
 
-        [HttpDelete("delete/{id}")]
+        [HttpDelete("category/delete/{id}")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
         public async Task<IActionResult> DeleteCategoryAsync(Guid id)

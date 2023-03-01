@@ -17,6 +17,6 @@ namespace Otiva.AppServeces.IRepository
 
         Task DeleteAsync(Subcategory model);
 
-        Task EditAdAsync(Subcategory model);
+        Task EditSubcategoryAsync(Subcategory model);
     }
 }
