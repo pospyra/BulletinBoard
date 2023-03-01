@@ -14,7 +14,7 @@ namespace Otiva.AppServeces.MapProfile
         public UserMapProfile() 
         {
             CreateMap<User, InfoUserResponse>().ReverseMap();
-            CreateMap<User, RegistrationRequest>().ReverseMap();
+            CreateMap<User, RegistrationOrUpdateRequest>().ReverseMap();
             CreateMap<User, LoginRequest>().ReverseMap();
         }
 

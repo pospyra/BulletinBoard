@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Otiva.Contracts.UserDto
 {
-    public class RegistrationRequest
+    public class RegistrationOrUpdateRequest
     {
         public string Name { get; set; }
 
