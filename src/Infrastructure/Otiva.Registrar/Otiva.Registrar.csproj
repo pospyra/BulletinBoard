@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Otiva.DataAccess\Otiva.DataAccess.csproj" />
+    <ProjectReference Include="..\Otiva.Infrastructure\Otiva.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

@@ -22,7 +22,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Application\Otiva.AppServeces\Otiva.AppServeces.csproj" />
     <ProjectReference Include="..\..\Domain\Otiva.Domain\Otiva.Domain.csproj" />
-    <ProjectReference Include="..\..\Infrastrucrure\Otiva.Infrastructure\Otiva.Infrastructure.csproj" />
+    <ProjectReference Include="..\Otiva.Infrastructure\Otiva.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

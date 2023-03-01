@@ -27,9 +27,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Otiva.Migrations", "src\Inf
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Otiva.DataAccess", "src\Infrastructure\Otiva.DataAccess\Otiva.DataAccess.csproj", "{D943945A-BDD5-476C-ABBD-9DAEA710F4CE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Otiva.Infrastructure", "src\Infrastrucrure\Otiva.Infrastructure\Otiva.Infrastructure.csproj", "{F33E9869-BD58-40F3-AEF4-9832B01BD0A2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Otiva.Contracts", "src\Contracts\Otiva.Contracts\Otiva.Contracts.csproj", "{21AB32E0-E53C-42EA-A232-0D2445599472}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Otiva.Contracts", "src\Contracts\Otiva.Contracts\Otiva.Contracts.csproj", "{21AB32E0-E53C-42EA-A232-0D2445599472}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Otiva.Infrastructure", "src\Infrastructure\Otiva.Infrastructure\Otiva.Infrastructure.csproj", "{0D4AEBAA-1379-46B3-B59B-4291C7D661B5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -61,14 +61,14 @@ Global
 		{D943945A-BDD5-476C-ABBD-9DAEA710F4CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D943945A-BDD5-476C-ABBD-9DAEA710F4CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D943945A-BDD5-476C-ABBD-9DAEA710F4CE}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F33E9869-BD58-40F3-AEF4-9832B01BD0A2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F33E9869-BD58-40F3-AEF4-9832B01BD0A2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F33E9869-BD58-40F3-AEF4-9832B01BD0A2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F33E9869-BD58-40F3-AEF4-9832B01BD0A2}.Release|Any CPU.Build.0 = Release|Any CPU
 		{21AB32E0-E53C-42EA-A232-0D2445599472}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{21AB32E0-E53C-42EA-A232-0D2445599472}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{21AB32E0-E53C-42EA-A232-0D2445599472}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{21AB32E0-E53C-42EA-A232-0D2445599472}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0D4AEBAA-1379-46B3-B59B-4291C7D661B5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0D4AEBAA-1379-46B3-B59B-4291C7D661B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0D4AEBAA-1379-46B3-B59B-4291C7D661B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0D4AEBAA-1379-46B3-B59B-4291C7D661B5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -85,8 +85,8 @@ Global
 		{96A3451B-DEAE-4947-908E-9799C3A8F8A1} = {C0782A95-607C-423C-A6DD-4C5E99CA9575}
 		{837051A9-038B-4451-8EFB-C7C97FB1E5C6} = {C0782A95-607C-423C-A6DD-4C5E99CA9575}
 		{D943945A-BDD5-476C-ABBD-9DAEA710F4CE} = {C0782A95-607C-423C-A6DD-4C5E99CA9575}
-		{F33E9869-BD58-40F3-AEF4-9832B01BD0A2} = {C0782A95-607C-423C-A6DD-4C5E99CA9575}
 		{21AB32E0-E53C-42EA-A232-0D2445599472} = {5B5D5483-B030-42C9-8B9A-9733835651FA}
+		{0D4AEBAA-1379-46B3-B59B-4291C7D661B5} = {C0782A95-607C-423C-A6DD-4C5E99CA9575}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E07873DF-AF96-4A26-B153-D77AE689A348}
