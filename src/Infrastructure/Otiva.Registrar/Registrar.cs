@@ -1,7 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Otiva.AppServeces.IRepository;
 using Otiva.AppServeces.MapProfile;
+using Otiva.AppServeces.Service.Ad;
 using Otiva.DataAccess.DataBase;
+using Otiva.DataAccess.Repository;
 using Otiva.Infrastructure.BaseRepository;
 using System;
 using System.Collections.Generic;
@@ -25,12 +28,13 @@ namespace Otiva.Registrar
 
             services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
 
-
-            //services.AddSingleton<IMapper>(new Mapper(GetMapperConfiguration()));
-
-
             services.AddAutoMapper(typeof(UserMapProfile), typeof(AdMapProfile),
                 typeof(CategoryMapProfile), typeof(SubcategoryMapProfile));
+
+            services.AddTransient<IAdService, AdService>();
+            services.AddTransient<IAdRepository, AdRepository>();
+
+            services.AddTransient<IUserRepository, UserRepository>();
 
             return services;
         }

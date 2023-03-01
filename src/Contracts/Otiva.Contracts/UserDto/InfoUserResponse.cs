@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Otiva.Domain
+namespace Otiva.Contracts.UserDto
 {
-    public class User
+    public class InfoUserResponse
     {
         public Guid Id { get; set; }
 
@@ -17,7 +17,5 @@ namespace Otiva.Domain
         public string Password { get; set; }
 
         public string Region { get; set; }
-
-        public ICollection<Ad> Ads { get; set; }
     }
 }

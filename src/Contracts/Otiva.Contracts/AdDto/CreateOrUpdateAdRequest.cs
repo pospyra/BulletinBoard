@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Otiva.Contracts.AdDto
 {
-    public class CreateAdRequest
+    public class CreateOrUpdateAdRequest
     {
         public string Name { get; set; }
 
@@ -17,7 +17,5 @@ namespace Otiva.Contracts.AdDto
         public decimal Price { get; set; }
 
         public bool PossibleOfDelivery { get; set; }
-
-        public Guid UserId { get; set; }
     }
 }
