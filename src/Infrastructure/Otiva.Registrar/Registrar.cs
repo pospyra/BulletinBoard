@@ -4,6 +4,7 @@ using Otiva.AppServeces.IRepository;
 using Otiva.AppServeces.MapProfile;
 using Otiva.AppServeces.Service.Ad;
 using Otiva.AppServeces.Service.Category;
+using Otiva.AppServeces.Service.SelectedAds;
 using Otiva.AppServeces.Service.Subcategory;
 using Otiva.AppServeces.Service.User;
 using Otiva.DataAccess.DataBase;
@@ -45,6 +46,10 @@ namespace Otiva.Registrar
 
             services.AddTransient<ICategoryService, CategoryService>();
             services.AddTransient<ICategoryRepository, CategoryRepository>();
+
+            services.AddTransient<ISelectedAdsService, SelectedAdsService>();
+            services.AddTransient<ISelectedAdsRepository, SelectedAdsRepository>();
+
             return services;
         }
     }

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Otiva.Contracts.AdDto;
+using Otiva.Contracts.SelectedAdDto;
 using Otiva.Domain;
 using System;
 using System.Collections.Generic;
@@ -15,7 +16,7 @@ namespace Otiva.AppServeces.MapProfile
         {
             CreateMap<Ad, InfoAdResponse>().ReverseMap();
             CreateMap<Ad, CreateOrUpdateAdRequest>().ReverseMap();
-            
+            CreateMap<SelectedAd, InfoSelectedResponse>().ReverseMap();
         }   
        
     }

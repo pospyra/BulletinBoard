@@ -10,6 +10,8 @@ namespace Otiva.Contracts.AdDto
     {
         public string Name { get; set; }
 
+        public Guid UserId { get; set; }
+
         public Guid SubcategoryId { get; set; }
 
         public string Description { get; set; }

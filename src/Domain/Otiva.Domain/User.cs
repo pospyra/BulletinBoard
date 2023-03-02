@@ -19,5 +19,7 @@ namespace Otiva.Domain
         public string Region { get; set; }
 
         public ICollection<Ad> Ads { get; set; }
+
+        public ICollection<SelectedAd> SelectedAds { get; set; }
     }
 }

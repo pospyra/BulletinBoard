@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Win32;
 using Otiva.AppServeces.IRepository;
 using Otiva.Contracts.CategoryDto;
@@ -36,9 +37,17 @@ namespace Otiva.AppServeces.Service.User
             return _mapper.Map<InfoUserResponse>(update);
         }
 
-        public Task<IReadOnlyCollection<InfoUserResponse>> GetAll(int take, int skip)
+        public async Task<IReadOnlyCollection<InfoUserResponse>> GetAll(int take, int skip)
         {
-            throw new NotImplementedException();
+            return await _userRepository.GetAll()
+                .Select(a=> new InfoUserResponse()
+                {
+                    Id = a.Id,
+                    Name= a.Name,
+                    Email= a.Email,
+                    Password= a.Password,
+                    Region   = a.Region,
+                }).ToListAsync();
         }
 
         public async Task<InfoUserResponse> GetByIdAsync(Guid id)
@@ -50,10 +59,10 @@ namespace Otiva.AppServeces.Service.User
         public async Task<Guid> Registration(RegistrationOrUpdateRequest registration)
         {
             var registerAcc = _mapper.Map<Domain.User>(registration);
-            var existingUser = _userRepository.GetAll().Where(x => x.Email == registration.Email);
-            if(existingUser != null)
+            var existingUser = _userRepository.GetAll().Where(x => x.Email == registration.Email).FirstOrDefault();
+            if (existingUser != null)
                 throw new Exception("такой пользователь уже существует");
-           
+
             await _userRepository.AddAsync(registerAcc);
             return registerAcc.Id;
         }
