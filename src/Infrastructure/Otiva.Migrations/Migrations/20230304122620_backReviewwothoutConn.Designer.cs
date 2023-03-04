@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Otiva.Migrations;
@@ -11,9 +12,11 @@ using Otiva.Migrations;
 namespace Otiva.Migrations.Migrations
 {
     [DbContext(typeof(MigrationsDbContext))]
-    partial class MigrationsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230304122620_backReviewwothoutConn")]
+    partial class backReviewwothoutConn
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -111,8 +114,6 @@ namespace Otiva.Migrations.Migrations
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("SellerId");
 
                     b.ToTable("Review");
                 });
@@ -220,17 +221,6 @@ namespace Otiva.Migrations.Migrations
                     b.Navigation("Ad");
                 });
 
-            modelBuilder.Entity("Otiva.Domain.Review", b =>
-                {
-                    b.HasOne("Otiva.Domain.User", "User")
-                        .WithMany("Reviews")
-                        .HasForeignKey("SellerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("Otiva.Domain.SelectedAd", b =>
                 {
                     b.HasOne("Otiva.Domain.User", null)
@@ -264,8 +254,6 @@ namespace Otiva.Migrations.Migrations
             modelBuilder.Entity("Otiva.Domain.User", b =>
                 {
                     b.Navigation("Ads");
-
-                    b.Navigation("Reviews");
 
                     b.Navigation("SelectedAds");
                 });
