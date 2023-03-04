@@ -19,6 +19,8 @@ namespace Otiva.AppServeces.Service.Ad
 
         Task<InfoAdResponse> EditAdAsync(Guid Id, CreateOrUpdateAdRequest editAd);
 
+        Task<IReadOnlyCollection<InfoAdResponse>> GetByFilterAsync(SearchFilterAd search);
+
 
     }
 }

@@ -15,7 +15,7 @@ namespace Otiva.API.Controllers
             _adService = adService;
         }
 
-        [HttpGet("/all")]
+        [HttpGet("/ad/all")]
         [ProducesResponseType(typeof(IReadOnlyCollection<InfoAdResponse>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetAllAsync(int take, int skip)
         {
@@ -33,6 +33,18 @@ namespace Otiva.API.Controllers
         public async Task<IActionResult> GetByIdAsync(Guid id)
         {
             var result = await _adService.GetByIdAsync(id);
+
+            return Ok(result);
+        }
+
+        [HttpGet("/ad/filter")]
+        [ProducesResponseType(typeof(IReadOnlyCollection<InfoAdResponse>), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> GetByFilter([FromQuery] SearchFilterAd query)
+        {
+            if (query.skip < 0 || query.take <= 0 || query.take == null)
+                throw new Exception("Некорректные данные. Убедитесь, что skip >= 0, take > 0 и !null ");
+
+            var result = await _adService.GetByFilterAsync(query);
 
             return Ok(result);
         }

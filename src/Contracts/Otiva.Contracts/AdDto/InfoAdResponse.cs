@@ -13,6 +13,11 @@ namespace Otiva.Contracts.AdDto
         public string Name { get; set; }
 
         public string Description { get; set; }
+
+        public string Region { get; set; }
+
+        public decimal? Price { get; set; }
+
         public DateTime CreateTime { get; set; }
 
         public Guid UserId { get; set; }

@@ -18,6 +18,7 @@ namespace Otiva.Contracts.AdDto
 
         public decimal Price { get; set; }
 
+        public decimal Region { get; set; }
         public bool PossibleOfDelivery { get; set; }
     }
 }
