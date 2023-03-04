@@ -9,11 +9,11 @@ namespace Otiva.AppServeces.IRepository
 {
     public interface ISubcategoryRepository
     {
-        Task<Subcategory> FindById(Guid id);
+        Task<Subcategory> FindByIdAsync(Guid id);
 
         IQueryable<Subcategory> GetAll();
 
-        Task AddAsync(Subcategory model);
+        Task Add(Subcategory model);
 
         Task DeleteAsync(Subcategory model);
 

@@ -23,21 +23,28 @@ namespace Otiva.AppServeces.Service.User
             _userRepository = userRepository;
             _mapper = mapper;
         }
-        public Task DeleteAsync(Guid id)
+        public async Task DeleteAsync(Guid id)
         {
-            throw new NotImplementedException();
+            var delUser = await _userRepository.FindByIdAsync(id);
+            if (delUser == null)
+                throw new Exception("Пользователь с таким идентификатором не найден");
+
+            await _userRepository.DeleteAsync(delUser);
+
         }
 
         public async Task<InfoUserResponse> EditUserAsync(Guid Id, RegistrationOrUpdateRequest update )
         {
-            var existingAccount = await _userRepository.FindById(Id);
+            var existingAccount = await _userRepository.FindByIdAsync(Id);
+            if (existingAccount == null)
+                throw new Exception("Пользователь с таким идентификатором не найден");
 
             await _userRepository.EditAdAsync(_mapper.Map(update, existingAccount));
 
             return _mapper.Map<InfoUserResponse>(update);
         }
 
-        public async Task<IReadOnlyCollection<InfoUserResponse>> GetAll(int take, int skip)
+        public async Task<IReadOnlyCollection<InfoUserResponse>> GetAllAsync(int take, int skip)
         {
             return await _userRepository.GetAll()
                 .Select(a=> new InfoUserResponse()
@@ -52,18 +59,21 @@ namespace Otiva.AppServeces.Service.User
 
         public async Task<InfoUserResponse> GetByIdAsync(Guid id)
         {
-            var existingUser = await _userRepository.FindById(id);
+            var existingUser = await _userRepository.FindByIdAsync(id);
+            if (existingUser == null)
+                throw new Exception("Пользователь с таким идентификатором не найден");
+
             return _mapper.Map<InfoUserResponse>(existingUser);
         }
 
-        public async Task<Guid> Registration(RegistrationOrUpdateRequest registration)
+        public async Task<Guid> RegistrationAsync(RegistrationOrUpdateRequest registration)
         {
             var registerAcc = _mapper.Map<Domain.User>(registration);
             var existingUser = _userRepository.GetAll().Where(x => x.Email == registration.Email).FirstOrDefault();
             if (existingUser != null)
-                throw new Exception("такой пользователь уже существует");
+                throw new Exception("Такой пользователь уже существует");
 
-            await _userRepository.AddAsync(registerAcc);
+            await _userRepository.Add(registerAcc);
             return registerAcc.Id;
         }
     }

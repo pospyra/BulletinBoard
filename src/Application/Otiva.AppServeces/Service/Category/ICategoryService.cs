@@ -14,7 +14,7 @@ namespace Otiva.AppServeces.Service.Category
 
         Task<Guid> CreateCategoryAsync(string name);
 
-        Task<IReadOnlyCollection<InfoCategoryResponse>> GetAll(int take, int skip);
+        Task<IReadOnlyCollection<InfoCategoryResponse>> GetAllAsync();
 
         Task DeleteAsync(Guid id);
 

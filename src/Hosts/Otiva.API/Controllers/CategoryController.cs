@@ -16,9 +16,10 @@ namespace Otiva.API.Controllers
 
         [HttpGet("category/all")]
         [ProducesResponseType(typeof(IReadOnlyCollection<InfoCategoryResponse>), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> GetAllCategory(int take, int skip)
+        public async Task<IActionResult> GetAllCategory()
         {
-            var result = await _categoryService.GetAll(take, skip);
+            var result = await _categoryService.GetAllAsync();
+
             return Ok(result);
         }
 
@@ -36,12 +37,12 @@ namespace Otiva.API.Controllers
         {
             var result = await _categoryService.CreateCategoryAsync(name);
 
-            return Created("", new { });
+            return Created("", new { result });
         }
 
         [HttpPut("category/put/{id}")]
         [ProducesResponseType(typeof(IReadOnlyCollection<InfoCategoryResponse>), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> EditCategory(Guid id, string name)
+        public async Task<IActionResult> EditCategoryAsync(Guid id, string name)
         {
             await _categoryService.EditCategoryAsync(id, name);
             return NoContent();

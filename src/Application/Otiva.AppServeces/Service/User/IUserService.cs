@@ -12,9 +12,9 @@ namespace Otiva.AppServeces.Service.User
     {
         Task<InfoUserResponse> GetByIdAsync(Guid id);
 
-        Task<Guid> Registration(RegistrationOrUpdateRequest registration);
+        Task<Guid> RegistrationAsync(RegistrationOrUpdateRequest registration);
 
-        Task<IReadOnlyCollection<InfoUserResponse>> GetAll(int take, int skip);
+        Task<IReadOnlyCollection<InfoUserResponse>> GetAllAsync(int take, int skip);
 
         Task DeleteAsync(Guid id);
 

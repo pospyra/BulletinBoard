@@ -25,31 +25,45 @@ namespace Otiva.AppServeces.Service.Category
         }
         public async Task<Guid> CreateCategoryAsync(string name)
         {
-            var newCategory = new Domain.Category()
+            try
             {
-                Name = name,
-            };
+                var newCategory = new Domain.Category()
+                {
+                    Name = name,
+                };
 
-            await _categoryRepository.AddAsync(newCategory);
-            return newCategory.Id;
+                await _categoryRepository.Add(newCategory);
+                return newCategory.Id;
+            }
+            catch(Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+
         }
 
         public async Task DeleteAsync(Guid id)
         {
-            var category = await _categoryRepository.FindById(id);
+            var category = await _categoryRepository.FindByIdAsync(id);
+            if(category == null)
+                throw new Exception("Категории с таким идентификатором не существует");
+
             await _categoryRepository.DeleteAsync(category);
         }
 
         public async Task<InfoCategoryResponse> EditCategoryAsync(Guid Id, string name)
         {
-            var existingCategory = await _categoryRepository.FindById(Id);
+            var existingCategory = await _categoryRepository.FindByIdAsync(Id);
+            if (existingCategory == null)
+                throw new Exception("Категории с таким идентификатором не сущесвует");
+
             existingCategory.Name = name;
             await _categoryRepository.EditAdAsync(existingCategory);
 
             return _mapper.Map<InfoCategoryResponse>(existingCategory);
         }
 
-        public async Task<IReadOnlyCollection<InfoCategoryResponse>> GetAll(int take, int skip)
+        public async Task<IReadOnlyCollection<InfoCategoryResponse>> GetAllAsync()
         {
             return await _categoryRepository.GetAll()
                 .Select(a => new InfoCategoryResponse()
@@ -61,13 +75,15 @@ namespace Otiva.AppServeces.Service.Category
                         Id = c.Id,
                         Name = c.Name,
                     }).ToList()
-                }).Skip(skip).Take(take).ToListAsync();
-
+                }).ToListAsync();
         }
 
         public async Task<InfoCategoryResponse> GetByIdAsync(Guid id)
         {
-           var existingCategory = await _categoryRepository.FindById(id);
+           var existingCategory = await _categoryRepository.FindByIdAsync(id);
+            if (existingCategory == null)
+                throw new Exception("Категории с таким идентификатором не сущесвует");
+
             var result = _mapper.Map<InfoCategoryResponse>(existingCategory);
             result.Subcategories = existingCategory.Subcategories.Select(c => new InfoSubcategory()
             {

@@ -11,8 +11,10 @@ namespace Otiva.AppServeces.IRepository
     {
         IQueryable<SelectedAd> GetAll();
 
-        Task AddAsync(SelectedAd model);
+        Task Add(SelectedAd model);
 
         Task DeleteAsync(SelectedAd model);
+
+        Task<SelectedAd> FindByIdAsync(Guid id);
     }
 }

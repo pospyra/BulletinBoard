@@ -13,8 +13,8 @@ namespace Otiva.AppServeces.Service.SelectedAds
     {
         Task<InfoSelectedResponse> AddSelectedAsync(Guid UserId, Guid AdId);
 
-        Task<IReadOnlyCollection<InfoSelectedResponse>> GetSelectedUsers(Guid UserId);
+        Task<IReadOnlyCollection<InfoSelectedResponse>> GetSelectedUsersAsync(Guid UserId, int take, int skip);
 
-        Task DeleteAsync(Guid UserId, Guid AdId);
+        Task DeleteAsync(Guid Id);
     }
 }

@@ -9,11 +9,11 @@ namespace Otiva.AppServeces.IRepository
 {
     public interface IUserRepository
     {
-        Task<User> FindById(Guid id);
+        Task<User> FindByIdAsync(Guid id);
 
         IQueryable<User> GetAll();
 
-        Task AddAsync(User model);
+        Task Add(User model);
 
         Task DeleteAsync(User model);
 

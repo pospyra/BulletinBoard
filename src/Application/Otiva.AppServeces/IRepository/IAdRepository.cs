@@ -9,11 +9,11 @@ namespace Otiva.AppServeces.IRepository
 {
     public interface IAdRepository
     {
-        Task<Ad> FindById(Guid id);
+        Task<Ad> FindByIdAsync(Guid id);
 
         IQueryable<Ad> GetAll();
 
-        Task AddAsync(Ad model);
+        Task Add(Ad model);
 
         Task DeleteAsync(Ad ad);
 

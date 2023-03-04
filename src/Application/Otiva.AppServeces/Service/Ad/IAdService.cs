@@ -13,7 +13,7 @@ namespace Otiva.AppServeces.Service.Ad
 
         Task<Guid> CreateAdAsync(CreateOrUpdateAdRequest createAd);
 
-        Task<IReadOnlyCollection<InfoAdResponse>> GetAll( int take, int skip);
+        Task<IReadOnlyCollection<InfoAdResponse>> GetAllAsync( int take, int skip);
 
         Task DeleteAsync(Guid id);
 

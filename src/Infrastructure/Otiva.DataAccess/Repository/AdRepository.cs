@@ -19,7 +19,7 @@ namespace Otiva.DataAccess.Repository
             _baseRepository = baseRepository;
         }
 
-        public Task AddAsync(Ad model)
+        public Task Add(Ad model)
         {
             return _baseRepository.AddAsync(model);
         }
@@ -34,7 +34,7 @@ namespace Otiva.DataAccess.Repository
             await _baseRepository.UpdateAsync(edit);
         }
 
-        public async Task<Ad> FindById(Guid id)
+        public async Task<Ad> FindByIdAsync(Guid id)
         {
             return await _baseRepository.GetByIdAsync(id);
         }

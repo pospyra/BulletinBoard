@@ -17,9 +17,12 @@ namespace Otiva.API.Controllers
 
         [HttpGet("/all")]
         [ProducesResponseType(typeof(IReadOnlyCollection<InfoAdResponse>), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> GetAll(int take, int skip)
+        public async Task<IActionResult> GetAllAsync(int take, int skip)
         {
-            var result = await _adService.GetAll(take, skip);
+            if (skip < 0 || take <= 0 || take == null)
+                throw new Exception("Некорректные данные. Убедитесь, что skip >= 0, take > 0 и !null ");
+
+            var result = await _adService.GetAllAsync(take, skip);
 
             return Ok(result);
         }
@@ -27,7 +30,7 @@ namespace Otiva.API.Controllers
 
         [HttpGet("/ad/{id}")]
         [ProducesResponseType(typeof(IReadOnlyCollection<InfoAdResponse>), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> GetById(Guid id)
+        public async Task<IActionResult> GetByIdAsync(Guid id)
         {
             var result = await _adService.GetByIdAsync(id);
 

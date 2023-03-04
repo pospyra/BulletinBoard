@@ -23,5 +23,7 @@ namespace Otiva.Domain
         public Subcategory Subcategory { get; set; }
 
         public User User { get; set; }
+
+        public ICollection<Photo> Photos { get; set; }
     }
 }

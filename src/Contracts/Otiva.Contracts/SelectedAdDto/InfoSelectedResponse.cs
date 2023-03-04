@@ -13,5 +13,7 @@ namespace Otiva.Contracts.SelectedAdDto
         public Guid UserId { get; set; }
 
         public Guid AdId { get; set; }
+
+        public DateTime DateAdded { get; set; }
     }
 }

@@ -22,29 +22,43 @@ namespace Otiva.AppServeces.Service.Ad
 
         public async Task<Guid> CreateAdAsync(CreateOrUpdateAdRequest createAd)
         {
-            var newUser = _mapper.Map<Domain.Ad>(createAd);
-            newUser.CreateTime = DateTime.UtcNow;
-            await _adRepository.AddAsync(newUser);
+            try
+            {
+                var newUser = _mapper.Map<Domain.Ad>(createAd);
+                newUser.CreateTime = DateTime.UtcNow;
+                await _adRepository.Add(newUser);
 
-            return newUser.Id;
+                return newUser.Id;
+            }
+
+            catch(Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
 
         public async Task DeleteAsync(Guid id)
         {
-            var existingUser = await _adRepository.FindById(id);
+            var existingUser = await _adRepository.FindByIdAsync(id);
+            if (existingUser == null)
+                throw new Exception("Объявления с таким идентификатором не сущесвует");
+
             await _adRepository.DeleteAsync(existingUser);
         }
 
         public async Task<InfoAdResponse> EditAdAsync(Guid Id, CreateOrUpdateAdRequest editAd)
         {
-            var existingAd = await _adRepository.FindById(Id);
+            var existingAd = await _adRepository.FindByIdAsync(Id);
+            if (existingAd == null)
+                throw new Exception("Объявления с таким идентификатором не сущесвует");
+
             await _adRepository.EditAdAsync(_mapper.Map(editAd, existingAd));
 
             return _mapper.Map<InfoAdResponse>(editAd);
 
         }
 
-        public async Task<IReadOnlyCollection<InfoAdResponse>> GetAll(int take, int skip)
+        public async Task<IReadOnlyCollection<InfoAdResponse>> GetAllAsync(int take, int skip)
         {
             return await _adRepository.GetAll()
                  .Select(a => new InfoAdResponse
@@ -59,7 +73,9 @@ namespace Otiva.AppServeces.Service.Ad
 
         public async  Task<InfoAdResponse> GetByIdAsync(Guid id)
         {
-            var exitAd = await _adRepository.FindById(id);
+            var exitAd = await _adRepository.FindByIdAsync(id);
+            if (exitAd == null)
+                throw new Exception("Объявления с таким идентификатором не сущесвует");
             return _mapper.Map<InfoAdResponse>(exitAd);
         }
     }

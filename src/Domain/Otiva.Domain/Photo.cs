@@ -6,14 +6,14 @@ using System.Threading.Tasks;
 
 namespace Otiva.Domain
 {
-    public class SelectedAd
+    public class Photo
     {
         public Guid Id { get; set; }
 
-        public Guid UserId { get; set; }
+        public string KodBase64 { get; set; }
 
         public Guid AdId { get; set; }
 
-        public DateTime DateAdded { get; set; }
+        public Ad Ad { get; set; }
     }
 }

@@ -30,19 +30,26 @@ namespace Otiva.AppServeces.Service.Subcategory
                 CategoryId = CategoryId
             };
 
-            await _subcategoryRepository.AddAsync(newSubcategory);
+            await _subcategoryRepository.Add(newSubcategory);
             return newSubcategory.Id;
         }
 
         public async Task DeleteAsync(Guid id)
         {
-            var category = await _subcategoryRepository.FindById(id);
+            var category = await _subcategoryRepository.FindByIdAsync(id);
+            if (category == null)
+                throw new Exception("Подкатегории с таким идентификатором не сущесвует");
+
             await _subcategoryRepository.DeleteAsync(category);
         }
 
         public async Task<InfoSubcategory> EditSubCategoryAsync(Guid Id, string name, Guid CategoryId)
         {
-            var existingCategory = await _subcategoryRepository.FindById(Id);
+            var existingCategory = await _subcategoryRepository.FindByIdAsync(Id);
+
+            if (existingCategory == null)
+                throw new Exception("Подкатегории с таким идентификатором не существует");
+
             existingCategory.Name = name;
             existingCategory.CategoryId = CategoryId;
             await _subcategoryRepository.EditSubcategoryAsync(existingCategory);
@@ -50,7 +57,7 @@ namespace Otiva.AppServeces.Service.Subcategory
             return _mapper.Map<InfoSubcategory>(existingCategory);
         }
 
-        public async Task<IReadOnlyCollection<InfoSubcategory>> GetAll(int take, int skip)
+        public async Task<IReadOnlyCollection<InfoSubcategory>> GetAllAsync(int take, int skip)
         {
             return await _subcategoryRepository.GetAll()
                 .Select(a => new InfoSubcategory()
@@ -63,7 +70,9 @@ namespace Otiva.AppServeces.Service.Subcategory
 
         public async Task<InfoSubcategory> GetByIdAsync(Guid id)
         {
-            var sub = await _subcategoryRepository.FindById(id);
+            var sub = await _subcategoryRepository.FindByIdAsync(id);
+            if (sub == null) throw new Exception("Подкатегории с таким идентификатором не сущесвует");
+
             return _mapper.Map<InfoSubcategory>(sub);
         }
     }

@@ -29,26 +29,20 @@ namespace Otiva.AppServeces.Service.SelectedAds
             {
                 AdId = AdId,
                 UserId = UserId,
+                DateAdded= DateTime.Now,
             };
-            await _selectedadRepository.AddAsync(selected);
+            await _selectedadRepository.Add(selected);
 
             return _mapper.Map<InfoSelectedResponse>(selected);
         }
 
-        public async Task DeleteAsync(Guid UserId, Guid AdId)
+        public async Task DeleteAsync(Guid Id)
         {
-            var selected =  _selectedadRepository.GetAll()
-                .Where(x=> x.UserId == UserId && x.AdId == AdId);
-
-            var delselected = new SelectedAd()
-            {
-                UserId = UserId,
-                AdId = AdId
-            };
-            await _selectedadRepository.DeleteAsync(delselected);
+            var selectedDel = await _selectedadRepository.FindByIdAsync(Id);
+            await _selectedadRepository.DeleteAsync(selectedDel);
         }
 
-        public async Task<IReadOnlyCollection<InfoSelectedResponse>> GetSelectedUsers(Guid UserId)
+        public async Task<IReadOnlyCollection<InfoSelectedResponse>> GetSelectedUsersAsync(Guid UserId, int take, int skip)
         {
             return await _selectedadRepository.GetAll()
                .Where(x => x.UserId == UserId)
@@ -56,8 +50,9 @@ namespace Otiva.AppServeces.Service.SelectedAds
                {
                    Id= a.Id,
                    UserId = a.UserId,
-                   AdId= a.AdId
-               }).ToListAsync();
+                   AdId= a.AdId,
+                   DateAdded= a.DateAdded,
+               }).OrderBy(x =>x.DateAdded).Skip(skip).Take(take).ToListAsync();
 
         }
     }

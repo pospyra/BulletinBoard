@@ -19,7 +19,7 @@ namespace Otiva.API.Controllers
         [ProducesResponseType(typeof(IReadOnlyCollection<InfoUserResponse>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetAll(int take, int skip)
         {
-            var result = await _userService.GetAll(take, skip);
+            var result = await _userService.GetAllAsync(take, skip);
 
             return Ok(result);
         }
@@ -38,7 +38,7 @@ namespace Otiva.API.Controllers
         [ProducesResponseType(typeof(IReadOnlyCollection<InfoUserResponse>), (int)HttpStatusCode.Created)]
         public async Task<IActionResult> Registration(RegistrationOrUpdateRequest registration)
         {
-            var result = await _userService.Registration(registration);
+            var result = await _userService.RegistrationAsync(registration);
 
             return Created("", result);
         }

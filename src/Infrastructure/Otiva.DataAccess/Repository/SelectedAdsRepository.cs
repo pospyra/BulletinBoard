@@ -17,7 +17,7 @@ namespace Otiva.DataAccess.Repository
         {
             _baseRepository = baseRepository;
         }
-        public Task AddAsync(SelectedAd model)
+        public Task Add(SelectedAd model)
         {
             return _baseRepository.AddAsync(model);
         }
@@ -25,6 +25,11 @@ namespace Otiva.DataAccess.Repository
         public async Task DeleteAsync(SelectedAd model)
         {
             await _baseRepository.DeleteAsync(model);
+        }
+
+        public async Task<SelectedAd> FindByIdAsync(Guid id)
+        {
+            return await _baseRepository.GetByIdAsync(id);
         }
 
         public IQueryable<SelectedAd> GetAll()

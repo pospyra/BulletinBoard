@@ -4,7 +4,6 @@ using Otiva.AppServeces.Service.SelectedAds;
 using Otiva.Contracts.AdDto;
 using Otiva.Contracts.SelectedAdDto;
 using System.Net;
-
 namespace Otiva.API.Controllers
 {
     public class SelectedAdController : ControllerBase
@@ -18,9 +17,9 @@ namespace Otiva.API.Controllers
 
         [HttpGet("/allSelectedByUserID{Id}")]
         [ProducesResponseType(typeof(IReadOnlyCollection<InfoSelectedResponse>), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> GetAll(Guid Id)
+        public async Task<IActionResult> GetAll(Guid UserId, int take, int skip)
         {
-            var result = await _selectedadService.GetSelectedUsers(Id);
+            var result = await _selectedadService.GetSelectedUsersAsync(UserId, take, skip);
 
             return Ok(result);
         }
@@ -39,9 +38,9 @@ namespace Otiva.API.Controllers
         [HttpDelete("/selected/delete")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
-        public async Task<IActionResult> DeleteAdAsync(Guid UserId, Guid AdId)
+        public async Task<IActionResult> DeleteAdAsync(Guid Id)
         {
-            await _selectedadService.DeleteAsync(UserId, AdId);
+            await _selectedadService.DeleteAsync(Id);
 
             return NoContent();
         }
