@@ -27,6 +27,18 @@ namespace Otiva.API.Controllers
             return Ok(result);
         }
 
+        [HttpGet("/ad/getAdsCurrentUser")]
+        [ProducesResponseType(typeof(IReadOnlyCollection<InfoAdResponse>), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> GetMyAdsAsync(int take, int skip, CancellationToken cancellation)
+        {
+            if (skip < 0 || take <= 0 || take == null)
+                throw new Exception("Некорректные данные. Убедитесь, что skip >= 0, take > 0 и !null ");
+
+            var result = await _adService.GetMyAdsAsync(take, skip, cancellation);
+
+            return Ok(result);
+        }
+
 
         [HttpGet("/ad/{id}")]
         [ProducesResponseType(typeof(IReadOnlyCollection<InfoAdResponse>), (int)HttpStatusCode.OK)]

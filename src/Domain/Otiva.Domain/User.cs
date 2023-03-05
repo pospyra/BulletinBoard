@@ -21,7 +21,7 @@ namespace Otiva.Domain
 
         public string Phone { get; set; }
 
-        public DateTime Registration { get; set; } = DateTime.UtcNow;
+        public DateTime RegistrationDateTime { get; set; } = DateTime.UtcNow;
 
 
         public ICollection<Message> SentMessages { get; set; }

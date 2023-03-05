@@ -28,11 +28,11 @@ namespace Otiva.AppServeces.Service.Ad
         {
             try
             {
-                var newUser = _mapper.Map<Domain.Ad>(createAd);
-                newUser.Id = await _userService.GetCurrentUserId(cancellation);
-                await _adRepository.Add(newUser);
+                var newAd = _mapper.Map<Domain.Ad>(createAd);
+                newAd.UserId = await _userService.GetCurrentUserId(cancellation);
+                await _adRepository.Add(newAd);
 
-                return newUser.Id;
+                return newAd.Id;
             }
 
             catch(Exception ex)
@@ -73,6 +73,8 @@ namespace Otiva.AppServeces.Service.Ad
                      SubcategoryId = a.SubcategoryId,
                      CreateTime = a.CreateTime,
                      UserId= a.UserId,
+                     Price = a.Price,
+                     Region = a.Region
                  }).OrderBy(d=>d.CreateTime).Skip(skip).Take(take).ToListAsync();
         }
 
@@ -118,6 +120,23 @@ namespace Otiva.AppServeces.Service.Ad
             if (exitAd == null)
                 throw new Exception("Объявления с таким идентификатором не сущесвует");
             return _mapper.Map<InfoAdResponse>(exitAd);
+        }
+
+        public async Task<IReadOnlyCollection<InfoAdResponse>> GetMyAdsAsync(int take, int skip, CancellationToken cancellation)
+        {
+            var currentUser = await _userService.GetCurrentUserId(cancellation);
+
+            return await _adRepository.GetAll()
+                .Where(p=>p.UserId == currentUser)
+                .Select(a => new InfoAdResponse
+                {
+                    Id = a.Id,
+                    Name = a.Name,
+                    Description = a.Description,
+                    SubcategoryId = a.SubcategoryId,
+                    CreateTime = a.CreateTime,
+                    UserId = a.UserId,
+                }).OrderBy(d => d.CreateTime).Skip(skip).Take(take).ToListAsync();
         }
     }
 }
