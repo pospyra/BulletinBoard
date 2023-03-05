@@ -106,7 +106,6 @@ namespace Otiva.AppServeces.Service.Ad
             }).OrderBy(x => x.CreateTime).Skip(search.skip).Take(search.take).ToListAsync();
         }
 
-
         public async  Task<InfoAdResponse> GetByIdAsync(Guid id)
         {
             var exitAd = await _adRepository.FindByIdAsync(id);

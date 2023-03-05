@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Otiva.Domain
 {
-    public class User
+    public class User 
     {
         public Guid Id { get; set; }
 
@@ -20,10 +21,12 @@ namespace Otiva.Domain
 
         public string Phone { get; set; }
 
+
+        public ICollection<Message> SentMessages { get; set; }
+        public ICollection<Message> ReceivedMessages { get; set; }
+
         public ICollection<Ad> Ads { get; set; }
-
         public ICollection<Review> Reviews { get; set; }
-
         public ICollection<SelectedAd> SelectedAds { get; set; }
     }
 }

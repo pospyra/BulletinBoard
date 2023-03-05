@@ -17,9 +17,9 @@ namespace Otiva.API.Controllers
 
         [HttpGet("subcategory/all")]
         [ProducesResponseType(typeof(IReadOnlyCollection<InfoCategoryResponse>), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> GetAllSubategory(int take, int skip)
+        public async Task<IActionResult> GetAllSubategory()
         {
-            var result = await _subcategoryService.GetAllAsync(take, skip);
+            var result = await _subcategoryService.GetAllAsync();
             return Ok(result);
         }
 

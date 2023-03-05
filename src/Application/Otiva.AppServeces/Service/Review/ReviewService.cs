@@ -28,8 +28,8 @@ namespace Otiva.AppServeces.Service.Review
             var newReview = _mapper.Map<Domain.Review>(createReview);
             newReview.CreatedReview = DateTime.UtcNow;
             newReview.CustomerId = customerID;
-
             //TODO newReview.CustomerId = currentUSer;
+
             await _reviewRepository.Add(newReview);
             return newReview.Id;
         }

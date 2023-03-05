@@ -20,6 +20,7 @@ namespace Otiva.DataAccess.DataBase
         {
             modelBuilder.ApplyConfiguration(new AdConfiguraration());
             modelBuilder.ApplyConfiguration(new ReviewConfiguration());
+            modelBuilder.ApplyConfiguration(new ChatConfiguration());
         }
     }
 }

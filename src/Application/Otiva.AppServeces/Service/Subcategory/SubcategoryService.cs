@@ -57,15 +57,14 @@ namespace Otiva.AppServeces.Service.Subcategory
             return _mapper.Map<InfoSubcategory>(existingCategory);
         }
 
-        public async Task<IReadOnlyCollection<InfoSubcategory>> GetAllAsync(int take, int skip)
+        public async Task<IReadOnlyCollection<InfoSubcategory>> GetAllAsync()
         {
             return await _subcategoryRepository.GetAll()
                 .Select(a => new InfoSubcategory()
                 {
                     Id = a.Id,
-                    Name = a.Name,
-                    
-                }).Skip(skip).Take(take).ToListAsync();
+                    Name = a.Name             
+                }).ToListAsync();
         }
 
         public async Task<InfoSubcategory> GetByIdAsync(Guid id)
