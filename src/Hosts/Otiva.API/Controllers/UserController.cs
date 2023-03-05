@@ -2,6 +2,7 @@
 using Otiva.AppServeces.Service.User;
 using Otiva.Contracts.AdDto;
 using Otiva.Contracts.UserDto;
+using Otiva.Domain;
 using System.Net;
 
 namespace Otiva.API.Controllers
@@ -24,6 +25,13 @@ namespace Otiva.API.Controllers
             return Ok(result);
         }
 
+        [HttpGet("currentUser")]
+        [ProducesResponseType(typeof(IReadOnlyCollection<InfoUserResponse>), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> GetCurrenUserI(CancellationToken cancellation)
+        {
+            var result = await _userService.GetCurrentUserId(cancellation);
+            return Ok(result);
+        }
 
         [HttpGet("/user/{id}")]
         [ProducesResponseType(typeof(IReadOnlyCollection<InfoUserResponse>), (int)HttpStatusCode.OK)]
@@ -32,6 +40,15 @@ namespace Otiva.API.Controllers
             var result = await _userService.GetByIdAsync(id);
 
             return Ok(result);
+        }
+
+        [HttpPost("login")]
+        [ProducesResponseType(typeof(IReadOnlyCollection<InfoUserResponse>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> Login(LoginRequest userLogin)
+        {
+            var token = await _userService.Login(userLogin);
+
+            return Ok(new { Token = token, Message = "Success" });
         }
 
         [HttpPost("/registration")]

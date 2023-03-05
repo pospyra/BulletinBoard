@@ -1,3 +1,4 @@
+using Otiva.Infrastructure.Modules;
 using Otiva.Registrar;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -6,6 +7,12 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddServices();
 
 builder.Services.AddControllers();
+
+builder.Services.AddAuthentificationModule(builder.Configuration);
+builder.Services.AddHttpContextAccessor();
+
+builder.Services.AddSwaggerModule();
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -21,6 +28,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

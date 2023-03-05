@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AdBoard.Infrastructure.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Otiva.AppServeces.IRepository;
 using Otiva.AppServeces.MapProfile;
@@ -59,6 +60,9 @@ namespace Otiva.Registrar
 
             services.AddTransient<IMessageService, MessageService>();
             services.AddTransient<IMessageRepository, MessageRepository>();
+
+            services.AddScoped<IClaimAccessor, HttpContextClaimsAccessor>();
+
 
             return services;
         }

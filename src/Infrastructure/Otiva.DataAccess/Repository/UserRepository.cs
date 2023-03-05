@@ -1,9 +1,11 @@
-﻿using Otiva.AppServeces.IRepository;
+﻿using Microsoft.EntityFrameworkCore;
+using Otiva.AppServeces.IRepository;
 using Otiva.Domain;
 using Otiva.Infrastructure.BaseRepository;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -35,6 +37,13 @@ namespace Otiva.DataAccess.Repository
         public async Task<User> FindByIdAsync(Guid id)
         {
             return await _baseRepository.GetByIdAsync(id);
+        }
+
+        public async Task<User> FindWhere(Expression<Func<User, bool>> predicate)
+        {
+            var data = _baseRepository.GetAllFiltered(predicate);
+
+            return await data.Where(predicate).FirstOrDefaultAsync();
         }
 
         public IQueryable<User> GetAll()
