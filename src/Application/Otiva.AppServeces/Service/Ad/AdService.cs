@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query.Internal;
 using Otiva.AppServeces.IRepository;
+using Otiva.AppServeces.Service.User;
 using Otiva.Contracts.AdDto;
 using System;
 using System.Collections.Generic;
@@ -13,19 +15,21 @@ namespace Otiva.AppServeces.Service.Ad
     public class AdService : IAdService
     {
         public readonly IAdRepository _adRepository;
+        public readonly IUserService _userService;
         public readonly IMapper _mapper;
-        public AdService(IAdRepository adRepository, IMapper mapper)
+        public AdService(IAdRepository adRepository, IMapper mapper, IUserService userService)
         {
             _adRepository = adRepository;
             _mapper = mapper;
+            _userService = userService;
         }
 
-        public async Task<Guid> CreateAdAsync(CreateOrUpdateAdRequest createAd)
+        public async Task<Guid> CreateAdAsync(CreateOrUpdateAdRequest createAd, CancellationToken cancellation)
         {
             try
             {
                 var newUser = _mapper.Map<Domain.Ad>(createAd);
-                newUser.CreateTime = DateTime.UtcNow;
+                newUser.Id = await _userService.GetCurrentUserId(cancellation);
                 await _adRepository.Add(newUser);
 
                 return newUser.Id;
@@ -68,6 +72,7 @@ namespace Otiva.AppServeces.Service.Ad
                      Description = a.Description,
                      SubcategoryId = a.SubcategoryId,
                      CreateTime = a.CreateTime,
+                     UserId= a.UserId,
                  }).OrderBy(d=>d.CreateTime).Skip(skip).Take(take).ToListAsync();
         }
 
@@ -77,6 +82,7 @@ namespace Otiva.AppServeces.Service.Ad
 
             if (search == null)
                 throw new Exception("Не задан фильтр");
+
 
             if (!string.IsNullOrEmpty(search.Name))
                 query = query.Where(p => p.Name.ToLower().Contains(search.Name.ToLower()));

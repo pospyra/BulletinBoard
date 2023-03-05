@@ -11,7 +11,7 @@ namespace Otiva.AppServeces.Service.SelectedAds
 {
     public interface ISelectedAdsService
     {
-        Task<InfoSelectedResponse> AddSelectedAsync(Guid UserId, Guid AdId);
+        Task<InfoSelectedResponse> AddSelectedAsync (Guid AdId, CancellationToken cancellation);
 
         Task<IReadOnlyCollection<InfoSelectedResponse>> GetSelectedUsersAsync(Guid UserId, int take, int skip);
 

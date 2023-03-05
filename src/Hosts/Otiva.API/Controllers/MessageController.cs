@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Otiva.AppServeces.Service.Message;
+using Otiva.AppServeces.Service.User;
 using Otiva.Contracts.MessageDto;
 using Otiva.Contracts.ReviewDto;
 using System.Net;
@@ -9,20 +10,24 @@ namespace Otiva.API.Controllers
     public class MessageController : ControllerBase
     {
         public readonly IMessageService _messageService;
+        public readonly IUserService _userService;
 
-        public MessageController(IMessageService messageService)
+        public MessageController(IMessageService messageService, IUserService userService)
         {
             _messageService = messageService;
+            _userService = userService;
         }
 
         [HttpGet("/chat/message")]
         [ProducesResponseType(typeof(IReadOnlyCollection<InfoMessageResponse>), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> GetMessageFromChatAsync(Guid user1_Id, Guid user2_Id)
+        public async Task<IActionResult> GetMessageFromChatAsync(Guid user2_Id, CancellationToken cancellation)
         {
+            var user1_Id = await _userService.GetCurrentUserId(cancellation);
+
             if (user1_Id == user2_Id)
                 throw new Exception("Нельзя создать чат с самим собой");
             
-            var result = await _messageService.GetMessageFromChatAsync(user1_Id, user2_Id);
+            var result = await _messageService.GetMessageFromChatAsync( user2_Id, cancellation);
 
             return Ok(result);
         }
@@ -30,9 +35,9 @@ namespace Otiva.API.Controllers
 
         [HttpPost("chat/postMessage")]
         [ProducesResponseType(typeof(IReadOnlyCollection<InfoMessageResponse>), (int)HttpStatusCode.Created)]
-        public async Task<IActionResult> PostMessageAsync(PostMessageRequest message)
+        public async Task<IActionResult> PostMessageAsync(PostMessageRequest message, CancellationToken cancellation)
         {
-            var result = await _messageService.PostMessageAsync(message);
+            var result = await _messageService.PostMessageAsync(message, cancellation);
 
             return Created("", result);
         }

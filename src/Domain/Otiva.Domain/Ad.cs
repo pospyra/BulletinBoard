@@ -18,8 +18,8 @@ namespace Otiva.Domain
 
         public Guid SubcategoryId { get; set; }
 
-        public DateTime CreateTime { get; set; }
-
+        public DateTime CreateTime { get; set; } = DateTime.UtcNow;
+         
         public decimal Price { get; set; }
 
         public string Region { get; set; }

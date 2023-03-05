@@ -27,9 +27,9 @@ namespace Otiva.API.Controllers
 
         [HttpPost("selectedAd/add")]
         [ProducesResponseType(typeof(IReadOnlyCollection<InfoSelectedResponse>), (int)HttpStatusCode.Created)]
-        public async Task<IActionResult> CreateAdAsync(Guid UserId, Guid AdId)
+        public async Task<IActionResult> CreateAdAsync(Guid AdId, CancellationToken cancellation)
         {
-            var result = await _selectedadService.AddSelectedAsync(UserId, AdId);
+            var result = await _selectedadService.AddSelectedAsync(AdId, cancellation);
 
             return Created("", result);
         }

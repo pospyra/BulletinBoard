@@ -11,10 +11,10 @@ namespace Otiva.AppServeces.Service.Message
     {
         public Task DeleteMessageAsync(Guid id);
 
-        public Task<Guid> PostMessageAsync(PostMessageRequest message);
+        public Task<Guid> PostMessageAsync(PostMessageRequest message, CancellationToken cancellation);
 
         public Task<InfoMessageResponse> EditMessageAsync(Guid id, TextMessageRequest text);
 
-        public Task<IReadOnlyCollection<InfoMessageResponse>> GetMessageFromChatAsync(Guid user1_Id, Guid user2_Id);
+        public Task<IReadOnlyCollection<InfoMessageResponse>> GetMessageFromChatAsync(Guid user2_Id, CancellationToken cancellation);
     }
 }

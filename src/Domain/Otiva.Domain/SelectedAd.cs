@@ -14,6 +14,6 @@ namespace Otiva.Domain
 
         public Guid AdId { get; set; }
 
-        public DateTime DateAdded { get; set; }
+        public DateTime DateAdded { get; set; } = DateTime.UtcNow; 
     }
 }

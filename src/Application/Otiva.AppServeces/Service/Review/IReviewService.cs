@@ -12,7 +12,7 @@ namespace Otiva.AppServeces.Service.Review
     {
         Task<InfoReviewResponse> GetByIdAsync(Guid id);
 
-        Task<Guid> CreateReviewAsync(CreateReviewRequest createReview, Guid customerID);
+        Task<Guid> CreateReviewAsync(CreateReviewRequest createReview, CancellationToken cancellation);
 
         Task<IReadOnlyCollection<InfoReviewResponse>> GetAllBySellerIdAsync(Guid SellerId);
 

@@ -51,9 +51,9 @@ namespace Otiva.API.Controllers
 
         [HttpPost("ad/createAd")]
         [ProducesResponseType(typeof(IReadOnlyCollection<InfoAdResponse>), (int)HttpStatusCode.Created)]
-        public async Task<IActionResult> CreateAdAsync(CreateOrUpdateAdRequest createAd)
+        public async Task<IActionResult> CreateAdAsync(CreateOrUpdateAdRequest createAd, CancellationToken cancellation)
         {
-            var result = await _adService.CreateAdAsync(createAd);
+            var result = await _adService.CreateAdAsync(createAd, cancellation);
 
             return Created("", result);
         }

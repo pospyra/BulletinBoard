@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualBasic;
 using Otiva.AppServeces.IRepository;
+using Otiva.AppServeces.Service.User;
 using Otiva.Contracts.SelectedAdDto;
 using Otiva.Domain;
 using System;
@@ -15,21 +16,23 @@ namespace Otiva.AppServeces.Service.SelectedAds
     public class SelectedAdsService : ISelectedAdsService
     {
         public readonly ISelectedAdsRepository _selectedadRepository;
+        public readonly IUserService _userService; 
         public readonly IMapper _mapper;
-        public SelectedAdsService(ISelectedAdsRepository selectedadRepository, IMapper mapper)
+        public SelectedAdsService(ISelectedAdsRepository selectedadRepository, IMapper mapper, IUserService userService)
         {
             _selectedadRepository = selectedadRepository;
+            _userService = userService;
             _mapper = mapper;
         }
 
 
-        public async Task<InfoSelectedResponse> AddSelectedAsync(Guid UserId, Guid AdId)
+        public async Task<InfoSelectedResponse> AddSelectedAsync( Guid AdId, CancellationToken cancellation)
         {
+            var userId = await _userService.GetCurrentUserId(cancellation);
             var selected = new Domain.SelectedAd()
             {
                 AdId = AdId,
-                UserId = UserId,
-                DateAdded= DateTime.Now,
+                UserId = userId,
             };
             await _selectedadRepository.Add(selected);
 
@@ -53,7 +56,6 @@ namespace Otiva.AppServeces.Service.SelectedAds
                    AdId= a.AdId,
                    DateAdded= a.DateAdded,
                }).OrderBy(x =>x.DateAdded).Skip(skip).Take(take).ToListAsync();
-
         }
     }
 }

@@ -34,12 +34,11 @@ namespace Otiva.API.Controllers
             return Ok(result);
         }
 
-
         [HttpPost("review/create")]
         [ProducesResponseType(typeof(IReadOnlyCollection<InfoReviewResponse>), (int)HttpStatusCode.Created)]
-        public async Task<IActionResult> CreateReviewAsync(CreateReviewRequest createReview, Guid customerID)
+        public async Task<IActionResult> CreateReviewAsync(CreateReviewRequest createReview, CancellationToken cancellation)
         {
-            var result = await _reviewService.CreateReviewAsync(createReview, customerID);
+            var result = await _reviewService.CreateReviewAsync(createReview, cancellation);
 
             return Created("", result);
         }

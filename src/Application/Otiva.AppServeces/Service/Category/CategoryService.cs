@@ -84,13 +84,19 @@ namespace Otiva.AppServeces.Service.Category
             if (existingCategory == null)
                 throw new Exception("Категории с таким идентификатором не сущесвует");
 
-            var result = _mapper.Map<InfoCategoryResponse>(existingCategory);
-            result.Subcategories = existingCategory.Subcategories.Select(c => new InfoSubcategory()
+            existingCategory.Subcategories = await _subcategoryRepository.GetAll().Where(c => c.CategoryId == id).ToListAsync();
+
+            return  new InfoCategoryResponse
             {
-                Id = c.Id,
-                Name = c.Name,
-            }).ToList();
-            return result;
+                Id = existingCategory.Id,
+                Name = existingCategory.Name,
+                Subcategories = existingCategory.Subcategories.Select(c => new InfoSubcategory()
+                {
+                    Id = c.Id,
+                    Name = c.Name,
+                }).ToList()
+            };
+
         }
     }
 }

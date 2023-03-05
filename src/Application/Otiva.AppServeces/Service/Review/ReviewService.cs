@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Otiva.AppServeces.IRepository;
+using Otiva.AppServeces.Service.User;
 using Otiva.Contracts.ReviewDto;
 using Otiva.Domain;
 using System;
@@ -15,20 +16,20 @@ namespace Otiva.AppServeces.Service.Review
     public class ReviewService : IReviewService
     {
         public readonly IReviewRepository _reviewRepository;
+        public readonly IUserService _userService;
         public readonly IMapper _mapper;
 
-        public ReviewService(IReviewRepository reviewRepository, IMapper mapper)
+        public ReviewService(IReviewRepository reviewRepository, IMapper mapper, IUserService userService)
         {
             _reviewRepository = reviewRepository;
+            _userService = userService;
             _mapper = mapper;
         }
 
-        public async Task<Guid> CreateReviewAsync(CreateReviewRequest createReview, Guid customerID)
+        public async Task<Guid> CreateReviewAsync(CreateReviewRequest createReview, CancellationToken cancellation)
         {
             var newReview = _mapper.Map<Domain.Review>(createReview);
-            newReview.CreatedReview = DateTime.UtcNow;
-            newReview.CustomerId = customerID;
-            //TODO newReview.CustomerId = currentUSer;
+            newReview.CustomerId = await _userService.GetCurrentUserId(cancellation);
 
             await _reviewRepository.Add(newReview);
             return newReview.Id;

@@ -16,7 +16,7 @@ namespace Otiva.Domain
         
         public string Content { get; set; }
 
-        public DateTime CreatedReview { get; set; }
+        public DateTime CreatedReview { get; set; } = DateTime.UtcNow;
 
         public User User { get; set; }
     }
