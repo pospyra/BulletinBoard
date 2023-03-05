@@ -14,8 +14,10 @@ namespace Otiva.Contracts.UserDto
 
         public string Email { get; set; }
 
-        public string Password { get; set; }
-
         public string Region { get; set; }
+
+        public string Phone { get; set; }
+
+        public string KodBase64 { get; set; }
     }
 }

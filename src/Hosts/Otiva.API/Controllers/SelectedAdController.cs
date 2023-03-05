@@ -6,6 +6,7 @@ using Otiva.Contracts.SelectedAdDto;
 using System.Net;
 namespace Otiva.API.Controllers
 {
+    [ApiController]
     public class SelectedAdController : ControllerBase
     {
         public readonly ISelectedAdsService _selectedadService;

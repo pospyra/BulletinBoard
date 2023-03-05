@@ -7,6 +7,7 @@ using System.Net;
 
 namespace Otiva.API.Controllers
 {
+    [ApiController]
     public class MessageController : ControllerBase
     {
         public readonly IMessageService _messageService;

@@ -35,6 +35,7 @@ namespace Otiva.AppServeces.Service.User
             _configuration = configuration;
             _claimAccessor = claimAccessor;
         }
+
         public async Task DeleteAsync(Guid id)
         {
             var delUser = await _userRepository.FindByIdAsync(id);
@@ -42,14 +43,20 @@ namespace Otiva.AppServeces.Service.User
                 throw new Exception("Пользователь с таким идентификатором не найден");
 
             await _userRepository.DeleteAsync(delUser);
-
         }
 
-        public async Task<InfoUserResponse> EditUserAsync(Guid Id, RegistrationOrUpdateRequest update )
+        public async Task<InfoUserResponse> EditUserAsync(Guid Id, RegistrationOrUpdateRequest update, byte[] photo )
         {
             var existingAccount = await _userRepository.FindByIdAsync(Id);
             if (existingAccount == null)
                 throw new Exception("Пользователь с таким идентификатором не найден");
+
+            if (photo != null)
+            {
+                if (photo.Length > 5242880)
+                    throw new Exception("Слишклм большой размер фото");
+                existingAccount.KodBase64 = Convert.ToBase64String(photo, 0, photo.Length);
+            }
 
             await _userRepository.EditAdAsync(_mapper.Map(update, existingAccount));
 
@@ -64,8 +71,9 @@ namespace Otiva.AppServeces.Service.User
                     Id = a.Id,
                     Name= a.Name,
                     Email= a.Email,
-                    Password= a.Password,
                     Region   = a.Region,
+                    Phone= a.Phone,
+                    KodBase64 = a.KodBase64
                 }).ToListAsync();
         }
 
@@ -146,12 +154,20 @@ namespace Otiva.AppServeces.Service.User
             return result;
         }
 
-        public async Task<Guid> RegistrationAsync(RegistrationOrUpdateRequest registration)
+        public async Task<Guid> RegistrationAsync(RegistrationOrUpdateRequest registration, byte[] photo)
         {
-            var registerAcc = _mapper.Map<Domain.User>(registration);
             var existingUser = _userRepository.GetAll().Where(x => x.Email == registration.Email).FirstOrDefault();
             if (existingUser != null)
                 throw new Exception("Такой пользователь уже существует");
+
+            var registerAcc = _mapper.Map<Domain.User>(registration);
+
+            if(photo != null)
+            {
+                if (photo.Length > 5242880)
+                    throw new Exception("Слишклм большой размер фото");
+                registerAcc.KodBase64 = Convert.ToBase64String(photo, 0, photo.Length);
+            }         
 
             await _userRepository.Add(registerAcc);
             return registerAcc.Id;

@@ -5,6 +5,7 @@ using System.Net;
 
 namespace Otiva.API.Controllers
 {
+    [ApiController]
     public class CategoryController : ControllerBase
     {
         private readonly ICategoryService _categoryService;

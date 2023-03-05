@@ -14,9 +14,7 @@ namespace Otiva.AppServeces.Service.User
         Task<Guid> GetCurrentUserId(CancellationToken cancellation);
         Task<string> Login(LoginRequest userLogin);
         Task<InfoUserResponse> GetCurrent(CancellationToken cancellation);
-        Task<Guid> RegistrationAsync(RegistrationOrUpdateRequest registration);
-
-
+        Task<Guid> RegistrationAsync(RegistrationOrUpdateRequest registration, byte[] photo);
 
         Task<InfoUserResponse> GetByIdAsync(Guid id);
 
@@ -24,6 +22,6 @@ namespace Otiva.AppServeces.Service.User
 
         Task DeleteAsync(Guid id);
 
-        Task<InfoUserResponse> EditUserAsync(Guid Id, RegistrationOrUpdateRequest registration);
+        Task<InfoUserResponse> EditUserAsync(Guid Id, RegistrationOrUpdateRequest update, byte[] photo);
     }
 }

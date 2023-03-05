@@ -46,6 +46,10 @@ namespace Otiva.API.Controllers
         [ProducesResponseType(typeof(IReadOnlyCollection<InfoUserResponse>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Login(LoginRequest userLogin)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
             var token = await _userService.Login(userLogin);
 
             return Ok(new { Token = token, Message = "Success" });
@@ -53,18 +57,35 @@ namespace Otiva.API.Controllers
 
         [HttpPost("/registration")]
         [ProducesResponseType(typeof(IReadOnlyCollection<InfoUserResponse>), (int)HttpStatusCode.Created)]
-        public async Task<IActionResult> Registration(RegistrationOrUpdateRequest registration)
+        public async Task<IActionResult> Registration(RegistrationOrUpdateRequest registration, IFormFile file)
         {
-            var result = await _userService.RegistrationAsync(registration);
+            byte[] photo = null;
+            if (file != null)
+            {
+                await using (var ms = new MemoryStream())
+                await using (var fs = file.OpenReadStream())
+                {
+                    await fs.CopyToAsync(ms);
+                    photo = ms.ToArray();
+                }
+            }
+            var result = await _userService.RegistrationAsync(registration, photo);
 
             return Created("", result);
         }
 
         [HttpPut("/user/update/{id}")]
         [ProducesResponseType(typeof(IReadOnlyCollection<InfoUserResponse>), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> EditUserAsync(Guid id, RegistrationOrUpdateRequest edit)
+        public async Task<IActionResult> EditUserAsync(Guid id, RegistrationOrUpdateRequest edit, IFormFile file)
         {
-            var res = await _userService.EditUserAsync(id, edit);
+            byte[] photo;
+            await using (var ms = new MemoryStream())
+            await using (var fs = file.OpenReadStream())
+            {
+                await fs.CopyToAsync(ms);
+                photo = ms.ToArray();
+            }
+            var res = await _userService.EditUserAsync(id, edit, photo);
 
             return Ok(res);
         }

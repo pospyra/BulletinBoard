@@ -6,6 +6,7 @@ using System.Net;
 
 namespace Otiva.API.Controllers
 {
+    [ApiController]
     public class ReviewController : ControllerBase
     {
 
