@@ -6,6 +6,7 @@ using Otiva.AppServeces.MapProfile;
 using Otiva.AppServeces.Service.Ad;
 using Otiva.AppServeces.Service.Category;
 using Otiva.AppServeces.Service.Message;
+using Otiva.AppServeces.Service.Photo;
 using Otiva.AppServeces.Service.Review;
 using Otiva.AppServeces.Service.SelectedAds;
 using Otiva.AppServeces.Service.Subcategory;
@@ -40,6 +41,9 @@ namespace Otiva.Registrar
 
             services.AddTransient<IAdService, AdService>();
             services.AddTransient<IAdRepository, AdRepository>();
+
+            services.AddTransient<IPhotoService, PhotoService>();
+            services.AddTransient<IPhotoRepository, PhotoRepository>();
 
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<IUserRepository, UserRepository>();

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Otiva.Contracts.PhotoDto;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,5 +24,7 @@ namespace Otiva.Contracts.AdDto
         public Guid UserId { get; set; }
 
         public Guid SubcategoryId { get; set; }
+
+        public ICollection<InfoPhotoResponse> Photos { get; set; }
     }
 }

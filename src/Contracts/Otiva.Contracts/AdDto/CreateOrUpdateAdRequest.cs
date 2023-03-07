@@ -16,7 +16,9 @@ namespace Otiva.Contracts.AdDto
 
         public decimal Price { get; set; }
 
-        public decimal Region { get; set; }
+        public string Region { get; set; }
         public bool PossibleOfDelivery { get; set; }
+
+        public ICollection<Guid> PhotoId { get; set; }
     }
 }

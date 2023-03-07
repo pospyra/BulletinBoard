@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query.Internal;
 using Otiva.AppServeces.IRepository;
+using Otiva.AppServeces.Service.Photo;
 using Otiva.AppServeces.Service.User;
 using Otiva.Contracts.AdDto;
 using System;
@@ -16,9 +17,11 @@ namespace Otiva.AppServeces.Service.Ad
     {
         public readonly IAdRepository _adRepository;
         public readonly IUserService _userService;
+        public readonly IPhotoService _photoService;
         public readonly IMapper _mapper;
-        public AdService(IAdRepository adRepository, IMapper mapper, IUserService userService)
+        public AdService(IAdRepository adRepository, IPhotoService photoService, IMapper mapper, IUserService userService)
         {
+            _photoService = photoService;
             _adRepository = adRepository;
             _mapper = mapper;
             _userService = userService;
@@ -31,6 +34,11 @@ namespace Otiva.AppServeces.Service.Ad
                 var newAd = _mapper.Map<Domain.Ad>(createAd);
                 newAd.UserId = await _userService.GetCurrentUserId(cancellation);
                 await _adRepository.Add(newAd);
+
+                foreach(var photoId in createAd.PhotoId)
+                {
+                    await _photoService.SetAdPhotoAsync(photoId, newAd.Id);
+                }
 
                 return newAd.Id;
             }
