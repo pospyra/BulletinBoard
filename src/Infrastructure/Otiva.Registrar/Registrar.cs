@@ -57,16 +57,13 @@ namespace Otiva.Registrar
             services.AddTransient<ISelectedAdsService, SelectedAdsService>();
             services.AddTransient<ISelectedAdsRepository, SelectedAdsRepository>();
 
-
             services.AddTransient<IReviewService, ReviewService>();
             services.AddTransient<IReviewRepository, ReviewRepository>();
-
 
             services.AddTransient<IMessageService, MessageService>();
             services.AddTransient<IMessageRepository, MessageRepository>();
 
             services.AddScoped<IClaimAccessor, HttpContextClaimsAccessor>();
-
 
             return services;
         }

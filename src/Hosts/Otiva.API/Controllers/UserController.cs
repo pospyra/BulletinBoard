@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Otiva.AppServeces;
 using Otiva.AppServeces.Service.User;
 using Otiva.Contracts.AdDto;
 using Otiva.Contracts.UserDto;
@@ -7,10 +8,10 @@ using System.Net;
 
 namespace Otiva.API.Controllers
 {
+    [ApiController]
     public class UserController : ControllerBase
     {
         public readonly IUserService _userService;
-
         public UserController(IUserService userService)
         {
             _userService = userService;
@@ -46,10 +47,6 @@ namespace Otiva.API.Controllers
         [ProducesResponseType(typeof(IReadOnlyCollection<InfoUserResponse>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Login(LoginRequest userLogin)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
             var token = await _userService.Login(userLogin);
 
             return Ok(new { Token = token, Message = "Success" });

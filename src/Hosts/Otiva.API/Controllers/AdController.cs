@@ -5,7 +5,6 @@ using System.Net;
 
 namespace Otiva.API.Controllers
 {
-    [ApiController]
     public class AdController : ControllerBase
     {
         public readonly IAdService _adService;

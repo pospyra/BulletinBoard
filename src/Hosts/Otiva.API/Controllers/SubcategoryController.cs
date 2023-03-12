@@ -30,7 +30,7 @@ namespace Otiva.API.Controllers
         {
             var result = await _subcategoryService.CreateSubCategoryAsync(name, categoryId);
 
-            return Created("", new { });
+            return Created("", new { result});
         }
 
         [HttpPut("subcategory/put/{id}")]

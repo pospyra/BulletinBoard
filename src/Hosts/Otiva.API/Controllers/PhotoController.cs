@@ -5,6 +5,7 @@ using System.Net;
 
 namespace Otiva.API.Controllers
 {
+    [ApiController]
     public class PhotoController : ControllerBase
     {
         public readonly IPhotoService _photoService;

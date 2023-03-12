@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Otiva.Contracts.Attributs;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,6 +11,7 @@ namespace Otiva.Contracts.ReviewDto
     {
         public Guid SellerId { get; set; }
 
+        [CheckCurseWord]
         public string Content { get; set; }
     }
 }
