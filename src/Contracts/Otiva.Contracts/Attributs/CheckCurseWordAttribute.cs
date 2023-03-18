@@ -12,24 +12,16 @@ namespace Otiva.Contracts.Attributs
     {
         private string[] WordsList = new string[]
     {
-        "блядь",
-        "блять",
-        "ебать",
-        "пизда",
-        "хуй",
-        "хули",
-        "хуёво",
-        "пошел нахуй",
-        "хуй",
-        "пидорас",
-        "хуйло",
-        "хуйлуша",
-        "мразота",
-        "ебаная",
-        "конченный",
-        "конченнная",
-        "конченное",
-        "ебаное"
+        "Баламошка ",
+        "Лободырный ",
+        "Пентюх ",
+        "Псоватый ",
+        "Маракуша ",
+        "Белебеня",
+        "Шинора ",
+        "Ёра ",
+        "Шаврик ",
+        "Туес ",
     };
 
         protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
