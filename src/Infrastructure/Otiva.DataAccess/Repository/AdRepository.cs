@@ -1,10 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore.Infrastructure;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using Otiva.AppServeces.IRepository;
 using Otiva.Domain;
 using Otiva.Infrastructure.BaseRepository;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -17,6 +19,13 @@ namespace Otiva.DataAccess.Repository
         public AdRepository(IBaseRepository<Ad> baseRepository)
         {
             _baseRepository = baseRepository;
+        }
+
+        public async Task<Ad> FindWhere(Expression<Func<Ad, bool>> predicate)
+        {
+            var data = _baseRepository.GetAllFiltered(predicate);
+
+            return await data.Where(predicate).FirstOrDefaultAsync();
         }
 
         public Task Add(Ad model)
