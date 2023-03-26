@@ -31,6 +31,7 @@ namespace Otiva.Domain
 
         public ICollection<Ad> Ads { get; set; }
         public ICollection<Review> Reviews { get; set; }
-        public ICollection<SelectedAd> SelectedAds { get; set; }
+
+        public ICollection<ItemSelectedAd> ItemSelectedAds { get; set; }
     }
 }

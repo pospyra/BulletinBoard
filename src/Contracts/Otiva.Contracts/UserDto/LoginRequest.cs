@@ -12,11 +12,10 @@ namespace Otiva.Contracts.UserDto
     public class LoginRequest
     {
         [Required]
-        [EmailAddress]
         public string Email { get; set; }
 
         [Required]
-        [MinLength(6, ErrorMessage ="Пароль должен содержать не менее 6ти символов")]
+      //  [MinLength(6, ErrorMessage ="Пароль должен содержать не менее 6ти символов")]
         public string Password { get; set; }
     }
 }

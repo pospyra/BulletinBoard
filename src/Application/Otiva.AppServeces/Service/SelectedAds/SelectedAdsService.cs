@@ -29,7 +29,7 @@ namespace Otiva.AppServeces.Service.SelectedAds
         public async Task<InfoSelectedResponse> AddSelectedAsync( Guid AdId, CancellationToken cancellation)
         {
             var userId = await _userService.GetCurrentUserId(cancellation);
-            var selected = new Domain.SelectedAd()
+            var selected = new Domain.ItemSelectedAd()
             {
                 AdId = AdId,
                 UserId = userId,

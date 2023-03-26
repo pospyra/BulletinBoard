@@ -23,21 +23,40 @@ namespace Otiva.DataAccess.Repository
             return _baseRepository.AddAsync(model);
         }
 
+        /// <summary>
+        /// Удалить сообщение
+        /// </summary>
+        /// <param name="model">Моднль сообщения</param>
+        /// <returns></returns>
         public async Task DeleteAsync(Message model)
         {
            await _baseRepository.DeleteAsync(model);
         }
 
+        /// <summary>
+        /// Редактировать сообщение
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         public async Task EditAdAsync(Message model)
         {
             await _baseRepository.UpdateAsync(model);
         }
 
+        /// <summary>
+        /// Найти сообщение по ID
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<Message> FindByIdAsync(Guid id)
         {
             return await _baseRepository.GetByIdAsync(id);
         }
 
+        /// <summary>
+        /// Получит все сообщения
+        /// </summary>
+        /// <returns></returns>
         public IQueryable<Message> GetAll()
         {
             return _baseRepository.GetAll();
