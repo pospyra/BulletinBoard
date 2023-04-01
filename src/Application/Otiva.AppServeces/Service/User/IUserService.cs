@@ -11,9 +11,9 @@ namespace Otiva.AppServeces.Service.User
 {
     public interface IUserService
     {
-        Task<Guid> GetCurrentUserId(CancellationToken cancellation);
-        Task<string> Login(LoginRequest userLogin);
-        Task<InfoUserResponse> GetCurrent(CancellationToken cancellation);
+        //убрать
+        public Task<Guid> GetCurrentUserId(CancellationToken cancellation);
+
         Task<Guid> RegistrationAsync(RegistrationOrUpdateRequest registration, byte[] photo);
 
         Task<InfoUserResponse> GetByIdAsync(Guid id);

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Otiva.Migrations;
@@ -11,9 +12,11 @@ using Otiva.Migrations;
 namespace Otiva.Migrations.Migrations
 {
     [DbContext(typeof(MigrationsDbContext))]
-    partial class MigrationsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230401151304_delIdentity")]
+    partial class delIdentity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,38 +24,6 @@ namespace Otiva.Migrations.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("text");
-
-                    b.Property<string>("ConcurrencyStamp")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("text");
-
-                    b.Property<string>("NormalizedName")
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Roles");
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
-                {
-                    b.Property<string>("UserId")
-                        .HasColumnType("text");
-
-                    b.Property<string>("RoleId")
-                        .HasColumnType("text");
-
-                    b.HasKey("UserId", "RoleId");
-
-                    b.ToTable("UserRoles");
-                });
 
             modelBuilder.Entity("Otiva.Domain.Ad", b =>
                 {
@@ -64,29 +35,32 @@ namespace Otiva.Migrations.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Description")
+                        .IsRequired()
                         .HasMaxLength(800)
                         .HasColumnType("character varying(800)");
 
-                    b.Property<Guid?>("DomainUserId")
-                        .HasColumnType("uuid");
-
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<decimal>("Price")
                         .HasColumnType("numeric");
 
                     b.Property<string>("Region")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<Guid>("SubcategoryId")
                         .HasColumnType("uuid");
 
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("DomainUserId");
-
                     b.HasIndex("SubcategoryId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Ad");
                 });
@@ -98,6 +72,7 @@ namespace Otiva.Migrations.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("Id");
@@ -117,12 +92,12 @@ namespace Otiva.Migrations.Migrations
                     b.Property<DateTime>("DateAdded")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<Guid>("DomainUserId")
+                    b.Property<Guid>("UserId")
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("DomainUserId");
+                    b.HasIndex("UserId");
 
                     b.ToTable("ItemSelectedAd");
                 });
@@ -134,6 +109,7 @@ namespace Otiva.Migrations.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<string>("Content")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<bool>("Read")
@@ -167,6 +143,7 @@ namespace Otiva.Migrations.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<string>("KodBase64")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("Id");
@@ -183,6 +160,7 @@ namespace Otiva.Migrations.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<string>("Content")
+                        .IsRequired()
                         .HasMaxLength(800)
                         .HasColumnType("character varying(800)");
 
@@ -212,6 +190,7 @@ namespace Otiva.Migrations.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("Id");
@@ -221,130 +200,80 @@ namespace Otiva.Migrations.Migrations
                     b.ToTable("Subcategory");
                 });
 
-            modelBuilder.Entity("Otiva.Domain.User.DomainUser", b =>
+            modelBuilder.Entity("Otiva.Domain.User", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
                     b.Property<string>("Email")
-                        .HasColumnType("text");
-
-                    b.Property<string>("IdentityUserId")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("KodBase64")
                         .HasColumnType("text");
 
-                    b.Property<string>("Password")
+                    b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("PhoneNumber")
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Phone")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Region")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<DateTime>("RegistrationDateTime")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("UserName")
-                        .HasColumnType("text");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("IdentityUserId");
-
-                    b.ToTable("DomainUser");
-                });
-
-            modelBuilder.Entity("Otiva.Domain.User.IdentityUser", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("text");
-
-                    b.Property<int>("AccessFailedCount")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("ConcurrencyStamp")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Email")
-                        .HasColumnType("text");
-
-                    b.Property<bool>("EmailConfirmed")
-                        .HasColumnType("boolean");
-
-                    b.Property<bool>("LockoutEnabled")
-                        .HasColumnType("boolean");
-
-                    b.Property<DateTimeOffset?>("LockoutEnd")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("NormalizedEmail")
-                        .HasColumnType("text");
-
-                    b.Property<string>("NormalizedUserName")
-                        .HasColumnType("text");
-
-                    b.Property<string>("PasswordHash")
-                        .HasColumnType("text");
-
-                    b.Property<string>("PhoneNumber")
-                        .HasColumnType("text");
-
-                    b.Property<bool>("PhoneNumberConfirmed")
-                        .HasColumnType("boolean");
-
-                    b.Property<string>("SecurityStamp")
-                        .HasColumnType("text");
-
-                    b.Property<bool>("TwoFactorEnabled")
-                        .HasColumnType("boolean");
-
-                    b.Property<string>("UserName")
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("IdentityUser");
+                    b.ToTable("User");
                 });
 
             modelBuilder.Entity("Otiva.Domain.Ad", b =>
                 {
-                    b.HasOne("Otiva.Domain.User.DomainUser", "DomainUser")
-                        .WithMany("Ads")
-                        .HasForeignKey("DomainUserId");
-
                     b.HasOne("Otiva.Domain.Subcategory", "Subcategory")
                         .WithMany()
                         .HasForeignKey("SubcategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("DomainUser");
+                    b.HasOne("Otiva.Domain.User", "User")
+                        .WithMany("Ads")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Subcategory");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Otiva.Domain.ItemSelectedAd", b =>
                 {
-                    b.HasOne("Otiva.Domain.User.DomainUser", null)
+                    b.HasOne("Otiva.Domain.User", null)
                         .WithMany("ItemSelectedAds")
-                        .HasForeignKey("DomainUserId")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
             modelBuilder.Entity("Otiva.Domain.Message", b =>
                 {
-                    b.HasOne("Otiva.Domain.User.DomainUser", "Receiver")
+                    b.HasOne("Otiva.Domain.User", "Receiver")
                         .WithMany("ReceivedMessages")
                         .HasForeignKey("ReceiverId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Otiva.Domain.User.DomainUser", "Sender")
+                    b.HasOne("Otiva.Domain.User", "Sender")
                         .WithMany("SentMessages")
                         .HasForeignKey("SenderId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -366,13 +295,13 @@ namespace Otiva.Migrations.Migrations
 
             modelBuilder.Entity("Otiva.Domain.Review", b =>
                 {
-                    b.HasOne("Otiva.Domain.User.DomainUser", "DomainUser")
+                    b.HasOne("Otiva.Domain.User", "User")
                         .WithMany("Reviews")
                         .HasForeignKey("SellerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("DomainUser");
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Otiva.Domain.Subcategory", b =>
@@ -386,15 +315,6 @@ namespace Otiva.Migrations.Migrations
                     b.Navigation("Category");
                 });
 
-            modelBuilder.Entity("Otiva.Domain.User.DomainUser", b =>
-                {
-                    b.HasOne("Otiva.Domain.User.IdentityUser", "IdentityUser")
-                        .WithMany()
-                        .HasForeignKey("IdentityUserId");
-
-                    b.Navigation("IdentityUser");
-                });
-
             modelBuilder.Entity("Otiva.Domain.Ad", b =>
                 {
                     b.Navigation("Photos");
@@ -405,7 +325,7 @@ namespace Otiva.Migrations.Migrations
                     b.Navigation("Subcategories");
                 });
 
-            modelBuilder.Entity("Otiva.Domain.User.DomainUser", b =>
+            modelBuilder.Entity("Otiva.Domain.User", b =>
                 {
                     b.Navigation("Ads");
 

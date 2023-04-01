@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Otiva.Domain.User;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,6 +19,6 @@ namespace Otiva.Domain
 
         public DateTime CreatedReview { get; set; } = DateTime.UtcNow;
 
-        public User User { get; set; }
+        public DomainUser DomainUser { get; set; }
     }
 }

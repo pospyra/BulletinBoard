@@ -16,10 +16,17 @@ namespace Otiva.DataAccess.DataBase
         public OtivaContext(DbContextOptions options)
             : base(options)
         {
+            
         }
+
+        public DbSet<IdentityRole> Roles { get; set; }
+        public DbSet<IdentityUserRole<string>> UserRoles { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.ApplyConfiguration(new IdentityUserRoleConfiguration());
+
             modelBuilder.ApplyConfiguration(new AdConfiguraration());
             modelBuilder.ApplyConfiguration(new ReviewConfiguration());
             modelBuilder.ApplyConfiguration(new ChatConfiguration());

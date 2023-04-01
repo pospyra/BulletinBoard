@@ -10,9 +10,7 @@ namespace Otiva.Migrations.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            var sql = $"INSERT INTO public.\"Category\" (\"Id\", \"Name\") VALUES('{Guid.NewGuid()}', 'Авто')," +
-                $" ('{Guid.NewGuid()}', 'Услуги') ,('{Guid.NewGuid()}', 'Авто') ";
-            migrationBuilder.Sql(sql);
+
         }
 
         /// <inheritdoc />

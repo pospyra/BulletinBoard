@@ -21,7 +21,7 @@ namespace Otiva.Contracts.AdDto
 
         public DateTime CreateTime { get; set; }
 
-        public Guid UserId { get; set; }
+        public Guid? UserId { get; set; }
 
         public Guid SubcategoryId { get; set; }
 

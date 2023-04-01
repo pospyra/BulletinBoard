@@ -8,10 +8,10 @@ using System.Threading.Tasks;
 
 namespace Otiva.Migrations
 {
-    public class MigrationsDbContext : OtivaContext
+   public class MigrationsDbContext : OtivaContext
+{
+    public MigrationsDbContext(DbContextOptions<MigrationsDbContext> options) : base(options)
     {
-        public MigrationsDbContext(DbContextOptions<MigrationsDbContext> options) : base(options)
-        {
-        }
     }
+}
 }

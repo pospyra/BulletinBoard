@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Otiva.Domain.User;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,7 +15,7 @@ namespace Otiva.Domain
 
         public string Description { get; set; }
 
-        public Guid UserId { get; set; }
+        public Guid? DomainUserId { get; set; }
 
         public Guid SubcategoryId { get; set; }
 
@@ -26,7 +27,7 @@ namespace Otiva.Domain
 
         public Subcategory Subcategory { get; set; }
 
-        public User User { get; set; }
+        public DomainUser DomainUser { get; set; }
 
         public ICollection<Photo> Photos { get; set; }
     }

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Otiva.AppServeces;
+using Otiva.AppServeces.Service.IdentityService;
 using Otiva.AppServeces.Service.User;
 using Otiva.Contracts.AdDto;
 using Otiva.Contracts.UserDto;
@@ -8,13 +9,14 @@ using System.Net;
 
 namespace Otiva.API.Controllers
 {
-    [ApiController]
     public class UserController : ControllerBase
     {
         public readonly IUserService _userService;
-        public UserController(IUserService userService)
+        public readonly IIdentityUserService _identityService;
+        public UserController(IUserService userService, IIdentityUserService identityService)
         {
             _userService = userService;
+            _identityService = identityService;
         }
 
         [HttpGet("user/all")]
@@ -30,8 +32,8 @@ namespace Otiva.API.Controllers
         [ProducesResponseType(typeof(IReadOnlyCollection<InfoUserResponse>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetCurrenUserI(CancellationToken cancellation)
         {
-            var result = await _userService.GetCurrentUserId(cancellation);
-            return Ok(result);
+            //var result = await _userService.GetCurrentUserId(cancellation);
+            return Ok();
         }
 
         [HttpGet("/user/{id}")]
@@ -43,18 +45,27 @@ namespace Otiva.API.Controllers
             return Ok(result);
         }
 
+        //[HttpPost("addRole")]
+        //[ProducesResponseType(typeof(IReadOnlyCollection<InfoUserResponse>), StatusCodes.Status200OK)]
+        //public async Task<IActionResult> AddUserToRole(Guid userId, string roleName)
+        //{
+        //    var res = await _userService.AddUserToRole(userId, roleName);
+
+        //    return Ok(res);
+        //}
+
         [HttpPost("login")]
         [ProducesResponseType(typeof(IReadOnlyCollection<InfoUserResponse>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Login(LoginRequest userLogin)
         {
-            var token = await _userService.Login(userLogin);
+            var token = await _identityService.Login(userLogin);
 
             return Ok(new { Token = token, Message = "Success" });
         }
 
         [HttpPost("/registration")]
         [ProducesResponseType(typeof(IReadOnlyCollection<InfoUserResponse>), (int)HttpStatusCode.Created)]
-        public async Task<IActionResult> Registration(RegistrationOrUpdateRequest registration, IFormFile file)
+        public async Task<IActionResult> Registration([FromBody]RegistrationOrUpdateRequest registration, IFormFile file)
         {
             byte[] photo = null;
             if (file != null)

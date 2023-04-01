@@ -1,4 +1,5 @@
 ﻿
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -6,13 +7,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Otiva.Domain
+namespace Otiva.Domain.User
 {
-    public class User 
+    public class DomainUser
     {
         public Guid Id { get; set; }
 
-        public string Name { get; set; }
+        public string UserName { get; set; }
 
         public string Email { get; set; }
 
@@ -20,12 +21,15 @@ namespace Otiva.Domain
 
         public string Region { get; set; }
 
-        public string Phone { get; set; }
+        public string PhoneNumber { get; set; }
 
         public DateTime RegistrationDateTime { get; set; } = DateTime.UtcNow;
 
         public string? KodBase64 { get; set; }
 
+        public string IdentityUserId { get; set; } 
+        public IdentityUser IdentityUser { get; set; }
+        
         public ICollection<Message> SentMessages { get; set; }
         public ICollection<Message> ReceivedMessages { get; set; }
 

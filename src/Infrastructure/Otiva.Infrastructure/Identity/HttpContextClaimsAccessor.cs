@@ -1,7 +1,7 @@
 ﻿
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Http;
-using Otiva.AppServeces.Service.User;
+using Otiva.AppServeces.Service.IdentityService;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Otiva.Domain.User;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,7 +21,7 @@ namespace Otiva.Domain
 
         public Guid ReceiverId { get; set; }
 
-        public User Sender { get; set; }
-        public User Receiver { get; set; }
+        public DomainUser Sender { get; set; }
+        public DomainUser Receiver { get; set; }
     }
 }

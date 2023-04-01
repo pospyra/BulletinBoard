@@ -1,4 +1,4 @@
-﻿using Otiva.Domain;
+﻿using Otiva.Domain.User;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,16 +10,16 @@ namespace Otiva.AppServeces.IRepository
 {
     public interface IUserRepository
     {
-        Task<User> FindWhere(Expression<Func<User, bool>> predicate);
+        Task<DomainUser> FindWhere(Expression<Func<DomainUser, bool>> predicate);
 
-        Task<User> FindByIdAsync(Guid id);
+        Task<DomainUser> FindByIdAsync(Guid id);
 
-        IQueryable<User> GetAll();
+        IQueryable<DomainUser> GetAll();
 
-        Task Add(User model);
+        Task Add(DomainUser model);
 
-        Task DeleteAsync(User model);
+        Task DeleteAsync(DomainUser model);
 
-        Task EditAdAsync(User model);
+        Task EditAdAsync(DomainUser model);
     }
 }

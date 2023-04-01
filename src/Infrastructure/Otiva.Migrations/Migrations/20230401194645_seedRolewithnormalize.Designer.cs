@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Otiva.Migrations;
@@ -11,9 +12,11 @@ using Otiva.Migrations;
 namespace Otiva.Migrations.Migrations
 {
     [DbContext(typeof(MigrationsDbContext))]
-    partial class MigrationsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230401194645_seedRolewithnormalize")]
+    partial class seedRolewithnormalize
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -39,19 +42,6 @@ namespace Otiva.Migrations.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Roles");
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
-                {
-                    b.Property<string>("UserId")
-                        .HasColumnType("text");
-
-                    b.Property<string>("RoleId")
-                        .HasColumnType("text");
-
-                    b.HasKey("UserId", "RoleId");
-
-                    b.ToTable("UserRoles");
                 });
 
             modelBuilder.Entity("Otiva.Domain.Ad", b =>

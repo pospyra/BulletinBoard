@@ -18,7 +18,7 @@ namespace Otiva.DataAccess.EntityConfiguration.Configuration
 
             builder.Property(b => b.Content).HasMaxLength(800);
 
-            builder.HasOne(x => x.User)
+            builder.HasOne(x => x.DomainUser)
                 .WithMany(p => p.Reviews)
                 .HasForeignKey(x => x.SellerId);
         }

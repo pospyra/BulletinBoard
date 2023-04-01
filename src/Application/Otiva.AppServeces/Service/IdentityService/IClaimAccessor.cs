@@ -5,7 +5,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Otiva.AppServeces.Service.User
+namespace Otiva.AppServeces.Service.IdentityService
 {
     public interface IClaimAccessor
     {

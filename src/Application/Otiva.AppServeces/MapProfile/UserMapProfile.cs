@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Otiva.Contracts.UserDto;
-using Otiva.Domain;
+using Otiva.Domain.User;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,9 +13,9 @@ namespace Otiva.AppServeces.MapProfile
     {
         public UserMapProfile() 
         {
-            CreateMap<User, InfoUserResponse>().ReverseMap();
-            CreateMap<User, RegistrationOrUpdateRequest>().ReverseMap();
-            CreateMap<User, LoginRequest>().ReverseMap();
+            CreateMap<DomainUser, InfoUserResponse>().ReverseMap();
+            CreateMap<DomainUser, RegistrationOrUpdateRequest>().ReverseMap();
+            CreateMap<DomainUser, LoginRequest>().ReverseMap();
         }
 
     }

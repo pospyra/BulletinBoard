@@ -1,0 +1,29 @@
+version: '3.9'
+
+services:
+
+# Сервис для разворачивания контейнера с базой данных
+  database:
+    image: postgres:latest
+    volumes:
+      - /var/lib/postgresql/data/
+    environment:
+      - POSTGRES_DB=Otiva
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgre
+
+
+# Сервис для разворачивания контейнера с приложением
+  webapi:
+    image: otivaapi:dev
+    build:
+      context: .
+      dockerfile: src\Hosts\Otiva.API\Dockerfile
+    ports:
+      - "5000:80"
+    depends_on:
+      - database
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/otiva
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgre

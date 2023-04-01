@@ -1,10 +1,12 @@
 ﻿using AdBoard.Infrastructure.Identity;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Otiva.AppServeces.IRepository;
 using Otiva.AppServeces.MapProfile;
 using Otiva.AppServeces.Service.Ad;
 using Otiva.AppServeces.Service.Category;
+using Otiva.AppServeces.Service.IdentityService;
 using Otiva.AppServeces.Service.Message;
 using Otiva.AppServeces.Service.Photo;
 using Otiva.AppServeces.Service.Review;
@@ -13,6 +15,7 @@ using Otiva.AppServeces.Service.Subcategory;
 using Otiva.AppServeces.Service.User;
 using Otiva.DataAccess.DataBase;
 using Otiva.DataAccess.Repository;
+using Otiva.Domain.User;
 using Otiva.Infrastructure.BaseRepository;
 using System;
 using System.Collections.Generic;
@@ -63,7 +66,13 @@ namespace Otiva.Registrar
             services.AddTransient<IMessageService, MessageService>();
             services.AddTransient<IMessageRepository, MessageRepository>();
 
-            services.AddScoped<IClaimAccessor, HttpContextClaimsAccessor>();
+            services.AddScoped<IClaimAccessor, HttpContextClaimsAccessor>();;
+
+            services.AddTransient<IIdentityUserService, IdentityUserService>();
+
+            services.AddIdentity<Domain.User.IdentityUser, IdentityRole>()
+    .AddEntityFrameworkStores<OtivaContext>()
+    .AddDefaultTokenProviders();
 
             return services;
         }

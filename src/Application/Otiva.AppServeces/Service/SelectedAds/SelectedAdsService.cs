@@ -32,7 +32,7 @@ namespace Otiva.AppServeces.Service.SelectedAds
             var selected = new Domain.ItemSelectedAd()
             {
                 AdId = AdId,
-                UserId = userId,
+                DomainUserId = userId,
             };
             await _selectedadRepository.Add(selected);
 
@@ -48,11 +48,11 @@ namespace Otiva.AppServeces.Service.SelectedAds
         public async Task<IReadOnlyCollection<InfoSelectedResponse>> GetSelectedUsersAsync(Guid UserId, int take, int skip)
         {
             return await _selectedadRepository.GetAll()
-               .Where(x => x.UserId == UserId)
+               .Where(x => x.DomainUserId == UserId)
                .Select(a=> new InfoSelectedResponse()
                {
                    Id= a.Id,
-                   UserId = a.UserId,
+                   UserId = a.DomainUserId,
                    AdId= a.AdId,
                    DateAdded= a.DateAdded,
                }).OrderBy(x =>x.DateAdded).Skip(skip).Take(take).ToListAsync();

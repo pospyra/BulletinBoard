@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Otiva.AppServeces.Service.Category;
 using Otiva.Contracts.CategoryDto;
 using System.Net;

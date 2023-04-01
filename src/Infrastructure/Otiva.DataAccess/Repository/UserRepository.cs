@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Otiva.AppServeces.IRepository;
-using Otiva.Domain;
+using Otiva.Domain.User;
 using Otiva.Infrastructure.BaseRepository;
 using System;
 using System.Collections.Generic;
@@ -13,40 +13,40 @@ namespace Otiva.DataAccess.Repository
 {
     public class UserRepository : IUserRepository
     {
-        public readonly IBaseRepository<User> _baseRepository;
+        public readonly IBaseRepository<DomainUser> _baseRepository;
 
-        public UserRepository(IBaseRepository<User> baseRepository)
+        public UserRepository(IBaseRepository<DomainUser> baseRepository)
         {
             _baseRepository = baseRepository;
         }
-        public Task Add(User model)
+        public Task Add(DomainUser model)
         {
             return _baseRepository.AddAsync(model);
         }
 
-        public async Task DeleteAsync(User del)
+        public async Task DeleteAsync(DomainUser del)
         {
             await _baseRepository.DeleteAsync(del);
         }
 
-        public async Task EditAdAsync(User edit)
+        public async Task EditAdAsync(DomainUser edit)
         {
             await _baseRepository.UpdateAsync(edit);
         }
 
-        public async Task<User> FindByIdAsync(Guid id)
+        public async Task<DomainUser> FindByIdAsync(Guid id)
         {
             return await _baseRepository.GetByIdAsync(id);
         }
 
-        public async Task<User> FindWhere(Expression<Func<User, bool>> predicate)
+        public async Task<DomainUser> FindWhere(Expression<Func<DomainUser, bool>> predicate)
         {
             var data = _baseRepository.GetAllFiltered(predicate);
 
             return await data.Where(predicate).FirstOrDefaultAsync();
         }
 
-        public IQueryable<User> GetAll()
+        public IQueryable<DomainUser> GetAll()
         {
             return _baseRepository.GetAll();
         }
