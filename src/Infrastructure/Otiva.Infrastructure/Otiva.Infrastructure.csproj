@@ -16,4 +16,8 @@
     <ProjectReference Include="..\..\Application\Otiva.AppServeces\Otiva.AppServeces.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Modules\" />
+  </ItemGroup>
+
 </Project>

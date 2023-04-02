@@ -15,19 +15,18 @@ namespace Otiva.Infrastructure.Modules
         {
             services.AddSwaggerGen(options =>
             {
-                options.SwaggerDoc("v1", new OpenApiInfo { Title = "AdBoard Api", Version = "V1" });
+               // options.CustomSchemaIds(type => type.FullName.Replace("+", "_"));
+                options.SwaggerDoc("v1", new OpenApiInfo { Title = "Otiva Api", Version = "V1" });
                 options.IncludeXmlComments(Path.Combine(Path.Combine(AppContext.BaseDirectory, "Documentation.xml")));
-                // options.CustomSchemaIds(type => type.FullName.Replace("+", "_"));
                 options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
                     Description = @"JWT Authorization header using the Bearer scheme.  
                         Enter 'Bearer' [space] and then your token in the text input below.
                         Example: 'Bearer secretKey'",
                     Name = "Authorization",
-                    // Scheme = "Bearer",
                     BearerFormat = "JWT",
                     In = ParameterLocation.Header,
-                    Type = SecuritySchemeType.ApiKey,
+                    Type = SecuritySchemeType.ApiKey, 
                     Scheme = JwtBearerDefaults.AuthenticationScheme
                 });
                 options.AddSecurityRequirement(new OpenApiSecurityRequirement

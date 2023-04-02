@@ -81,11 +81,11 @@ namespace Otiva.AppServeces.Service.IdentityService
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, existingUser.Id.ToString()),
-                new Claim(ClaimTypes.Name, existingUser.UserName),
+                new Claim(ClaimTypes.Name, existingUser.UserName)
             };
 
-            var userRole = await _userManager.GetRolesAsync(existingUser);
-            claims.AddRange(userRole.Select(role => new Claim(ClaimTypes.Role, role)));
+            //var userRole = await _userManager.GetRolesAsync(existingUser);
+            //claims.AddRange(userRole.Select(role => new Claim(ClaimTypes.Role, role)));
 
 
             var secretKey = _configuration["Token:SecretKey"];
@@ -93,7 +93,7 @@ namespace Otiva.AppServeces.Service.IdentityService
             var token = new JwtSecurityToken
                 (
                 claims: claims,
-                expires: DateTime.UtcNow.AddDays(3),
+                expires: DateTime.UtcNow.AddDays(1),
                 notBefore: DateTime.UtcNow,
                 signingCredentials: new SigningCredentials(
                     new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey)),

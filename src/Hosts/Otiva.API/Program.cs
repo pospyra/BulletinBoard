@@ -8,14 +8,13 @@ builder.Services.AddServices();
 
 builder.Services.AddControllers();
 
-builder.Services.AddAuthentificationModule(builder.Configuration);
-builder.Services.AddHttpContextAccessor();
-
-builder.Services.AddSwaggerModule();
-
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddSwaggerModule();
+
+builder.Services.AddAuthenticationModule(builder.Configuration);
 
 var app = builder.Build();
 
@@ -23,10 +22,13 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Otiva.Api v1 "));
 }
 
 app.UseHttpsRedirection();
+
+app.UseRouting();
+
 
 app.UseAuthentication();
 app.UseAuthorization();

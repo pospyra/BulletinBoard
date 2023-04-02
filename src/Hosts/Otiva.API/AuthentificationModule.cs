@@ -12,11 +12,10 @@ namespace Otiva.Infrastructure.Modules
 {
     public static class AuthentificationModule
     {
-        public static IServiceCollection AddAuthentificationModule(this IServiceCollection services,
-            IConfiguration configuration)
+        public static IServiceCollection AddAuthenticationModule(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
+                .AddJwtBearer(options =>
                 {
                     var secretKey = configuration["Token:SecretKey"];
                     options.SaveToken = true;
@@ -27,7 +26,7 @@ namespace Otiva.Infrastructure.Modules
                         ValidateAudience = false,
                         ValidateLifetime = true,
                         ValidateIssuerSigningKey = true,
-                        ValidateIssuer = false,
+                        ValidateIssuer = true,
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey))
                     };
                 });
@@ -35,4 +34,4 @@ namespace Otiva.Infrastructure.Modules
             return services;
         }
     }
-}   
+}

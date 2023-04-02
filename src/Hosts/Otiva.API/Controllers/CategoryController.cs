@@ -16,6 +16,8 @@ namespace Otiva.API.Controllers
             _categoryService = categoryService;
         }
 
+        //[AllowAnonymous]
+        [Authorize]
         [HttpGet("category/all")]
         [ProducesResponseType(typeof(IReadOnlyCollection<InfoCategoryResponse>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetAllCategory()
@@ -32,6 +34,7 @@ namespace Otiva.API.Controllers
             var result = await _categoryService.GetByIdAsync(id);
             return Ok(result);
         }
+
 
         [HttpPost("category/create")]
         [ProducesResponseType(typeof(IReadOnlyCollection<InfoCategoryResponse>), (int)HttpStatusCode.Created)]
