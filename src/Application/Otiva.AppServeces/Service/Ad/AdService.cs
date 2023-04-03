@@ -49,6 +49,7 @@ namespace Otiva.AppServeces.Service.Ad
             }
         }
 
+        /// <inheritdoc/>
         public async Task DeleteAsync(Guid id)
         {
             var existingUser = await _adRepository.FindByIdAsync(id);

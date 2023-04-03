@@ -84,8 +84,8 @@ namespace Otiva.AppServeces.Service.IdentityService
                 new Claim(ClaimTypes.Name, existingUser.UserName)
             };
 
-            //var userRole = await _userManager.GetRolesAsync(existingUser);
-            //claims.AddRange(userRole.Select(role => new Claim(ClaimTypes.Role, role)));
+            var userRole = await _userManager.GetRolesAsync(existingUser);
+            claims.AddRange(userRole.Select(role => new Claim(ClaimTypes.Role, role)));
 
 
             var secretKey = _configuration["Token:SecretKey"];

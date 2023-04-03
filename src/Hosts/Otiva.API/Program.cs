@@ -1,4 +1,4 @@
-using Otiva.Infrastructure.Modules;
+using Otiva.API.Modules;
 using Otiva.Registrar;
 
 var builder = WebApplication.CreateBuilder(args);

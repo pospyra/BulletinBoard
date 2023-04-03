@@ -19,6 +19,12 @@ namespace Otiva.API.Controllers
             _identityService = identityService;
         }
 
+        /// <summary>
+        /// Получить всех пользователе  
+        /// </summary>
+        /// <param name="take"></param>
+        /// <param name="skip"></param>
+        /// <returns></returns>
         [HttpGet("user/all")]
         [ProducesResponseType(typeof(IReadOnlyCollection<InfoUserResponse>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetAll(int take, int skip)
@@ -28,6 +34,11 @@ namespace Otiva.API.Controllers
             return Ok(result);
         }
 
+        /// <summary>
+        /// Получить текущего пользователя
+        /// </summary>
+        /// <param name="cancellation"></param>
+        /// <returns></returns>
         [HttpGet("currentUser")]
         [ProducesResponseType(typeof(IReadOnlyCollection<InfoUserResponse>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetCurrenUserI(CancellationToken cancellation)
@@ -36,6 +47,11 @@ namespace Otiva.API.Controllers
             return Ok();
         }
 
+        /// <summary>
+        /// Получить пользователя по Id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet("/user/{id}")]
         [ProducesResponseType(typeof(IReadOnlyCollection<InfoUserResponse>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetById(Guid id)
@@ -54,6 +70,11 @@ namespace Otiva.API.Controllers
         //    return Ok(res);
         //}
 
+        /// <summary>
+        /// Аутентификация пользователя
+        /// </summary>
+        /// <param name="userLogin"></param>
+        /// <returns></returns>
         [HttpPost("login")]
         [ProducesResponseType(typeof(IReadOnlyCollection<InfoUserResponse>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Login(LoginRequest userLogin)
@@ -63,6 +84,12 @@ namespace Otiva.API.Controllers
             return Ok(new { Token = token, Message = "Success" });
         }
 
+        /// <summary>
+        /// Регистрация пользователя
+        /// </summary>
+        /// <param name="registration"></param>
+        /// <param name="file"></param>
+        /// <returns></returns>
         [HttpPost("/registration")]
         [ProducesResponseType(typeof(IReadOnlyCollection<InfoUserResponse>), (int)HttpStatusCode.Created)]
         public async Task<IActionResult> Registration([FromBody]RegistrationOrUpdateRequest registration, IFormFile file)
@@ -82,6 +109,13 @@ namespace Otiva.API.Controllers
             return Created("", result);
         }
 
+        /// <summary>
+        /// Редактировать данные пользователя
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="edit"></param>
+        /// <param name="file"></param>
+        /// <returns></returns>
         [HttpPut("/user/update/{id}")]
         [ProducesResponseType(typeof(IReadOnlyCollection<InfoUserResponse>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> EditUserAsync(Guid id, RegistrationOrUpdateRequest edit, IFormFile file)
@@ -98,6 +132,11 @@ namespace Otiva.API.Controllers
             return Ok(res);
         }
 
+        /// <summary>
+        /// Удалить пользователя
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpDelete("/user/delete/{id}")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]

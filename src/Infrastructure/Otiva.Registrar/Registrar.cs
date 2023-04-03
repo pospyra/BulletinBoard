@@ -65,11 +65,10 @@ namespace Otiva.Registrar
 
             services.AddTransient<IMessageService, MessageService>();
             services.AddTransient<IMessageRepository, MessageRepository>();
-
-            services.AddScoped<IClaimAccessor, HttpContextClaimsAccessor>();;
-
             services.AddTransient<IIdentityUserService, IdentityUserService>();
 
+            services.AddScoped<IClaimAccessor, HttpContextClaimsAccessor>();;
+     
             services.AddIdentity<Domain.User.IdentityUser, IdentityRole>()
     .AddEntityFrameworkStores<OtivaContext>()
     .AddDefaultTokenProviders();

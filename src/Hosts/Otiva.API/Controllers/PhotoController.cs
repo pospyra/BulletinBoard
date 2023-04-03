@@ -14,6 +14,11 @@ namespace Otiva.API.Controllers
             _photoService = photoService;
         }
 
+        /// <summary>
+        /// Добавить фото в бд
+        /// </summary>
+        /// <param name="file"></param>
+        /// <returns></returns>
         [HttpPost("photo/create")]
         [ProducesResponseType(typeof(IReadOnlyCollection<>), (int)HttpStatusCode.Created)]
         public async Task<IActionResult> CreatePhotoAsync(IFormFile file)
@@ -31,6 +36,11 @@ namespace Otiva.API.Controllers
             return Created("", result);
         }
 
+        /// <summary>
+        /// Удалить фото из бд
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpDelete("/photo/delete/{id}")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]

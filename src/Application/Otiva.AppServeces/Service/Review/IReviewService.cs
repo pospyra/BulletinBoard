@@ -10,14 +10,41 @@ namespace Otiva.AppServeces.Service.Review
 {
     public interface IReviewService
     {
+        /// <summary>
+        /// Получить отзыв по ID
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         Task<InfoReviewResponse> GetByIdAsync(Guid id);
 
+        /// <summary>
+        /// Отправить отзыв на продавца
+        /// </summary>
+        /// <param name="createReview"></param>
+        /// <param name="cancellation"></param>
+        /// <returns></returns>
         Task<Guid> CreateReviewAsync(CreateReviewRequest createReview, CancellationToken cancellation);
 
+        /// <summary>
+        /// Получить все отзывы на продавца
+        /// </summary>
+        /// <param name="SellerId">Id продавца</param>
+        /// <returns></returns>
         Task<IReadOnlyCollection<InfoReviewResponse>> GetAllBySellerIdAsync(Guid SellerId);
 
+        /// <summary>
+        /// Удалить отзыв
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         Task DeleteAsync(Guid id);
 
+        /// <summary>
+        /// Редактировать отзыв
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="content"></param>
+        /// <returns></returns>
         Task<InfoReviewResponse> EditReviewAsync(Guid id, string content);
     }
 }

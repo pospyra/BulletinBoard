@@ -16,8 +16,11 @@ namespace Otiva.API.Controllers
             _categoryService = categoryService;
         }
 
-        //[AllowAnonymous]
-        [Authorize]
+        /// <summary>
+        /// Получить все категории
+        /// </summary>
+        /// <returns></returns>
+        [Authorize(Roles = "Admin")]
         [HttpGet("category/all")]
         [ProducesResponseType(typeof(IReadOnlyCollection<InfoCategoryResponse>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetAllCategory()
@@ -26,7 +29,11 @@ namespace Otiva.API.Controllers
 
             return Ok(result);
         }
-
+        /// <summary>
+        /// Получить категорию по Id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet("category/getById/{id}")]
         [ProducesResponseType(typeof(IReadOnlyCollection<InfoCategoryResponse>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetByIdCategory(Guid id)
@@ -35,7 +42,11 @@ namespace Otiva.API.Controllers
             return Ok(result);
         }
 
-
+        /// <summary>
+        /// Добавить категорию
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
         [HttpPost("category/create")]
         [ProducesResponseType(typeof(IReadOnlyCollection<InfoCategoryResponse>), (int)HttpStatusCode.Created)]
         public async Task<IActionResult> CreateCategoryAsync(string name)
@@ -45,6 +56,12 @@ namespace Otiva.API.Controllers
             return Created("", new { result });
         }
 
+        /// <summary>
+        /// Редактировать категорию
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="name"></param>
+        /// <returns></returns>
         [HttpPut("category/put/{id}")]
         [ProducesResponseType(typeof(IReadOnlyCollection<InfoCategoryResponse>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> EditCategoryAsync(Guid id, string name)
@@ -53,6 +70,11 @@ namespace Otiva.API.Controllers
             return NoContent();
         }
 
+        /// <summary>
+        /// Удалить категорию
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpDelete("category/delete/{id}")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]

@@ -5,6 +5,9 @@ using System.Net;
 
 namespace Otiva.API.Controllers
 {
+    /// <summary>
+    /// Контроллер для работы с объявлениями
+    /// </summary>
     public class AdController : ControllerBase
     {
         public readonly IAdService _adService;
@@ -14,6 +17,13 @@ namespace Otiva.API.Controllers
             _adService = adService;
         }
 
+        /// <summary>
+        /// Получить все объявления
+        /// </summary>
+        /// <param name="take"></param>
+        /// <param name="skip"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
         [HttpGet("/ad/all")]
         [ProducesResponseType(typeof(IReadOnlyCollection<InfoAdResponse>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetAllAsync(int take, int skip)
@@ -26,6 +36,14 @@ namespace Otiva.API.Controllers
             return Ok(result);
         }
 
+        /// <summary>
+        /// Получить все объявления, которые опубликовал текущий пользователь
+        /// </summary>
+        /// <param name="take"></param>
+        /// <param name="skip"></param>
+        /// <param name="cancellation"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
         [HttpGet("/ad/getAdsCurrentUser")]
         [ProducesResponseType(typeof(IReadOnlyCollection<InfoAdResponse>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetMyAdsAsync(int take, int skip, CancellationToken cancellation)
@@ -38,7 +56,11 @@ namespace Otiva.API.Controllers
             return Ok(result);
         }
 
-
+        /// <summary>
+        /// Получить объявление по Id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet("/ad/{id}")]
         [ProducesResponseType(typeof(IReadOnlyCollection<InfoAdResponse>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetByIdAsync(Guid id)
@@ -48,6 +70,12 @@ namespace Otiva.API.Controllers
             return Ok(result);
         }
 
+        /// <summary>
+        /// Получить объявления по фильтрам
+        /// </summary>
+        /// <param name="query"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
         [HttpGet("/ad/filter")]
         [ProducesResponseType(typeof(IReadOnlyCollection<InfoAdResponse>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetByFilter([FromQuery] SearchFilterAd query)
@@ -60,6 +88,12 @@ namespace Otiva.API.Controllers
             return Ok(result);
         }
 
+        /// <summary>
+        /// Создать объвления
+        /// </summary>
+        /// <param name="createAd"></param>
+        /// <param name="cancellation"></param>
+        /// <returns></returns>
         [HttpPost("ad/createAd")]
         [ProducesResponseType(typeof(IReadOnlyCollection<InfoAdResponse>), (int)HttpStatusCode.Created)]
         public async Task<IActionResult> CreateAdAsync(CreateOrUpdateAdRequest createAd, CancellationToken cancellation)
@@ -69,6 +103,12 @@ namespace Otiva.API.Controllers
             return Created("", result);
         }
 
+        /// <summary>
+        /// Редактировать объявление
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="edit"></param>
+        /// <returns></returns>
         [HttpPut("/ad/update/{id}")]
         [ProducesResponseType(typeof(IReadOnlyCollection<InfoAdResponse>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> EditAdAsync(Guid id, CreateOrUpdateAdRequest edit)
@@ -78,6 +118,11 @@ namespace Otiva.API.Controllers
             return Ok(res);
         }
 
+        /// <summary>
+        /// Удалить объявление
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpDelete("/ad/delete/{id}")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]

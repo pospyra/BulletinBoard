@@ -16,6 +16,13 @@ namespace Otiva.API.Controllers
             _selectedadService = selectedadService;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="UserId"></param>
+        /// <param name="take"></param>
+        /// <param name="skip"></param>
+        /// <returns></returns>
         [HttpGet("/allSelectedByUserID{Id}")]
         [ProducesResponseType(typeof(IReadOnlyCollection<InfoSelectedResponse>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetAll(Guid UserId, int take, int skip)
@@ -25,7 +32,12 @@ namespace Otiva.API.Controllers
             return Ok(result);
         }
 
-
+        /// <summary>
+        /// Добавить объявление в избранные
+        /// </summary>
+        /// <param name="AdId"></param>
+        /// <param name="cancellation"></param>
+        /// <returns></returns>
         [HttpPost("selectedAd/add")]
         [ProducesResponseType(typeof(IReadOnlyCollection<InfoSelectedResponse>), (int)HttpStatusCode.Created)]
         public async Task<IActionResult> CreateAdAsync(Guid AdId, CancellationToken cancellation)
@@ -35,7 +47,11 @@ namespace Otiva.API.Controllers
             return Created("", result);
         }
 
-
+        /// <summary>
+        /// Удалить объвление из избранных
+        /// </summary>
+        /// <param name="Id"></param>
+        /// <returns></returns>
         [HttpDelete("/selected/delete")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]

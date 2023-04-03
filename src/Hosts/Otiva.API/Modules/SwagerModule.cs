@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Otiva.Infrastructure.Modules
+namespace Otiva.API.Modules
 {
     public static class SwagerModule
     {
@@ -15,7 +15,7 @@ namespace Otiva.Infrastructure.Modules
         {
             services.AddSwaggerGen(options =>
             {
-               // options.CustomSchemaIds(type => type.FullName.Replace("+", "_"));
+                // options.CustomSchemaIds(type => type.FullName.Replace("+", "_"));
                 options.SwaggerDoc("v1", new OpenApiInfo { Title = "Otiva Api", Version = "V1" });
                 options.IncludeXmlComments(Path.Combine(Path.Combine(AppContext.BaseDirectory, "Documentation.xml")));
                 options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
@@ -26,7 +26,7 @@ namespace Otiva.Infrastructure.Modules
                     Name = "Authorization",
                     BearerFormat = "JWT",
                     In = ParameterLocation.Header,
-                    Type = SecuritySchemeType.ApiKey, 
+                    Type = SecuritySchemeType.ApiKey,
                     Scheme = JwtBearerDefaults.AuthenticationScheme
                 });
                 options.AddSecurityRequirement(new OpenApiSecurityRequirement
@@ -42,7 +42,7 @@ namespace Otiva.Infrastructure.Modules
                             Scheme = "oauth2",
                             Name = "Bearer",
                             In = ParameterLocation.Header,
-                        },                 
+                        },
                         new List<string>()
                     }
                 });

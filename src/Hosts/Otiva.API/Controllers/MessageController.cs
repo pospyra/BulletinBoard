@@ -19,6 +19,13 @@ namespace Otiva.API.Controllers
             _userService = userService;
         }
 
+        /// <summary>
+        /// Получить все сообщения с выбранным пользователем
+        /// </summary>
+        /// <param name="user2_Id"></param>
+        /// <param name="cancellation"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
         [HttpGet("/chat/message")]
         [ProducesResponseType(typeof(IReadOnlyCollection<InfoMessageResponse>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetMessageFromChatAsync(Guid user2_Id, CancellationToken cancellation)
@@ -33,7 +40,12 @@ namespace Otiva.API.Controllers
             return Ok(result);
         }
 
-
+        /// <summary>
+        /// Отправить сообщение
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="cancellation"></param>
+        /// <returns></returns>
         [HttpPost("chat/postMessage")]
         [ProducesResponseType(typeof(IReadOnlyCollection<InfoMessageResponse>), (int)HttpStatusCode.Created)]
         public async Task<IActionResult> PostMessageAsync(PostMessageRequest message, CancellationToken cancellation)
@@ -43,6 +55,12 @@ namespace Otiva.API.Controllers
             return Created("", result);
         }
 
+        /// <summary>
+        /// Редактировать сообщение
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="text"></param>
+        /// <returns></returns>
         [HttpPut("/chat/message/update/{id}")]
         [ProducesResponseType(typeof(IReadOnlyCollection<InfoReviewResponse>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> EditMessageAsync(Guid id, TextMessageRequest text)
@@ -52,6 +70,11 @@ namespace Otiva.API.Controllers
             return Ok(res);
         }
 
+        /// <summary>
+        /// Удалить сообщение
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpDelete("/chat/message/delete/{id}")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]

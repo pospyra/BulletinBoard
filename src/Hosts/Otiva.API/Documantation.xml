@@ -4,5 +4,10 @@
         <name>Otiva.API</name>
     </assembly>
     <members>
+        <member name="T:Otiva.API.Controllers.AdController">
+            <summary>
+            Контроллер объявлни
+            </summary>
+        </member>
     </members>
 </doc>

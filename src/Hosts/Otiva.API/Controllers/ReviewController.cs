@@ -17,6 +17,11 @@ namespace Otiva.API.Controllers
             _reviewService = reviewService;
         }
 
+        /// <summary>
+        /// Получить все отзывы на выбранного продавца
+        /// </summary>
+        /// <param name="SellerId"></param>
+        /// <returns></returns>
         [HttpGet("/reviewAboutSeller{SellerId}")]
         [ProducesResponseType(typeof(IReadOnlyCollection<InfoReviewResponse>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetAllAsync(Guid SellerId)
@@ -26,6 +31,11 @@ namespace Otiva.API.Controllers
             return Ok(result);
         }
 
+        /// <summary>
+        /// Получить отзыв по Id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet("/review/{id}")]
         [ProducesResponseType(typeof(IReadOnlyCollection<InfoReviewResponse>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetByIdAsync(Guid id)
@@ -35,6 +45,12 @@ namespace Otiva.API.Controllers
             return Ok(result);
         }
 
+        /// <summary>
+        /// Отправить отзыв
+        /// </summary>
+        /// <param name="createReview"></param>
+        /// <param name="cancellation"></param>
+        /// <returns></returns>
         [HttpPost("review/create")]
         [ProducesResponseType(typeof(IReadOnlyCollection<InfoReviewResponse>), (int)HttpStatusCode.Created)]
         public async Task<IActionResult> CreateReviewAsync(CreateReviewRequest createReview, CancellationToken cancellation)
@@ -44,6 +60,12 @@ namespace Otiva.API.Controllers
             return Created("", result);
         }
 
+        /// <summary>
+        /// Редактировать отзыв
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="content"></param>
+        /// <returns></returns>
         [HttpPut("/review/update/{id}")]
         [ProducesResponseType(typeof(IReadOnlyCollection<InfoReviewResponse>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> EditReviewAsync(Guid id, string content)
@@ -53,6 +75,11 @@ namespace Otiva.API.Controllers
             return Ok(res);
         }
 
+        /// <summary>
+        /// Удалить отзыв
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpDelete("/review/delete/{id}")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
