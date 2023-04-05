@@ -18,28 +18,42 @@ namespace Otiva.DataAccess.Repository
             _baseRepository = baseRepository;
         }
 
-        public Task Add(Photo model)
+        public Task Add(Photo model, CancellationToken cancellation)
         {
+            if (cancellation.IsCancellationRequested)
+                throw new OperationCanceledException();
+
             return _baseRepository.AddAsync(model);
         }
 
-        public async Task DeleteAsync(Photo photo)
+        public async Task DeleteAsync(Photo photo, CancellationToken cancellation)
         {
+            if (cancellation.IsCancellationRequested)
+                throw new OperationCanceledException();
+
             await _baseRepository.DeleteAsync(photo);
         }
 
-        public async Task UpdatePhotoAsync(Photo edit)
+        public async Task UpdatePhotoAsync(Photo edit, CancellationToken cancellation)
         {
+            if (cancellation.IsCancellationRequested)
+                throw new OperationCanceledException();
+
             await _baseRepository.UpdateAsync(edit);
         }
 
-        public async Task<Photo> FindByIdAsync(Guid id)
+        public async Task<Photo> FindByIdAsync(Guid id, CancellationToken cancellation)
         {
+            if (cancellation.IsCancellationRequested)
+                throw new OperationCanceledException();
             return await _baseRepository.GetByIdAsync(id);
         }
 
-        public IQueryable<Photo> GetAll()
+        public IQueryable<Photo> GetAll( CancellationToken cancellation)
         {
+            if (cancellation.IsCancellationRequested)
+                throw new OperationCanceledException();
+
             return _baseRepository.GetAll();
         }
     }

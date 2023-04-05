@@ -9,13 +9,13 @@ namespace Otiva.AppServeces.IRepository
 {
     public interface IMessageRepository
     {
-        Task<Message> FindByIdAsync(Guid id);
-        IQueryable<Message> GetAll();
+        Task<Message> FindByIdAsync(Guid id, CancellationToken cancellation);
+        IQueryable<Message> GetAll(CancellationToken cancellation);
 
-        Task Add(Message model);
+        Task Add(Message model, CancellationToken cancellation);
 
-        Task DeleteAsync(Message model);
+        Task DeleteAsync(Message model, CancellationToken cancellation);
 
-        Task EditAdAsync(Message model);
+        Task EditAdAsync(Message model, CancellationToken cancellation);
     }
 }

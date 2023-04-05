@@ -17,14 +17,14 @@ namespace Otiva.AppServeces.Service.User
         /// <param name="registration"></param>
         /// <param name="photo"></param>
         /// <returns></returns>
-        Task<Guid> RegistrationAsync(RegistrationOrUpdateRequest registration);
+        Task<Guid> RegistrationAsync(RegistrationOrUpdateRequest registration, CancellationToken cancellation);
 
         /// <summary>
         /// Получить DomainUser по Id
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        Task<InfoUserResponse> GetByIdAsync(Guid id);
+        Task<InfoUserResponse> GetByIdAsync(Guid id, CancellationToken cancellation);
 
         /// <summary>
         /// Получить всех DomainUser
@@ -32,14 +32,14 @@ namespace Otiva.AppServeces.Service.User
         /// <param name="take"></param>
         /// <param name="skip"></param>
         /// <returns></returns>
-        Task<IReadOnlyCollection<InfoUserResponse>> GetAllAsync(int take, int skip);
+        Task<IReadOnlyCollection<InfoUserResponse>> GetAllAsync(int take, int skip, CancellationToken cancellation);
 
         /// <summary>
         /// Удалить DomaiUser
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        Task DeleteAsync(Guid id);
+        Task DeleteAsync(Guid id, CancellationToken cancellation);
 
         /// <summary>
         /// Редактировать DomainUser
@@ -48,6 +48,6 @@ namespace Otiva.AppServeces.Service.User
         /// <param name="update"></param>
         /// <param name="photo"></param>
         /// <returns></returns>
-        Task<InfoUserResponse> EditUserAsync(Guid Id, RegistrationOrUpdateRequest update, byte[] photo);
+        Task<InfoUserResponse> EditUserAsync(Guid Id, RegistrationOrUpdateRequest update, byte[] photo, CancellationToken cancellation);
     }
 }

@@ -9,7 +9,7 @@
             Контроллер для работы с объявлениями
             </summary>
         </member>
-        <member name="M:Otiva.API.Controllers.AdController.GetAllAsync(System.Int32,System.Int32)">
+        <member name="M:Otiva.API.Controllers.AdController.GetAllAsync(System.Int32,System.Int32,System.Threading.CancellationToken)">
             <summary>
             Получить все объявления
             </summary>
@@ -28,14 +28,14 @@
             <returns></returns>
             <exception cref="T:System.Exception"></exception>
         </member>
-        <member name="M:Otiva.API.Controllers.AdController.GetByIdAsync(System.Guid)">
+        <member name="M:Otiva.API.Controllers.AdController.GetByIdAsync(System.Guid,System.Threading.CancellationToken)">
             <summary>
             Получить объявление по Id
             </summary>
             <param name="id"></param>
             <returns></returns>
         </member>
-        <member name="M:Otiva.API.Controllers.AdController.GetByFilter(Otiva.Contracts.AdDto.SearchFilterAd)">
+        <member name="M:Otiva.API.Controllers.AdController.GetByFilter(Otiva.Contracts.AdDto.SearchFilterAd,System.Threading.CancellationToken)">
             <summary>
             Получить объявления по фильтрам
             </summary>
@@ -51,7 +51,7 @@
             <param name="cancellation"></param>
             <returns></returns>
         </member>
-        <member name="M:Otiva.API.Controllers.AdController.EditAdAsync(System.Guid,Otiva.Contracts.AdDto.CreateOrUpdateAdRequest)">
+        <member name="M:Otiva.API.Controllers.AdController.EditAdAsync(System.Guid,Otiva.Contracts.AdDto.CreateOrUpdateAdRequest,System.Threading.CancellationToken)">
             <summary>
             Редактировать объявление
             </summary>
@@ -66,27 +66,27 @@
             <param name="id"></param>
             <returns></returns>
         </member>
-        <member name="M:Otiva.API.Controllers.CategoryController.GetAllCategory">
+        <member name="M:Otiva.API.Controllers.CategoryController.GetAllCategory(System.Threading.CancellationToken)">
             <summary>
             Получить все категории
             </summary>
             <returns></returns>
         </member>
-        <member name="M:Otiva.API.Controllers.CategoryController.GetByIdCategory(System.Guid)">
+        <member name="M:Otiva.API.Controllers.CategoryController.GetByIdCategory(System.Guid,System.Threading.CancellationToken)">
             <summary>
             Получить категорию по Id
             </summary>
             <param name="id"></param>
             <returns></returns>
         </member>
-        <member name="M:Otiva.API.Controllers.CategoryController.CreateCategoryAsync(System.String)">
+        <member name="M:Otiva.API.Controllers.CategoryController.CreateCategoryAsync(System.String,System.Threading.CancellationToken)">
             <summary>
             Добавить категорию
             </summary>
             <param name="name"></param>
             <returns></returns>
         </member>
-        <member name="M:Otiva.API.Controllers.CategoryController.EditCategoryAsync(System.Guid,System.String)">
+        <member name="M:Otiva.API.Controllers.CategoryController.EditCategoryAsync(System.Guid,System.String,System.Threading.CancellationToken)">
             <summary>
             Редактировать категорию
             </summary>
@@ -94,7 +94,7 @@
             <param name="name"></param>
             <returns></returns>
         </member>
-        <member name="M:Otiva.API.Controllers.CategoryController.DeleteCategoryAsync(System.Guid)">
+        <member name="M:Otiva.API.Controllers.CategoryController.DeleteCategoryAsync(System.Guid,System.Threading.CancellationToken)">
             <summary>
             Удалить категорию
             </summary>
@@ -118,7 +118,7 @@
             <param name="cancellation"></param>
             <returns></returns>
         </member>
-        <member name="M:Otiva.API.Controllers.MessageController.EditMessageAsync(System.Guid,Otiva.Contracts.MessageDto.TextMessageRequest)">
+        <member name="M:Otiva.API.Controllers.MessageController.EditMessageAsync(System.Guid,Otiva.Contracts.MessageDto.TextMessageRequest,System.Threading.CancellationToken)">
             <summary>
             Редактировать сообщение
             </summary>
@@ -126,35 +126,35 @@
             <param name="text"></param>
             <returns></returns>
         </member>
-        <member name="M:Otiva.API.Controllers.MessageController.DeleteAsync(System.Guid)">
+        <member name="M:Otiva.API.Controllers.MessageController.DeleteAsync(System.Guid,System.Threading.CancellationToken)">
             <summary>
             Удалить сообщение
             </summary>
             <param name="id"></param>
             <returns></returns>
         </member>
-        <member name="M:Otiva.API.Controllers.PhotoController.CreatePhotoAsync(Microsoft.AspNetCore.Http.IFormFile)">
+        <member name="M:Otiva.API.Controllers.PhotoController.CreatePhotoAsync(Microsoft.AspNetCore.Http.IFormFile,System.Threading.CancellationToken)">
             <summary>
             Добавить фото в бд
             </summary>
             <param name="file"></param>
             <returns></returns>
         </member>
-        <member name="M:Otiva.API.Controllers.PhotoController.DeletePhotoAsync(System.Guid)">
+        <member name="M:Otiva.API.Controllers.PhotoController.DeletePhotoAsync(System.Guid,System.Threading.CancellationToken)">
             <summary>
             Удалить фото из бд
             </summary>
             <param name="id"></param>
             <returns></returns>
         </member>
-        <member name="M:Otiva.API.Controllers.ReviewController.GetAllAsync(System.Guid)">
+        <member name="M:Otiva.API.Controllers.ReviewController.GetAllAsync(System.Guid,System.Threading.CancellationToken)">
             <summary>
             Получить все отзывы на выбранного продавца
             </summary>
             <param name="SellerId"></param>
             <returns></returns>
         </member>
-        <member name="M:Otiva.API.Controllers.ReviewController.GetByIdAsync(System.Guid)">
+        <member name="M:Otiva.API.Controllers.ReviewController.GetByIdAsync(System.Guid,System.Threading.CancellationToken)">
             <summary>
             Получить отзыв по Id
             </summary>
@@ -169,7 +169,7 @@
             <param name="cancellation"></param>
             <returns></returns>
         </member>
-        <member name="M:Otiva.API.Controllers.ReviewController.EditReviewAsync(System.Guid,System.String)">
+        <member name="M:Otiva.API.Controllers.ReviewController.EditReviewAsync(System.Guid,System.String,System.Threading.CancellationToken)">
             <summary>
             Редактировать отзыв
             </summary>
@@ -177,14 +177,14 @@
             <param name="content"></param>
             <returns></returns>
         </member>
-        <member name="M:Otiva.API.Controllers.ReviewController.DeleteAsync(System.Guid)">
+        <member name="M:Otiva.API.Controllers.ReviewController.DeleteAsync(System.Guid,System.Threading.CancellationToken)">
             <summary>
             Удалить отзыв
             </summary>
             <param name="id"></param>
             <returns></returns>
         </member>
-        <member name="M:Otiva.API.Controllers.SelectedAdController.GetAll(System.Guid,System.Int32,System.Int32)">
+        <member name="M:Otiva.API.Controllers.SelectedAdController.GetAll(System.Int32,System.Int32,System.Threading.CancellationToken)">
             <summary>
             
             </summary>
@@ -201,14 +201,14 @@
             <param name="cancellation"></param>
             <returns></returns>
         </member>
-        <member name="M:Otiva.API.Controllers.SelectedAdController.DeleteAdAsync(System.Guid)">
+        <member name="M:Otiva.API.Controllers.SelectedAdController.DeleteAdAsync(System.Guid,System.Threading.CancellationToken)">
             <summary>
             Удалить объвление из избранных
             </summary>
             <param name="Id"></param>
             <returns></returns>
         </member>
-        <member name="M:Otiva.API.Controllers.UserController.GetAll(System.Int32,System.Int32)">
+        <member name="M:Otiva.API.Controllers.UserController.GetAll(System.Int32,System.Int32,System.Threading.CancellationToken)">
             <summary>
             Получить всех пользователе  
             </summary>
@@ -216,28 +216,28 @@
             <param name="skip"></param>
             <returns></returns>
         </member>
-        <member name="M:Otiva.API.Controllers.UserController.GetCurrenUserI(System.Threading.CancellationToken)">
+        <member name="M:Otiva.API.Controllers.UserController.GetCurrenUserId(System.Threading.CancellationToken)">
             <summary>
             Получить текущего пользователя
             </summary>
             <param name="cancellation"></param>
             <returns></returns>
         </member>
-        <member name="M:Otiva.API.Controllers.UserController.GetById(System.Guid)">
+        <member name="M:Otiva.API.Controllers.UserController.GetById(System.Guid,System.Threading.CancellationToken)">
             <summary>
             Получить пользователя по Id
             </summary>
             <param name="id"></param>
             <returns></returns>
         </member>
-        <member name="M:Otiva.API.Controllers.UserController.Login(Otiva.Contracts.UserDto.LoginRequest)">
+        <member name="M:Otiva.API.Controllers.UserController.Login(Otiva.Contracts.UserDto.LoginRequest,System.Threading.CancellationToken)">
             <summary>
             Аутентификация пользователя
             </summary>
             <param name="userLogin"></param>
             <returns></returns>
         </member>
-        <member name="M:Otiva.API.Controllers.UserController.Registration(Otiva.Contracts.UserDto.RegistrationOrUpdateRequest)">
+        <member name="M:Otiva.API.Controllers.UserController.Registration(Otiva.Contracts.UserDto.RegistrationOrUpdateRequest,System.Threading.CancellationToken)">
             <summary>
             Регистрация пользователя
             </summary>
@@ -245,7 +245,7 @@
             <param name="file"></param>
             <returns></returns>
         </member>
-        <member name="M:Otiva.API.Controllers.UserController.EditUserAsync(System.Guid,Otiva.Contracts.UserDto.RegistrationOrUpdateRequest,Microsoft.AspNetCore.Http.IFormFile)">
+        <member name="M:Otiva.API.Controllers.UserController.EditUserAsync(System.Guid,Otiva.Contracts.UserDto.RegistrationOrUpdateRequest,Microsoft.AspNetCore.Http.IFormFile,System.Threading.CancellationToken)">
             <summary>
             Редактировать данные пользователя
             </summary>
@@ -254,7 +254,7 @@
             <param name="file"></param>
             <returns></returns>
         </member>
-        <member name="M:Otiva.API.Controllers.UserController.DeleteAdAsync(System.Guid)">
+        <member name="M:Otiva.API.Controllers.UserController.DeleteAdAsync(System.Guid,System.Threading.CancellationToken)">
             <summary>
             Удалить пользователя
             </summary>

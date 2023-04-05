@@ -58,6 +58,9 @@ namespace Otiva.AppServeces.Service.IdentityService
 
         public async Task<string> GetCurrentUserId(CancellationToken cancellation)
         {
+            if (cancellation.IsCancellationRequested)
+                throw new OperationCanceledException();
+
             var claim = await _claimAccessor.GetClaims(cancellation);
             var claimId = claim.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
 
@@ -72,9 +75,8 @@ namespace Otiva.AppServeces.Service.IdentityService
             return user.Id;
         }
 
-        public async Task<string> Login(LoginRequest userLogin)
+        public async Task<string> Login(LoginRequest userLogin, CancellationToken cancellation)
         {
-
             var existingUser = await _userManager.FindByEmailAsync(userLogin.Email);
             if (existingUser == null)
                 throw new Exception($"Пользователь с email '{userLogin.Email}' не существует");
@@ -108,18 +110,25 @@ namespace Otiva.AppServeces.Service.IdentityService
 
             var result = new JwtSecurityTokenHandler().WriteToken(token);
 
+            if (cancellation.IsCancellationRequested)
+                throw new OperationCanceledException();
+
+
             return result;
         }
 
-        public async Task<string> RegisterIdentityUser(RegistrationOrUpdateRequest userReg)
+        public async Task<string> RegisterIdentityUser(RegistrationOrUpdateRequest userReg, CancellationToken cancellation)
         {
             var newIdentityUser = new Domain.User.IdentityUser
             {
-                UserName = userReg.Name,
+                UserName = userReg.UserName,
                 Email = userReg.Email,
                 PasswordHash = userReg.Password,
-                PhoneNumber = userReg.Phone
+                PhoneNumber = userReg.PhoneNumber
             };
+
+            if (cancellation.IsCancellationRequested)
+                throw new OperationCanceledException();
 
             var resRegister = await _userManager.CreateAsync(newIdentityUser, userReg.Password);
 

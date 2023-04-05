@@ -26,9 +26,9 @@ namespace Otiva.API.Controllers
         [Authorize]
         [HttpGet("/reviewAboutSeller{SellerId}")]
         [ProducesResponseType(typeof(IReadOnlyCollection<InfoReviewResponse>), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> GetAllAsync(Guid SellerId)
+        public async Task<IActionResult> GetAllAsync(Guid SellerId, CancellationToken cancellation)
         {
-            var result = await _reviewService.GetAllBySellerIdAsync(SellerId);
+            var result = await _reviewService.GetAllBySellerIdAsync(SellerId, cancellation);
 
             return Ok(result);
         }
@@ -41,9 +41,9 @@ namespace Otiva.API.Controllers
         [Authorize]
         [HttpGet("/review/{id}")]
         [ProducesResponseType(typeof(IReadOnlyCollection<InfoReviewResponse>), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> GetByIdAsync(Guid id)
+        public async Task<IActionResult> GetByIdAsync(Guid id, CancellationToken cancellation)
         {
-            var result = await _reviewService.GetByIdAsync(id);
+            var result = await _reviewService.GetByIdAsync(id, cancellation);
 
             return Ok(result);
         }
@@ -73,9 +73,9 @@ namespace Otiva.API.Controllers
         [Authorize]
         [HttpPut("/review/update/{id}")]
         [ProducesResponseType(typeof(IReadOnlyCollection<InfoReviewResponse>), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> EditReviewAsync(Guid id, string content)
+        public async Task<IActionResult> EditReviewAsync(Guid id, string content, CancellationToken cancellation)
         {
-            var res = await _reviewService.EditReviewAsync(id, content);
+            var res = await _reviewService.EditReviewAsync(id, content, cancellation);
 
             return Ok(res);
         }
@@ -89,9 +89,9 @@ namespace Otiva.API.Controllers
         [HttpDelete("/review/delete/{id}")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
-        public async Task<IActionResult> DeleteAsync(Guid id)
+        public async Task<IActionResult> DeleteAsync(Guid id, CancellationToken cancellation)
         {
-            await _reviewService.DeleteAsync(id);
+            await _reviewService.DeleteAsync(id, cancellation);
 
             return NoContent();
         }

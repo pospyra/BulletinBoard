@@ -38,18 +38,18 @@ namespace Otiva.AppServeces.Service.User
             _identityService = identityService;
         }
 
-        public async Task DeleteAsync(Guid id)
+        public async Task DeleteAsync(Guid id, CancellationToken cancellation)
         {
-            var delUser = await _userRepository.FindByIdAsync(id);
+            var delUser = await _userRepository.FindByIdAsync(id, cancellation);
             if (delUser == null)
                 throw new Exception("Пользователь с таким идентификатором не найден");
 
-            await _userRepository.DeleteAsync(delUser);
+            await _userRepository.DeleteAsync(delUser, cancellation);
         }
 
-        public async Task<InfoUserResponse> EditUserAsync(Guid Id, RegistrationOrUpdateRequest update, byte[] photo )
+        public async Task<InfoUserResponse> EditUserAsync(Guid Id, RegistrationOrUpdateRequest update, byte[] photo, CancellationToken cancellation)
         {
-            var existingAccount = await _userRepository.FindByIdAsync(Id);
+            var existingAccount = await _userRepository.FindByIdAsync(Id, cancellation);
             if (existingAccount == null)
                 throw new Exception("Пользователь с таким идентификатором не найден");
 
@@ -60,28 +60,28 @@ namespace Otiva.AppServeces.Service.User
                 existingAccount.KodBase64 = Convert.ToBase64String(photo, 0, photo.Length);
             }
 
-            await _userRepository.EditAdAsync(_mapper.Map(update, existingAccount));
+            await _userRepository.EditAdAsync(_mapper.Map(update, existingAccount), cancellation);
 
             return _mapper.Map<InfoUserResponse>(update);
         }
 
-        public async Task<IReadOnlyCollection<InfoUserResponse>> GetAllAsync(int take, int skip)
+        public async Task<IReadOnlyCollection<InfoUserResponse>> GetAllAsync(int take, int skip, CancellationToken cancellation)
         {
-            return await _userRepository.GetAll()
+            return await _userRepository.GetAll(cancellation)
                 .Select(a=> new InfoUserResponse()
                 {
                     Id = a.Id,
-                    Name= a.UserName,
+                    UserName= a.UserName,
                     Email= a.Email,
                     Region   = a.Region,
-                    Phone= a.PhoneNumber,
+                    PhoneNumber = a.PhoneNumber,
                     KodBase64 = a.KodBase64
                 }).ToListAsync();
         }
 
-        public async Task<InfoUserResponse> GetByIdAsync(Guid id)
+        public async Task<InfoUserResponse> GetByIdAsync(Guid id, CancellationToken cancellation)
         {
-            var existingUser = await _userRepository.FindByIdAsync(id);
+            var existingUser = await _userRepository.FindByIdAsync(id, cancellation);
             if (existingUser == null)
                 throw new Exception("Пользователь с таким идентификатором не найден");
 
@@ -89,19 +89,21 @@ namespace Otiva.AppServeces.Service.User
         }
 
 
-        public async Task<Guid> RegistrationAsync(RegistrationOrUpdateRequest registration)
+        public async Task<Guid> RegistrationAsync(RegistrationOrUpdateRequest registration, CancellationToken cancellation)
         {
-            var existingUser = _userRepository.GetAll().Where(x => x.Email == registration.Email).FirstOrDefault();
+            var existingUser = _userRepository.GetAll(cancellation)
+                .Where(x => x.Email == registration.Email).FirstOrDefault();
+
             if (existingUser != null)
                 throw new Exception("Пльзователь с таким email уже существует");
 
-            var newidentityUserId = await _identityService.RegisterIdentityUser(registration);
+            var newidentityUserId = await _identityService.RegisterIdentityUser(registration, cancellation);
 
             var registerAcc = _mapper.Map<Domain.User.DomainUser>(registration);
 
             registerAcc.Id = Guid.Parse(newidentityUserId);
             
-            await _userRepository.Add(registerAcc);
+            await _userRepository.Add(registerAcc, cancellation);
             return registerAcc.Id;
         }
     }

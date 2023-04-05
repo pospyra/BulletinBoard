@@ -9,8 +9,8 @@ namespace Otiva.AppServeces.Service.IdentityService
 {
     public interface IIdentityUserService
     {
-        public Task<string> Login(LoginRequest userLogin);
-        public Task<string> RegisterIdentityUser(RegistrationOrUpdateRequest userReg);
+        public Task<string> Login(LoginRequest userLogin, CancellationToken cancellation);
+        public Task<string> RegisterIdentityUser(RegistrationOrUpdateRequest userReg, CancellationToken cancellation);
 
         public Task<string> GetCurrentUserId(CancellationToken cancellation);
 

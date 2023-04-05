@@ -18,8 +18,10 @@ namespace Otiva.DataAccess.Repository
         { 
             _baseRepository = baseRepository;
         }
-        public Task Add(Message model)
+        public Task Add(Message model, CancellationToken cancellation)
         {
+            if (cancellation.IsCancellationRequested)
+                throw new OperationCanceledException();
             return _baseRepository.AddAsync(model);
         }
 
@@ -28,9 +30,12 @@ namespace Otiva.DataAccess.Repository
         /// </summary>
         /// <param name="model">Моднль сообщения</param>
         /// <returns></returns>
-        public async Task DeleteAsync(Message model)
+        public async Task DeleteAsync(Message model, CancellationToken cancellation)
         {
-           await _baseRepository.DeleteAsync(model);
+            if (cancellation.IsCancellationRequested)
+                throw new OperationCanceledException();
+
+            await _baseRepository.DeleteAsync(model);
         }
 
         /// <summary>
@@ -38,8 +43,11 @@ namespace Otiva.DataAccess.Repository
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public async Task EditAdAsync(Message model)
+        public async Task EditAdAsync(Message model, CancellationToken cancellation)
         {
+            if (cancellation.IsCancellationRequested)
+                throw new OperationCanceledException();
+
             await _baseRepository.UpdateAsync(model);
         }
 
@@ -48,8 +56,11 @@ namespace Otiva.DataAccess.Repository
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public async Task<Message> FindByIdAsync(Guid id)
+        public async Task<Message> FindByIdAsync(Guid id, CancellationToken cancellation)
         {
+            if (cancellation.IsCancellationRequested)
+                throw new OperationCanceledException();
+
             return await _baseRepository.GetByIdAsync(id);
         }
 
@@ -57,8 +68,11 @@ namespace Otiva.DataAccess.Repository
         /// Получит все сообщения
         /// </summary>
         /// <returns></returns>
-        public IQueryable<Message> GetAll()
+        public IQueryable<Message> GetAll(CancellationToken cancellation)
         {
+            if (cancellation.IsCancellationRequested)
+                throw new OperationCanceledException();
+
             return _baseRepository.GetAll();
         }
     }

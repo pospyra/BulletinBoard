@@ -15,7 +15,7 @@ namespace Otiva.AppServeces.Service.Review
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        Task<InfoReviewResponse> GetByIdAsync(Guid id);
+        Task<InfoReviewResponse> GetByIdAsync(Guid id, CancellationToken cancellation);
 
         /// <summary>
         /// Отправить отзыв на продавца
@@ -30,14 +30,14 @@ namespace Otiva.AppServeces.Service.Review
         /// </summary>
         /// <param name="SellerId">Id продавца</param>
         /// <returns></returns>
-        Task<IReadOnlyCollection<InfoReviewResponse>> GetAllBySellerIdAsync(Guid SellerId);
+        Task<IReadOnlyCollection<InfoReviewResponse>> GetAllBySellerIdAsync(Guid SellerId, CancellationToken cancellation);
 
         /// <summary>
         /// Удалить отзыв
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        Task DeleteAsync(Guid id);
+        Task DeleteAsync(Guid id, CancellationToken cancellation);
 
         /// <summary>
         /// Редактировать отзыв
@@ -45,6 +45,6 @@ namespace Otiva.AppServeces.Service.Review
         /// <param name="id"></param>
         /// <param name="content"></param>
         /// <returns></returns>
-        Task<InfoReviewResponse> EditReviewAsync(Guid id, string content);
+        Task<InfoReviewResponse> EditReviewAsync(Guid id, string content, CancellationToken cancellation);
     }
 }

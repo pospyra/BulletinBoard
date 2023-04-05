@@ -23,7 +23,7 @@ namespace Otiva.API.Controllers
         [Authorize]
         [HttpPost("photo/create")]
         [ProducesResponseType(typeof(IReadOnlyCollection<>), (int)HttpStatusCode.Created)]
-        public async Task<IActionResult> CreatePhotoAsync(IFormFile file)
+        public async Task<IActionResult> CreatePhotoAsync(IFormFile file, CancellationToken cancellation)
         {
             byte[] photo;
             await using (var ms = new MemoryStream())
@@ -33,7 +33,7 @@ namespace Otiva.API.Controllers
                 photo = ms.ToArray();
             }
 
-            var result = await _photoService.AddPhotoAsync(photo);
+            var result = await _photoService.AddPhotoAsync(photo, cancellation);
 
             return Created("", result);
         }
@@ -47,9 +47,9 @@ namespace Otiva.API.Controllers
         [HttpDelete("/photo/delete/{id}")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
-        public async Task<IActionResult> DeletePhotoAsync(Guid id)
+        public async Task<IActionResult> DeletePhotoAsync(Guid id, CancellationToken cancellation)
         {
-            await _photoService.DeleteAsync(id);
+            await _photoService.DeleteAsync(id, cancellation);
 
             return NoContent();
         }

@@ -14,7 +14,7 @@ namespace Otiva.AppServeces.Service.Message
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public Task DeleteMessageAsync(Guid id);
+        public Task DeleteMessageAsync(Guid id, CancellationToken cancellation);
 
         /// <summary>
         /// Отправить сообщение
@@ -30,7 +30,7 @@ namespace Otiva.AppServeces.Service.Message
         /// <param name="id"></param>
         /// <param name="text"></param>
         /// <returns></returns>
-        public Task<InfoMessageResponse> EditMessageAsync(Guid id, TextMessageRequest text);
+        public Task<InfoMessageResponse> EditMessageAsync(Guid id, TextMessageRequest text, CancellationToken cancellation);
 
         /// <summary>
         /// Получить все сообщения с пользователем user2

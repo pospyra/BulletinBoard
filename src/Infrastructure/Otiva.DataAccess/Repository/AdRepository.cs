@@ -29,34 +29,51 @@ namespace Otiva.DataAccess.Repository
             return await data.Where(predicate).FirstOrDefaultAsync();
         }
 
-        public Task Add(Ad model)
+        public Task Add(Ad model, CancellationToken cancellation)
         {
+            if (cancellation.IsCancellationRequested)
+                throw new OperationCanceledException();
             return _baseRepository.AddAsync(model);
         }
 
-        public async Task DeleteAsync(Ad ad)
+        public async Task DeleteAsync(Ad ad, CancellationToken cancellation)
         {
+            if (cancellation.IsCancellationRequested)
+                throw new OperationCanceledException();
+
             await _baseRepository.DeleteAsync(ad);
         }
 
-        public async Task EditAdAsync(Ad edit)
+        public async Task EditAdAsync(Ad edit, CancellationToken cancellation)
         {
+            if (cancellation.IsCancellationRequested)
+                throw new OperationCanceledException();
+
             await _baseRepository.UpdateAsync(edit);
         }
 
-        public async Task<Ad> FindByIdAsync(Guid id)
+        public async Task<Ad> FindByIdAsync(Guid id, CancellationToken cancellation)
         {
+            if (cancellation.IsCancellationRequested)
+                throw new OperationCanceledException();
+
             return await _baseRepository.GetByIdAsync(id);
         }
 
-        public async Task<IReadOnlyCollection<Ad>> GetAllAsync()
+        public async Task<IReadOnlyCollection<Ad>> GetAllAsync(CancellationToken cancellation)
         {
-             return await _baseRepository.GetAll()
+            if (cancellation.IsCancellationRequested)
+                throw new OperationCanceledException();
+
+            return await _baseRepository.GetAll()
                 .ToListAsync();
         }
 
-        public async Task<IReadOnlyCollection<Ad>> GetByFilterAsync(SearchFilterAd search)
+        public async Task<IReadOnlyCollection<Ad>> GetByFilterAsync(SearchFilterAd search, CancellationToken cancellation)
         {
+            if (cancellation.IsCancellationRequested)
+                throw new OperationCanceledException();
+
             var query = await _baseRepository.GetAllAsync();
 
             if (!string.IsNullOrEmpty(search.Name))

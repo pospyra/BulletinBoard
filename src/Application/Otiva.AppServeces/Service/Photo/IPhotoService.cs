@@ -13,14 +13,14 @@ namespace Otiva.AppServeces.Service.Photo
         /// </summary>
         /// <param name="photoId"></param>
         /// <returns></returns>
-        public Task DeleteAsync(Guid photoId);
+        public Task DeleteAsync(Guid photoId, CancellationToken cancellation);
 
         /// <summary>
         /// Добавить фотографию в бд
         /// </summary>
         /// <param name="photo"></param>
         /// <returns></returns>
-        public Task<Guid> AddPhotoAsync(byte[] photo);
+        public Task<Guid> AddPhotoAsync(byte[] photo, CancellationToken cancellation);
 
         /// <summary>
         /// Добавить фотографию к объявлению
@@ -28,6 +28,6 @@ namespace Otiva.AppServeces.Service.Photo
         /// <param name="PhotoId"></param>
         /// <param name="AdId"></param>
         /// <returns></returns>
-        public Task SetAdPhotoAsync(Guid PhotoId, Guid AdId);
+        public Task SetAdPhotoAsync(Guid PhotoId, Guid AdId, CancellationToken cancellation);
     }
 }

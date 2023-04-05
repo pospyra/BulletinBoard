@@ -29,9 +29,10 @@ namespace Otiva.API.Controllers
         /// <returns></returns>
         [HttpGet("user/all")]
         [ProducesResponseType(typeof(IReadOnlyCollection<InfoUserResponse>), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> GetAll(int take, int skip)
+        public async Task<IActionResult> GetAll(int take, int skip, CancellationToken cancellation)
         {
-            var result = await _userService.GetAllAsync(take, skip);
+
+            var result = await _userService.GetAllAsync(take, skip, cancellation);
 
             return Ok(result);
         }
@@ -43,9 +44,9 @@ namespace Otiva.API.Controllers
         /// <returns></returns>
         [HttpGet("currentUser")]
         [ProducesResponseType(typeof(IReadOnlyCollection<InfoUserResponse>), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> GetCurrenUserI(CancellationToken cancellation)
+        public async Task<IActionResult> GetCurrenUserId(CancellationToken cancellation)
         {
-            //var result = await _userService.GetCurrentUserId(cancellation);
+            var result = await _identityService.GetCurrentUserId(cancellation);
             return Ok();
         }
 
@@ -56,9 +57,9 @@ namespace Otiva.API.Controllers
         /// <returns></returns>
         [HttpGet("/user/{id}")]
         [ProducesResponseType(typeof(IReadOnlyCollection<InfoUserResponse>), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> GetById(Guid id)
+        public async Task<IActionResult> GetById(Guid id, CancellationToken cancellation)
         {
-            var result = await _userService.GetByIdAsync(id);
+            var result = await _userService.GetByIdAsync(id, cancellation);
 
             return Ok(result);
         }
@@ -79,9 +80,9 @@ namespace Otiva.API.Controllers
         /// <returns></returns>
         [HttpPost("login")]
         [ProducesResponseType(typeof(IReadOnlyCollection<InfoUserResponse>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> Login(LoginRequest userLogin)
+        public async Task<IActionResult> Login(LoginRequest userLogin, CancellationToken cancellation)
         {
-            var token = await _identityService.Login(userLogin);
+            var token = await _identityService.Login(userLogin, cancellation);
 
             return Ok(new { Token = token, Message = "Success" });
         }
@@ -94,10 +95,10 @@ namespace Otiva.API.Controllers
         /// <returns></returns>
         [HttpPost("/registration")]
         [ProducesResponseType(typeof(IReadOnlyCollection<InfoUserResponse>), (int)HttpStatusCode.Created)]
-        public async Task<IActionResult> Registration([FromBody]RegistrationOrUpdateRequest registration)
+        public async Task<IActionResult> Registration([FromBody]RegistrationOrUpdateRequest registration, CancellationToken cancellation)
         {
 
-            var result = await _userService.RegistrationAsync(registration);
+            var result = await _userService.RegistrationAsync(registration, cancellation);
 
             return Created("", result);
         }
@@ -112,7 +113,7 @@ namespace Otiva.API.Controllers
         [Authorize]
         [HttpPut("/user/update/{id}")]
         [ProducesResponseType(typeof(IReadOnlyCollection<InfoUserResponse>), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> EditUserAsync(Guid id, RegistrationOrUpdateRequest edit, IFormFile file)
+        public async Task<IActionResult> EditUserAsync(Guid id, RegistrationOrUpdateRequest edit, IFormFile file, CancellationToken cancellation)
         {
             byte[] photo;
             await using (var ms = new MemoryStream())
@@ -120,10 +121,11 @@ namespace Otiva.API.Controllers
             {
                 await fs.CopyToAsync(ms);
                 photo = ms.ToArray();
-            }
-            var res = await _userService.EditUserAsync(id, edit, photo);
 
-            return Ok(res);
+                var res = await _userService.EditUserAsync(id, edit, photo, cancellation);
+
+                return Ok(res);
+            }
         }
 
         /// <summary>
@@ -135,9 +137,9 @@ namespace Otiva.API.Controllers
         [HttpDelete("/user/delete/{id}")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
-        public async Task<IActionResult> DeleteAdAsync(Guid id)
+        public async Task<IActionResult> DeleteAdAsync(Guid id, CancellationToken cancellation)
         {
-            await _userService.DeleteAsync(id);
+            await _userService.DeleteAsync(id, cancellation);
 
             return NoContent();
         }

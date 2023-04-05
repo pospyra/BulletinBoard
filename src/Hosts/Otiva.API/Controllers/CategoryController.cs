@@ -22,9 +22,9 @@ namespace Otiva.API.Controllers
         /// <returns></returns>
         [HttpGet("category/all")]
         [ProducesResponseType(typeof(IReadOnlyCollection<InfoCategoryResponse>), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> GetAllCategory()
+        public async Task<IActionResult> GetAllCategory(CancellationToken cancellation)
         {
-            var result = await _categoryService.GetAllAsync();
+            var result = await _categoryService.GetAllAsync(cancellation);
 
             return Ok(result);
         }
@@ -35,9 +35,9 @@ namespace Otiva.API.Controllers
         /// <returns></returns>
         [HttpGet("category/getById/{id}")]
         [ProducesResponseType(typeof(IReadOnlyCollection<InfoCategoryResponse>), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> GetByIdCategory(Guid id)
+        public async Task<IActionResult> GetByIdCategory(Guid id, CancellationToken cancellation)
         {
-            var result = await _categoryService.GetByIdAsync(id);
+            var result = await _categoryService.GetByIdAsync(id, cancellation);
             return Ok(result);
         }
 
@@ -49,9 +49,9 @@ namespace Otiva.API.Controllers
         [Authorize(Roles = "Admin")]
         [HttpPost("category/create")]
         [ProducesResponseType(typeof(IReadOnlyCollection<InfoCategoryResponse>), (int)HttpStatusCode.Created)]
-        public async Task<IActionResult> CreateCategoryAsync(string name)
+        public async Task<IActionResult> CreateCategoryAsync(string name, CancellationToken cancellation)
         {
-            var result = await _categoryService.CreateCategoryAsync(name);
+            var result = await _categoryService.CreateCategoryAsync(name, cancellation);
 
             return Created("", new { result });
         }
@@ -65,9 +65,9 @@ namespace Otiva.API.Controllers
         [Authorize(Roles = "Admin")]
         [HttpPut("category/put/{id}")]
         [ProducesResponseType(typeof(IReadOnlyCollection<InfoCategoryResponse>), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> EditCategoryAsync(Guid id, string name)
+        public async Task<IActionResult> EditCategoryAsync(Guid id, string name, CancellationToken cancellation)
         {
-            await _categoryService.EditCategoryAsync(id, name);
+            await _categoryService.EditCategoryAsync(id, name, cancellation);
             return NoContent();
         }
 
@@ -80,9 +80,9 @@ namespace Otiva.API.Controllers
         [HttpDelete("category/delete/{id}")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
-        public async Task<IActionResult> DeleteCategoryAsync(Guid id)
+        public async Task<IActionResult> DeleteCategoryAsync(Guid id, CancellationToken cancellation)
         {
-            await _categoryService.DeleteAsync(id);
+            await _categoryService.DeleteAsync(id, cancellation);
             return NoContent();
         }
     }

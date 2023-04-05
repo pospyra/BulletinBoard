@@ -15,7 +15,7 @@ namespace Otiva.AppServeces.Service.Photo
             _photoRepository = photoRepository;
         }
 
-        public async Task<Guid> AddPhotoAsync(byte[] photo)
+        public async Task<Guid> AddPhotoAsync(byte[] photo, CancellationToken cancellation)
         {
             if (photo.Length > 5242880)
                 throw new Exception("Слишком большой размер фотографий");
@@ -24,22 +24,22 @@ namespace Otiva.AppServeces.Service.Photo
             {
                 KodBase64 = Convert.ToBase64String(photo, 0, photo.Length)
             };
-            await _photoRepository.Add(newPhoto);
+            await _photoRepository.Add(newPhoto, cancellation);
 
             return newPhoto.Id;
         }
 
-        public async Task DeleteAsync(Guid photoId)
+        public async Task DeleteAsync(Guid photoId, CancellationToken cancellation)
         {
-            var photoDel = await _photoRepository.FindByIdAsync(photoId);
-            await _photoRepository.DeleteAsync(photoDel);
+            var photoDel = await _photoRepository.FindByIdAsync(photoId, cancellation);
+            await _photoRepository.DeleteAsync(photoDel, cancellation);
         }
 
-        public async Task SetAdPhotoAsync(Guid PhotoId, Guid AdId)
+        public async Task SetAdPhotoAsync(Guid PhotoId, Guid AdId, CancellationToken cancellation)
         {
-            var photo = await _photoRepository.FindByIdAsync(PhotoId);
+            var photo = await _photoRepository.FindByIdAsync(PhotoId, cancellation);
             photo.AdId = AdId;
-            await _photoRepository.UpdatePhotoAsync(photo);
+            await _photoRepository.UpdatePhotoAsync(photo, cancellation);
         }
     }
 }

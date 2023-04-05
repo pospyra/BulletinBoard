@@ -19,28 +19,43 @@ namespace Otiva.DataAccess.Repository
             _baseRepository = baseRepository;
         }
 
-        public Task Add(Review model)
+        public Task Add(Review model, CancellationToken cancellation)
         {
+            if (cancellation.IsCancellationRequested)
+                throw new OperationCanceledException();
+
             return _baseRepository.AddAsync(model);
         }
 
-        public async Task DeleteAsync(Review model)
+        public async Task DeleteAsync(Review model, CancellationToken cancellation)
         {
+            if (cancellation.IsCancellationRequested)
+                throw new OperationCanceledException();
+
             await _baseRepository.DeleteAsync(model);   
         }
 
-        public async Task EditAdAsync(Review edit)
+        public async Task EditAdAsync(Review edit, CancellationToken cancellation)
         {
+            if (cancellation.IsCancellationRequested)
+                throw new OperationCanceledException();
+
             await _baseRepository.UpdateAsync(edit);
         }
 
-        public async Task<Review> FindByIdAsync(Guid id)
+        public async Task<Review> FindByIdAsync(Guid id, CancellationToken cancellation)
         {
+            if (cancellation.IsCancellationRequested)
+                throw new OperationCanceledException();
+
             return await _baseRepository.GetByIdAsync(id);
         }
 
-        public IQueryable<Review> GetAll()
+        public IQueryable<Review> GetAll(CancellationToken cancellation)
         {
+            if (cancellation.IsCancellationRequested)
+                throw new OperationCanceledException();
+
             return _baseRepository.GetAll();
         }
     }

@@ -12,14 +12,14 @@ namespace Otiva.AppServeces.IRepository
     {
         Task<DomainUser> FindWhere(Expression<Func<DomainUser, bool>> predicate);
 
-        Task<DomainUser> FindByIdAsync(Guid id);
+        Task<DomainUser> FindByIdAsync(Guid id, CancellationToken cancellation);
 
-        IQueryable<DomainUser> GetAll();
+        IQueryable<DomainUser> GetAll(CancellationToken cancellation);
 
-        Task Add(DomainUser model);
+        Task Add(DomainUser model, CancellationToken cancellation);
 
-        Task DeleteAsync(DomainUser model);
+        Task DeleteAsync(DomainUser model, CancellationToken cancellation);
 
-        Task EditAdAsync(DomainUser model);
+        Task EditAdAsync(DomainUser model, CancellationToken cancellation);
     }
 }

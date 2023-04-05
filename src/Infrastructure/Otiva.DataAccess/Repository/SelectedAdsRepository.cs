@@ -17,23 +17,35 @@ namespace Otiva.DataAccess.Repository
         {
             _baseRepository = baseRepository;
         }
-        public Task Add(ItemSelectedAd model)
+        public Task Add(ItemSelectedAd model, CancellationToken cancellation)
         {
+            if (cancellation.IsCancellationRequested)
+                throw new OperationCanceledException();
+
             return _baseRepository.AddAsync(model);
         }
 
-        public async Task DeleteAsync(ItemSelectedAd model)
+        public async Task DeleteAsync(ItemSelectedAd model, CancellationToken cancellation)
         {
+            if (cancellation.IsCancellationRequested)
+                throw new OperationCanceledException();
+
             await _baseRepository.DeleteAsync(model);
         }
 
-        public async Task<ItemSelectedAd> FindByIdAsync(Guid id)
+        public async Task<ItemSelectedAd> FindByIdAsync(Guid id, CancellationToken cancellation)
         {
+            if (cancellation.IsCancellationRequested)
+                throw new OperationCanceledException();
+
             return await _baseRepository.GetByIdAsync(id);
         }
 
-        public IQueryable<ItemSelectedAd> GetAll()
+        public IQueryable<ItemSelectedAd> GetAll(CancellationToken cancellation)
         {
+            if (cancellation.IsCancellationRequested)
+                throw new OperationCanceledException();
+
             return _baseRepository.GetAll();
         }
     }

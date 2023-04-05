@@ -69,9 +69,9 @@ namespace Otiva.API.Controllers
         [Authorize]
         [HttpPut("/chat/message/update/{id}")]
         [ProducesResponseType(typeof(IReadOnlyCollection<InfoReviewResponse>), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> EditMessageAsync(Guid id, TextMessageRequest text)
+        public async Task<IActionResult> EditMessageAsync(Guid id, TextMessageRequest text, CancellationToken cancellation)
         {
-            var res = await _messageService.EditMessageAsync(id, text);
+            var res = await _messageService.EditMessageAsync(id, text, cancellation);
 
             return Ok(res);
         }
@@ -85,9 +85,9 @@ namespace Otiva.API.Controllers
         [HttpDelete("/chat/message/delete/{id}")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
-        public async Task<IActionResult> DeleteAsync(Guid id)
+        public async Task<IActionResult> DeleteAsync(Guid id, CancellationToken cancellation)
         {
-            await _messageService.DeleteMessageAsync(id);
+            await _messageService.DeleteMessageAsync(id, cancellation);
 
             return NoContent();
         }

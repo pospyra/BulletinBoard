@@ -26,9 +26,9 @@ namespace Otiva.API.Controllers
         /// <returns></returns>
         [HttpGet("/allSelectedByUserID{Id}")]
         [ProducesResponseType(typeof(IReadOnlyCollection<InfoSelectedResponse>), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> GetAll(Guid UserId, int take, int skip)
+        public async Task<IActionResult> GetAll(int take, int skip, CancellationToken cancellation)
         {
-            var result = await _selectedadService.GetSelectedUsersAsync(UserId, take, skip);
+            var result = await _selectedadService.GetSelectedUsersAsync(take, skip, cancellation);
 
             return Ok(result);
         }
@@ -58,9 +58,9 @@ namespace Otiva.API.Controllers
         [HttpDelete("/selected/delete")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
-        public async Task<IActionResult> DeleteAdAsync(Guid Id)
+        public async Task<IActionResult> DeleteAdAsync(Guid Id, CancellationToken cancellation)
         {
-            await _selectedadService.DeleteAsync(Id);
+            await _selectedadService.DeleteAsync(Id, cancellation);
 
             return NoContent();
         }

@@ -37,15 +37,19 @@ namespace Otiva.AppServeces.Service.Ad
         {
             try
             {
+                if(cancellation.IsCancellationRequested)
+                    throw new OperationCanceledException();
+
                 var newAd = _mapper.Map<Domain.Ad>(createAd);
                 newAd.DomainUserId = Guid.Parse(await _identityService.GetCurrentUserId(cancellation));
-                await _adRepository.Add(newAd);
+
+                await _adRepository.Add(newAd, cancellation);
 
                 if(createAd.PhotoId != null)
                 {
                     foreach (var photoId in createAd.PhotoId)
                     {
-                        await _photoService.SetAdPhotoAsync(photoId, newAd.Id);
+                        await _photoService.SetAdPhotoAsync(photoId, newAd.Id, cancellation);
                     }
                 }
 
@@ -61,7 +65,7 @@ namespace Otiva.AppServeces.Service.Ad
         /// <inheritdoc/>
         public async Task DeleteAsync(Guid id, CancellationToken cancellation)
         {
-            var existingAd = await _adRepository.FindByIdAsync(id);
+            var existingAd = await _adRepository.FindByIdAsync(id, cancellation);
             if (existingAd == null)
                 throw new Exception("Объявления с таким идентификатором не сущесвует");
 
@@ -71,24 +75,24 @@ namespace Otiva.AppServeces.Service.Ad
                 || currentUser.Role.Contains("User"))
                 throw new Exception("У вас не достаточно прав для работы с этим объвлением");
 
-            await _adRepository.DeleteAsync(existingAd);
+            await _adRepository.DeleteAsync(existingAd,cancellation);
         }
 
-        public async Task<InfoAdResponse> EditAdAsync(Guid Id, CreateOrUpdateAdRequest editAd)
+        public async Task<InfoAdResponse> EditAdAsync(Guid Id, CreateOrUpdateAdRequest editAd, CancellationToken cancellation)
         {
-            var existingAd = await _adRepository.FindByIdAsync(Id);
+            var existingAd = await _adRepository.FindByIdAsync(Id, cancellation);
             if (existingAd == null)
                 throw new Exception("Объявления с таким идентификатором не сущесвует");
 
-            await _adRepository.EditAdAsync(_mapper.Map(editAd, existingAd));
+            await _adRepository.EditAdAsync(_mapper.Map(editAd, existingAd), cancellation);
 
             return _mapper.Map<InfoAdResponse>(editAd);
 
         }
 
-        public async Task<IReadOnlyCollection<InfoAdResponse>> GetAllAsync(int take, int skip)
+        public async Task<IReadOnlyCollection<InfoAdResponse>> GetAllAsync(int take, int skip, CancellationToken cancellation)
         {
-            var collectionAds = await _adRepository.GetAllAsync();
+            var collectionAds = await _adRepository.GetAllAsync(cancellation);
             return collectionAds.Select(x => new InfoAdResponse
             {
                 Id = x.Id,
@@ -107,9 +111,9 @@ namespace Otiva.AppServeces.Service.Ad
         }
 
 
-        public async Task<IReadOnlyCollection<InfoAdResponse>> GetByFilterAsync(SearchFilterAd search)
+        public async Task<IReadOnlyCollection<InfoAdResponse>> GetByFilterAsync(SearchFilterAd search, CancellationToken cancellation)
         {
-            var query = await _adRepository.GetByFilterAsync(search);
+            var query = await _adRepository.GetByFilterAsync(search, cancellation);
 
             return query.Select(p => new InfoAdResponse
             {
@@ -124,9 +128,9 @@ namespace Otiva.AppServeces.Service.Ad
             }).OrderBy(x => x.CreateTime).Skip(search.skip).Take(search.take).ToList();
         }
 
-        public async  Task<InfoAdResponse> GetByIdAsync(Guid id)
+        public async  Task<InfoAdResponse> GetByIdAsync(Guid id, CancellationToken cancellation)
         {
-            var exitAd = await _adRepository.FindByIdAsync(id);
+            var exitAd = await _adRepository.FindByIdAsync(id, cancellation);
             if (exitAd == null)
                 throw new Exception("Объявления с таким идентификатором не сущесвует");
             return _mapper.Map<InfoAdResponse>(exitAd);
@@ -136,7 +140,7 @@ namespace Otiva.AppServeces.Service.Ad
         {
             var currentUser = await _identityService.GetCurrentUserId(cancellation);
 
-            var res = await _adRepository.GetAllAsync();
+            var res = await _adRepository.GetAllAsync(cancellation);
             return res
                 .Select(a => new InfoAdResponse
                 {

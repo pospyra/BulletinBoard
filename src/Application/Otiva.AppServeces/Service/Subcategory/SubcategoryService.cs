@@ -22,7 +22,7 @@ namespace Otiva.AppServeces.Service.Subcategory
             _mapper = mapper;
         }
 
-        public async Task<Guid> CreateSubCategoryAsync(string name, Guid CategoryId)
+        public async Task<Guid> CreateSubCategoryAsync(string name, Guid CategoryId, CancellationToken cancellation)
         {
             var newSubcategory = new Domain.Subcategory()
             {
@@ -30,36 +30,36 @@ namespace Otiva.AppServeces.Service.Subcategory
                 CategoryId = CategoryId
             };
 
-            await _subcategoryRepository.Add(newSubcategory);
+            await _subcategoryRepository.Add(newSubcategory, cancellation);
             return newSubcategory.Id;
         }
 
-        public async Task DeleteAsync(Guid id)
+        public async Task DeleteAsync(Guid id, CancellationToken cancellation)
         {
-            var category = await _subcategoryRepository.FindByIdAsync(id);
+            var category = await _subcategoryRepository.FindByIdAsync(id, cancellation);
             if (category == null)
                 throw new Exception("Подкатегории с таким идентификатором не сущесвует");
 
-            await _subcategoryRepository.DeleteAsync(category);
+            await _subcategoryRepository.DeleteAsync(category, cancellation);
         }
 
-        public async Task<InfoSubcategory> EditSubCategoryAsync(Guid Id, string name, Guid CategoryId)
+        public async Task<InfoSubcategory> EditSubCategoryAsync(Guid Id, string name, Guid CategoryId, CancellationToken cancellation)
         {
-            var existingCategory = await _subcategoryRepository.FindByIdAsync(Id);
+            var existingCategory = await _subcategoryRepository.FindByIdAsync(Id, cancellation);
 
             if (existingCategory == null)
                 throw new Exception("Подкатегории с таким идентификатором не существует");
 
             existingCategory.Name = name;
             existingCategory.CategoryId = CategoryId;
-            await _subcategoryRepository.EditSubcategoryAsync(existingCategory);
+            await _subcategoryRepository.EditSubcategoryAsync(existingCategory, cancellation);
 
             return _mapper.Map<InfoSubcategory>(existingCategory);
         }
 
-        public async Task<IReadOnlyCollection<InfoSubcategory>> GetAllAsync()
+        public async Task<IReadOnlyCollection<InfoSubcategory>> GetAllAsync(CancellationToken cancellation)
         {
-            return await _subcategoryRepository.GetAll()
+            return await _subcategoryRepository.GetAll(cancellation)
                 .Select(a => new InfoSubcategory()
                 {
                     Id = a.Id,
@@ -67,9 +67,9 @@ namespace Otiva.AppServeces.Service.Subcategory
                 }).ToListAsync();
         }
 
-        public async Task<InfoSubcategory> GetByIdAsync(Guid id)
+        public async Task<InfoSubcategory> GetByIdAsync(Guid id, CancellationToken cancellation)
         {
-            var sub = await _subcategoryRepository.FindByIdAsync(id);
+            var sub = await _subcategoryRepository.FindByIdAsync(id, cancellation);
             if (sub == null) throw new Exception("Подкатегории с таким идентификатором не сущесвует");
 
             return _mapper.Map<InfoSubcategory>(sub);

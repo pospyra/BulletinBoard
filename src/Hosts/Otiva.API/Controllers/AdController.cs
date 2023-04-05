@@ -29,12 +29,12 @@ namespace Otiva.API.Controllers
         [AllowAnonymous]
         [HttpGet("/ad/all")]
         [ProducesResponseType(typeof(IReadOnlyCollection<InfoAdResponse>), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> GetAllAsync(int take, int skip)
+        public async Task<IActionResult> GetAllAsync(int take, int skip, CancellationToken cancellation)
         {
             if (skip < 0 || take <= 0 || take == null)
                 throw new Exception("Некорректные данные. Убедитесь, что skip >= 0, take > 0 и !null ");
 
-            var result = await _adService.GetAllAsync(take, skip);
+            var result = await _adService.GetAllAsync(take, skip, cancellation);
 
             return Ok(result);
         }
@@ -67,9 +67,9 @@ namespace Otiva.API.Controllers
         /// <returns></returns>
         [HttpGet("/ad/{id}")]
         [ProducesResponseType(typeof(IReadOnlyCollection<InfoAdResponse>), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> GetByIdAsync(Guid id)
+        public async Task<IActionResult> GetByIdAsync(Guid id, CancellationToken cancellation)
         {
-            var result = await _adService.GetByIdAsync(id);
+            var result = await _adService.GetByIdAsync(id, cancellation);
 
             return Ok(result);
         }
@@ -83,12 +83,12 @@ namespace Otiva.API.Controllers
         [AllowAnonymous]
         [HttpGet("/ad/filter")]
         [ProducesResponseType(typeof(IReadOnlyCollection<InfoAdResponse>), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> GetByFilter([FromQuery] SearchFilterAd query)
+        public async Task<IActionResult> GetByFilter([FromQuery] SearchFilterAd query, CancellationToken cancellation)
         {
             if (query.skip < 0 || query.take <= 0 || query.take == null)
                 throw new Exception("Некорректные данные. Убедитесь, что skip >= 0, take > 0 и !null ");
 
-            var result = await _adService.GetByFilterAsync(query);
+            var result = await _adService.GetByFilterAsync(query, cancellation);
 
             return Ok(result);
         }
@@ -117,9 +117,9 @@ namespace Otiva.API.Controllers
         /// <returns></returns>
         [HttpPut("/ad/update/{id}")]
         [ProducesResponseType(typeof(IReadOnlyCollection<InfoAdResponse>), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> EditAdAsync(Guid id, CreateOrUpdateAdRequest edit)
+        public async Task<IActionResult> EditAdAsync(Guid id, CreateOrUpdateAdRequest edit, CancellationToken cancellation)
         {
-            var res = await _adService.EditAdAsync(id, edit);
+            var res = await _adService.EditAdAsync(id, edit, cancellation);
 
             return Ok(res);
         }

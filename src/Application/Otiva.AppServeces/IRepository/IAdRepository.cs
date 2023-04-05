@@ -16,34 +16,34 @@ namespace Otiva.AppServeces.IRepository
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        Task<Ad> FindByIdAsync(Guid id);
+        Task<Ad> FindByIdAsync(Guid id, CancellationToken cancellation);
 
         /// <summary>
         /// Получить все объявления
         /// </summary>
         /// <returns></returns>
-        public Task<IReadOnlyCollection<Ad>> GetAllAsync();
+        public Task<IReadOnlyCollection<Ad>> GetAllAsync( CancellationToken cancellation);
 
         /// <summary>
         /// Добавить объявление
         /// </summary>
         /// <param name="model">Модель объявления</param>
         /// <returns></returns>
-        Task Add(Ad model);
+        Task Add(Ad model, CancellationToken cancellation);
 
         /// <summary>
         /// Удалить объявление
         /// </summary>
         /// <param name="ad">Модель объявления</param>
         /// <returns></returns>
-        Task DeleteAsync(Ad ad);
+        Task DeleteAsync(Ad ad, CancellationToken cancellation);
 
         /// <summary>
         /// Редактировать объявление
         /// </summary>
         /// <param name="edit"></param>
         /// <returns></returns>
-        Task EditAdAsync(Ad edit);
+        Task EditAdAsync(Ad edit, CancellationToken cancellation);
 
         /// <summary>
         /// Получить объявление по заданному параметру
@@ -57,7 +57,7 @@ namespace Otiva.AppServeces.IRepository
         /// </summary>
         /// <param name="search"></param>
         /// <returns></returns>
-        public Task<IReadOnlyCollection<Ad>> GetByFilterAsync(SearchFilterAd search);
+        public Task<IReadOnlyCollection<Ad>> GetByFilterAsync(SearchFilterAd search, CancellationToken cancellation);
 
     }
 }

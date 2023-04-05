@@ -14,7 +14,7 @@ namespace Otiva.AppServeces.Service.Ad
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        Task<InfoAdResponse> GetByIdAsync(Guid id);
+        Task<InfoAdResponse> GetByIdAsync(Guid id, CancellationToken cancellation);
 
         /// <summary>
         /// Получить объявления текущего пользователя
@@ -39,7 +39,7 @@ namespace Otiva.AppServeces.Service.Ad
         /// <param name="take">сколько объявлений взять</param>
         /// <param name="skip">сколько пропустить</param>
         /// <returns></returns>
-        Task<IReadOnlyCollection<InfoAdResponse>> GetAllAsync( int take, int skip);
+        Task<IReadOnlyCollection<InfoAdResponse>> GetAllAsync( int take, int skip, CancellationToken cancellation);
 
         /// <summary>
         /// Удалить объявление
@@ -54,14 +54,14 @@ namespace Otiva.AppServeces.Service.Ad
         /// <param name="Id"></param>
         /// <param name="editAd"></param>
         /// <returns></returns>
-        Task<InfoAdResponse> EditAdAsync(Guid Id, CreateOrUpdateAdRequest editAd);
+        Task<InfoAdResponse> EditAdAsync(Guid Id, CreateOrUpdateAdRequest editAd, CancellationToken cancellation);
 
         /// <summary>
         /// Получить объвления по фильтрам
         /// </summary>
         /// <param name="search"></param>
         /// <returns>Коллекцию объвлений</returns>
-        Task<IReadOnlyCollection<InfoAdResponse>> GetByFilterAsync(SearchFilterAd search);
+        Task<IReadOnlyCollection<InfoAdResponse>> GetByFilterAsync(SearchFilterAd search, CancellationToken cancellation);
 
 
     }

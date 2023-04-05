@@ -27,24 +27,24 @@ namespace Otiva.AppServeces.Service.Message
             _identityService = identityService;
 
         }
-        public async Task DeleteMessageAsync(Guid id)
+        public async Task DeleteMessageAsync(Guid id, CancellationToken cancellation)
         {
-            var mesDel = await _messageRepository.FindByIdAsync(id);
+            var mesDel = await _messageRepository.FindByIdAsync(id, cancellation);
             if (mesDel == null)
                 throw new Exception("Сообщения с таким айди не найдено");
 
-            await _messageRepository.DeleteAsync(mesDel);
+            await _messageRepository.DeleteAsync(mesDel, cancellation);
         }
 
-        public async Task<InfoMessageResponse> EditMessageAsync(Guid id, TextMessageRequest text)
+        public async Task<InfoMessageResponse> EditMessageAsync(Guid id, TextMessageRequest text, CancellationToken cancellation)
         {
-            var existingMessage = await _messageRepository.FindByIdAsync(id);
+            var existingMessage = await _messageRepository.FindByIdAsync(id, cancellation);
 
             if (existingMessage == null)
                 throw new Exception("Сообщения с таким айди не найдено");
 
             existingMessage.Content = text.Text;
-            await _messageRepository.EditAdAsync(existingMessage);
+            await _messageRepository.EditAdAsync(existingMessage, cancellation);
 
             return _mapper.Map<InfoMessageResponse>(existingMessage);
 
@@ -54,7 +54,7 @@ namespace Otiva.AppServeces.Service.Message
         {
             var user1_Id = Guid.Parse(await _identityService.GetCurrentUserId(cancellation));
 
-            return await _messageRepository.GetAll()
+            return await _messageRepository.GetAll(cancellation)
                 .Where(x=>x.SenderId == user1_Id && x.ReceiverId == user2_Id 
                 || x.SenderId == user2_Id && x.ReceiverId == user1_Id)
                 .Select(a=> new InfoMessageResponse
@@ -72,7 +72,7 @@ namespace Otiva.AppServeces.Service.Message
             var newMessage = _mapper.Map<Domain.Message>(message);
              newMessage.SenderId = Guid.Parse(await _identityService.GetCurrentUserId(cancellation));
 
-            await _messageRepository.Add(newMessage);
+            await _messageRepository.Add(newMessage, cancellation);
             return newMessage.Id;
         }
     }

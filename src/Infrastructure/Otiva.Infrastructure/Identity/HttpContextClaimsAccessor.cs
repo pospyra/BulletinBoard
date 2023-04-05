@@ -22,6 +22,9 @@ namespace AdBoard.Infrastructure.Identity
 
         public async Task<IEnumerable<Claim>> GetClaims(CancellationToken cancellation)
         {
+            if (cancellation.IsCancellationRequested)
+                throw new OperationCanceledException();
+
             return _contextAccessor.HttpContext.User.Claims;
         }
     }

@@ -19,23 +19,35 @@ namespace Otiva.DataAccess.Repository
         {
             _baseRepository = baseRepository;
         }
-        public Task Add(DomainUser model)
+        public Task Add(DomainUser model, CancellationToken cancellation)
         {
+            if (cancellation.IsCancellationRequested)
+                throw new OperationCanceledException();
+
             return _baseRepository.AddAsync(model);
         }
 
-        public async Task DeleteAsync(DomainUser del)
+        public async Task DeleteAsync(DomainUser del, CancellationToken cancellation)
         {
+            if (cancellation.IsCancellationRequested)
+                throw new OperationCanceledException();
+
             await _baseRepository.DeleteAsync(del);
         }
 
-        public async Task EditAdAsync(DomainUser edit)
+        public async Task EditAdAsync(DomainUser edit, CancellationToken cancellation)
         {
+            if (cancellation.IsCancellationRequested)
+                throw new OperationCanceledException();
+
             await _baseRepository.UpdateAsync(edit);
         }
 
-        public async Task<DomainUser> FindByIdAsync(Guid id)
+        public async Task<DomainUser> FindByIdAsync(Guid id, CancellationToken cancellation)
         {
+            if (cancellation.IsCancellationRequested)
+                throw new OperationCanceledException();
+
             return await _baseRepository.GetByIdAsync(id);
         }
 
@@ -46,8 +58,11 @@ namespace Otiva.DataAccess.Repository
             return await data.Where(predicate).FirstOrDefaultAsync();
         }
 
-        public IQueryable<DomainUser> GetAll()
+        public IQueryable<DomainUser> GetAll(CancellationToken cancellation)
         {
+            if (cancellation.IsCancellationRequested)
+                throw new OperationCanceledException();
+
             return _baseRepository.GetAll();
         }
     }

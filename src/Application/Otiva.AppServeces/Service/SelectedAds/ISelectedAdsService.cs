@@ -26,13 +26,13 @@ namespace Otiva.AppServeces.Service.SelectedAds
         /// <param name="take"></param>
         /// <param name="skip"></param>
         /// <returns></returns>
-        Task<IReadOnlyCollection<InfoSelectedResponse>> GetSelectedUsersAsync(Guid UserId, int take, int skip);
+        Task<IReadOnlyCollection<InfoSelectedResponse>> GetSelectedUsersAsync( int take, int skip, CancellationToken cancellation);
 
         /// <summary>
         /// Удалить объявление из избранных
         /// </summary>
         /// <param name="Id"></param>
         /// <returns></returns>
-        Task DeleteAsync(Guid Id);
+        Task DeleteAsync(Guid Id, CancellationToken cancellation);
     }
 }

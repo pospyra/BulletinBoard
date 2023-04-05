@@ -9,14 +9,14 @@ namespace Otiva.AppServeces.IRepository
 {
     public interface IPhotoRepository
     {
-        Task<Photo> FindByIdAsync(Guid id);
+        Task<Photo> FindByIdAsync(Guid id, CancellationToken cancellation);
 
-        IQueryable<Photo> GetAll();
+        IQueryable<Photo> GetAll( CancellationToken cancellation);
 
-        Task Add(Photo model);
+        Task Add(Photo model, CancellationToken cancellation);
 
-        Task DeleteAsync(Photo photo);
+        Task DeleteAsync(Photo photo, CancellationToken cancellation);
 
-        Task UpdatePhotoAsync(Photo photo);
+        Task UpdatePhotoAsync(Photo photo, CancellationToken cancellation);
     }
 }

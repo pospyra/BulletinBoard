@@ -37,40 +37,40 @@ namespace Otiva.AppServeces.Service.Review
             var newReview = _mapper.Map<Domain.Review>(createReview);
             newReview.CustomerId = Guid.Parse(await _identityService.GetCurrentUserId(cancellation));
 
-            await _reviewRepository.Add(newReview);
+            await _reviewRepository.Add(newReview, cancellation);
             return newReview.Id;
         }
 
-        public async Task DeleteAsync(Guid id)
+        public async Task DeleteAsync(Guid id, CancellationToken cancellation)
         {
-            var reviewDel = await _reviewRepository.FindByIdAsync(id);
+            var reviewDel = await _reviewRepository.FindByIdAsync(id, cancellation);
             if (reviewDel == null)
                 throw new Exception("Отзыва с таким идентификатором не существует");
 
-            await _reviewRepository.DeleteAsync(reviewDel);
+            await _reviewRepository.DeleteAsync(reviewDel, cancellation);
         }
 
-        public async Task<InfoReviewResponse> EditReviewAsync(Guid id, string content)
+        public async Task<InfoReviewResponse> EditReviewAsync(Guid id, string content, CancellationToken cancellation)
         {
-            var exisitingReview = await _reviewRepository.FindByIdAsync(id);
+            var exisitingReview = await _reviewRepository.FindByIdAsync(id,cancellation);
             if (exisitingReview == null)
                 throw new Exception("Отзыва с таким идентификатором не существует");
 
             exisitingReview.Content= content;
-            await _reviewRepository.EditAdAsync(exisitingReview);
+            await _reviewRepository.EditAdAsync(exisitingReview, cancellation);   
 
             return _mapper.Map<InfoReviewResponse>(exisitingReview);
 
         }
 
-        public async Task<IReadOnlyCollection<InfoReviewResponse>> GetAllBySellerIdAsync(Guid SellerId)
+        public async Task<IReadOnlyCollection<InfoReviewResponse>> GetAllBySellerIdAsync(Guid SellerId, CancellationToken cancellation)
         {
             //var list = _reviewRepository.GetAll().Where(x => x.SellerId == SellerId);
 
             //return await list.Select(p => _mapper.Map<InfoReviewResponse>(p))
             //   .OrderByDescending(p => p.Id).ToListAsync();
 
-            return await _reviewRepository.GetAll().Where(x => x.SellerId == SellerId)
+            return await _reviewRepository.GetAll(cancellation).Where(x => x.SellerId == SellerId)
                .Select(a => new InfoReviewResponse
                {
                    Id = a.Id,
@@ -81,9 +81,9 @@ namespace Otiva.AppServeces.Service.Review
                }).ToListAsync();
         }
 
-        public async Task<InfoReviewResponse> GetByIdAsync(Guid id)
+        public async Task<InfoReviewResponse> GetByIdAsync(Guid id, CancellationToken cancellation)
         {
-            var review = await _reviewRepository.FindByIdAsync(id);
+            var review = await _reviewRepository.FindByIdAsync(id, cancellation);
             if (review == null)
                 throw new Exception("Отзыва с таким айди не найден");
 

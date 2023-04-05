@@ -12,7 +12,7 @@ namespace Otiva.Contracts.UserDto
     public class RegistrationOrUpdateRequest
     {
         [Required]
-        public string Name { get; set; }
+        public string UserName { get; set; }
 
         [EmailAddress]
         public string Email { get; set; }
@@ -23,7 +23,9 @@ namespace Otiva.Contracts.UserDto
 
         public string Region { get; set; }
 
-        public string Phone { get; set; }
+        public string PhoneNumber { get; set; }
+
+        public DateTime DateBirthday { get; set; }
 
         public string? Role { get; set; }
     }

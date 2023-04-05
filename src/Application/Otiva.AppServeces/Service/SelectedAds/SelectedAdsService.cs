@@ -29,7 +29,7 @@ namespace Otiva.AppServeces.Service.SelectedAds
         }
 
 
-        public async Task<InfoSelectedResponse> AddSelectedAsync( Guid AdId, CancellationToken cancellation)
+        public async Task<InfoSelectedResponse> AddSelectedAsync(Guid AdId, CancellationToken cancellation)
         {
             var userId =  Guid.Parse(await _identityService.GetCurrentUserId(cancellation));
             var selected = new Domain.ItemSelectedAd()
@@ -37,21 +37,22 @@ namespace Otiva.AppServeces.Service.SelectedAds
                 AdId = AdId,
                 DomainUserId = userId,
             };
-            await _selectedadRepository.Add(selected);
+            await _selectedadRepository.Add(selected, cancellation);
 
             return _mapper.Map<InfoSelectedResponse>(selected);
         }
 
-        public async Task DeleteAsync(Guid Id)
+        public async Task DeleteAsync(Guid Id, CancellationToken cancellation)
         {
-            var selectedDel = await _selectedadRepository.FindByIdAsync(Id);
-            await _selectedadRepository.DeleteAsync(selectedDel);
+            var selectedDel = await _selectedadRepository.FindByIdAsync(Id, cancellation);
+            await _selectedadRepository.DeleteAsync(selectedDel, cancellation);
         }
 
-        public async Task<IReadOnlyCollection<InfoSelectedResponse>> GetSelectedUsersAsync(Guid UserId, int take, int skip)
+        public async Task<IReadOnlyCollection<InfoSelectedResponse>> GetSelectedUsersAsync(int take, int skip, CancellationToken cancellation)
         {
-            return await _selectedadRepository.GetAll()
-               .Where(x => x.DomainUserId == UserId)
+            var currentUserId = Guid.Parse(await _identityService.GetCurrentUserId(cancellation));
+            return await _selectedadRepository.GetAll(cancellation)
+               .Where(x => x.DomainUserId == currentUserId)
                .Select(a=> new InfoSelectedResponse()
                {
                    Id= a.Id,

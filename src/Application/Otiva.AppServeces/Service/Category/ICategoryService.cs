@@ -15,27 +15,27 @@ namespace Otiva.AppServeces.Service.Category
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        Task<InfoCategoryResponse> GetByIdAsync(Guid id);
+        Task<InfoCategoryResponse> GetByIdAsync(Guid id, CancellationToken cancellation);
 
         /// <summary>
         /// Создать категорию
         /// </summary>
         /// <param name="name"></param>
         /// <returns>Id созданной категории</returns>
-        Task<Guid> CreateCategoryAsync(string name);
+        Task<Guid> CreateCategoryAsync(string name, CancellationToken cancellation);
         
         /// <summary>
         /// Получить все категории
         /// </summary>
         /// <returns></returns>
-        Task<IReadOnlyCollection<InfoCategoryResponse>> GetAllAsync();
+        Task<IReadOnlyCollection<InfoCategoryResponse>> GetAllAsync(CancellationToken cancellation);
 
         /// <summary>
         /// Удалить категорию
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        Task DeleteAsync(Guid id);
+        Task DeleteAsync(Guid id, CancellationToken cancellation);
 
         /// <summary>
         /// Htlfrnbhdjfnm rfntujhb.
@@ -43,7 +43,7 @@ namespace Otiva.AppServeces.Service.Category
         /// <param name="Id"></param>
         /// <param name="name"></param>
         /// <returns></returns>
-        Task<InfoCategoryResponse> EditCategoryAsync(Guid Id,string name);
+        Task<InfoCategoryResponse> EditCategoryAsync(Guid Id,string name, CancellationToken cancellation);
 
     }
 }

@@ -23,6 +23,8 @@ namespace Otiva.Domain.User
 
         public string PhoneNumber { get; set; }
 
+        public DateTime DateBirthday { get; set; }
+
         public DateTime RegistrationDateTime { get; set; } = DateTime.UtcNow;
 
         public string? KodBase64 { get; set; }

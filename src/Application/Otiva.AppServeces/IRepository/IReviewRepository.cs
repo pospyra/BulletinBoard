@@ -9,14 +9,14 @@ namespace Otiva.AppServeces.IRepository
 {
     public interface IReviewRepository
     {
-        Task<Review> FindByIdAsync(Guid id);
+        Task<Review> FindByIdAsync(Guid id, CancellationToken cancellation);
 
-        IQueryable<Review> GetAll();
+        IQueryable<Review> GetAll(CancellationToken cancellation);
 
-        Task Add(Review model);
+        Task Add(Review model, CancellationToken cancellation);
 
-        Task DeleteAsync(Review model);
+        Task DeleteAsync(Review model, CancellationToken cancellation);
 
-        Task EditAdAsync(Review edit);
+        Task EditAdAsync(Review edit, CancellationToken cancellation);
     }
 }
