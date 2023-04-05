@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Otiva.AppServeces.Service.Review;
 using Otiva.Contracts.AdDto;
 using Otiva.Contracts.ReviewDto;
@@ -22,6 +23,7 @@ namespace Otiva.API.Controllers
         /// </summary>
         /// <param name="SellerId"></param>
         /// <returns></returns>
+        [Authorize]
         [HttpGet("/reviewAboutSeller{SellerId}")]
         [ProducesResponseType(typeof(IReadOnlyCollection<InfoReviewResponse>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetAllAsync(Guid SellerId)
@@ -36,6 +38,7 @@ namespace Otiva.API.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
+        [Authorize]
         [HttpGet("/review/{id}")]
         [ProducesResponseType(typeof(IReadOnlyCollection<InfoReviewResponse>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetByIdAsync(Guid id)
@@ -51,6 +54,7 @@ namespace Otiva.API.Controllers
         /// <param name="createReview"></param>
         /// <param name="cancellation"></param>
         /// <returns></returns>
+        [Authorize]
         [HttpPost("review/create")]
         [ProducesResponseType(typeof(IReadOnlyCollection<InfoReviewResponse>), (int)HttpStatusCode.Created)]
         public async Task<IActionResult> CreateReviewAsync(CreateReviewRequest createReview, CancellationToken cancellation)
@@ -66,6 +70,7 @@ namespace Otiva.API.Controllers
         /// <param name="id"></param>
         /// <param name="content"></param>
         /// <returns></returns>
+        [Authorize]
         [HttpPut("/review/update/{id}")]
         [ProducesResponseType(typeof(IReadOnlyCollection<InfoReviewResponse>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> EditReviewAsync(Guid id, string content)
@@ -80,6 +85,7 @@ namespace Otiva.API.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
+        [Authorize]
         [HttpDelete("/review/delete/{id}")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]

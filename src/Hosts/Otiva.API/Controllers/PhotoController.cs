@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Otiva.AppServeces.Service.Photo;
 using Otiva.Contracts.AdDto;
 using System.Net;
@@ -19,6 +20,7 @@ namespace Otiva.API.Controllers
         /// </summary>
         /// <param name="file"></param>
         /// <returns></returns>
+        [Authorize]
         [HttpPost("photo/create")]
         [ProducesResponseType(typeof(IReadOnlyCollection<>), (int)HttpStatusCode.Created)]
         public async Task<IActionResult> CreatePhotoAsync(IFormFile file)
@@ -41,6 +43,7 @@ namespace Otiva.API.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
+        [Authorize]
         [HttpDelete("/photo/delete/{id}")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]

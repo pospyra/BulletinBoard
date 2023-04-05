@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Otiva.AppServeces;
 using Otiva.AppServeces.Service.IdentityService;
 using Otiva.AppServeces.Service.User;
@@ -9,6 +10,7 @@ using System.Net;
 
 namespace Otiva.API.Controllers
 {
+    [ApiController]
     public class UserController : ControllerBase
     {
         public readonly IUserService _userService;
@@ -92,19 +94,10 @@ namespace Otiva.API.Controllers
         /// <returns></returns>
         [HttpPost("/registration")]
         [ProducesResponseType(typeof(IReadOnlyCollection<InfoUserResponse>), (int)HttpStatusCode.Created)]
-        public async Task<IActionResult> Registration([FromBody]RegistrationOrUpdateRequest registration, IFormFile file)
+        public async Task<IActionResult> Registration([FromBody]RegistrationOrUpdateRequest registration)
         {
-            byte[] photo = null;
-            if (file != null)
-            {
-                await using (var ms = new MemoryStream())
-                await using (var fs = file.OpenReadStream())
-                {
-                    await fs.CopyToAsync(ms);
-                    photo = ms.ToArray();
-                }
-            }
-            var result = await _userService.RegistrationAsync(registration, photo);
+
+            var result = await _userService.RegistrationAsync(registration);
 
             return Created("", result);
         }
@@ -116,6 +109,7 @@ namespace Otiva.API.Controllers
         /// <param name="edit"></param>
         /// <param name="file"></param>
         /// <returns></returns>
+        [Authorize]
         [HttpPut("/user/update/{id}")]
         [ProducesResponseType(typeof(IReadOnlyCollection<InfoUserResponse>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> EditUserAsync(Guid id, RegistrationOrUpdateRequest edit, IFormFile file)
@@ -137,6 +131,7 @@ namespace Otiva.API.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
+        [Authorize]
         [HttpDelete("/user/delete/{id}")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]

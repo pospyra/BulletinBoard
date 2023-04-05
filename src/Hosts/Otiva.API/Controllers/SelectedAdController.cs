@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Otiva.AppServeces.Service.Ad;
 using Otiva.AppServeces.Service.SelectedAds;
 using Otiva.Contracts.AdDto;
@@ -38,6 +39,7 @@ namespace Otiva.API.Controllers
         /// <param name="AdId"></param>
         /// <param name="cancellation"></param>
         /// <returns></returns>
+        [Authorize]
         [HttpPost("selectedAd/add")]
         [ProducesResponseType(typeof(IReadOnlyCollection<InfoSelectedResponse>), (int)HttpStatusCode.Created)]
         public async Task<IActionResult> CreateAdAsync(Guid AdId, CancellationToken cancellation)
@@ -52,6 +54,7 @@ namespace Otiva.API.Controllers
         /// </summary>
         /// <param name="Id"></param>
         /// <returns></returns>
+        [Authorize]
         [HttpDelete("/selected/delete")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]

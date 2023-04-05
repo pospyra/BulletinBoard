@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Otiva.AppServeces.Service.Ad;
 using Otiva.Contracts.AdDto;
 using System.Net;
@@ -8,6 +9,7 @@ namespace Otiva.API.Controllers
     /// <summary>
     /// Контроллер для работы с объявлениями
     /// </summary>
+    [ApiController]
     public class AdController : ControllerBase
     {
         public readonly IAdService _adService;
@@ -24,6 +26,7 @@ namespace Otiva.API.Controllers
         /// <param name="skip"></param>
         /// <returns></returns>
         /// <exception cref="Exception"></exception>
+        [AllowAnonymous]
         [HttpGet("/ad/all")]
         [ProducesResponseType(typeof(IReadOnlyCollection<InfoAdResponse>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetAllAsync(int take, int skip)
@@ -44,6 +47,7 @@ namespace Otiva.API.Controllers
         /// <param name="cancellation"></param>
         /// <returns></returns>
         /// <exception cref="Exception"></exception>
+        [Authorize]
         [HttpGet("/ad/getAdsCurrentUser")]
         [ProducesResponseType(typeof(IReadOnlyCollection<InfoAdResponse>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetMyAdsAsync(int take, int skip, CancellationToken cancellation)
@@ -76,6 +80,7 @@ namespace Otiva.API.Controllers
         /// <param name="query"></param>
         /// <returns></returns>
         /// <exception cref="Exception"></exception>
+        [AllowAnonymous]
         [HttpGet("/ad/filter")]
         [ProducesResponseType(typeof(IReadOnlyCollection<InfoAdResponse>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetByFilter([FromQuery] SearchFilterAd query)
@@ -94,9 +99,10 @@ namespace Otiva.API.Controllers
         /// <param name="createAd"></param>
         /// <param name="cancellation"></param>
         /// <returns></returns>
+        [Authorize]
         [HttpPost("ad/createAd")]
         [ProducesResponseType(typeof(IReadOnlyCollection<InfoAdResponse>), (int)HttpStatusCode.Created)]
-        public async Task<IActionResult> CreateAdAsync(CreateOrUpdateAdRequest createAd, CancellationToken cancellation)
+        public async Task<IActionResult> CreateAdAsync([FromQuery]CreateOrUpdateAdRequest createAd, CancellationToken cancellation)
         {
             var result = await _adService.CreateAdAsync(createAd, cancellation);
 
@@ -123,12 +129,13 @@ namespace Otiva.API.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
+        [Authorize]
         [HttpDelete("/ad/delete/{id}")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
-        public async Task<IActionResult> DeleteAdAsync(Guid id)
+        public async Task<IActionResult> DeleteAdAsync(Guid id, CancellationToken cancellation)
         {
-            await _adService.DeleteAsync(id);
+            await _adService.DeleteAsync(id, cancellation);
 
             return NoContent();
         }

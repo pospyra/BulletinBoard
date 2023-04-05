@@ -20,7 +20,6 @@ namespace Otiva.API.Controllers
         /// Получить все категории
         /// </summary>
         /// <returns></returns>
-        [Authorize(Roles = "Admin")]
         [HttpGet("category/all")]
         [ProducesResponseType(typeof(IReadOnlyCollection<InfoCategoryResponse>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetAllCategory()
@@ -47,6 +46,7 @@ namespace Otiva.API.Controllers
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
+        [Authorize(Roles = "Admin")]
         [HttpPost("category/create")]
         [ProducesResponseType(typeof(IReadOnlyCollection<InfoCategoryResponse>), (int)HttpStatusCode.Created)]
         public async Task<IActionResult> CreateCategoryAsync(string name)
@@ -62,6 +62,7 @@ namespace Otiva.API.Controllers
         /// <param name="id"></param>
         /// <param name="name"></param>
         /// <returns></returns>
+        [Authorize(Roles = "Admin")]
         [HttpPut("category/put/{id}")]
         [ProducesResponseType(typeof(IReadOnlyCollection<InfoCategoryResponse>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> EditCategoryAsync(Guid id, string name)
@@ -75,6 +76,7 @@ namespace Otiva.API.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
+        [Authorize(Roles = "Admin")]
         [HttpDelete("category/delete/{id}")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]

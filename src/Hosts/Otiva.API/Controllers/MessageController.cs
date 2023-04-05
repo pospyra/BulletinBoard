@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Otiva.AppServeces.Service.IdentityService;
 using Otiva.AppServeces.Service.Message;
 using Otiva.AppServeces.Service.User;
 using Otiva.Contracts.MessageDto;
@@ -12,11 +14,12 @@ namespace Otiva.API.Controllers
     {
         public readonly IMessageService _messageService;
         public readonly IUserService _userService;
-
-        public MessageController(IMessageService messageService, IUserService userService)
+        public readonly IIdentityUserService _identityService;
+        public MessageController(IMessageService messageService, IUserService userService, IIdentityUserService identityService)
         {
             _messageService = messageService;
             _userService = userService;
+            _identityService = identityService;
         }
 
         /// <summary>
@@ -26,11 +29,12 @@ namespace Otiva.API.Controllers
         /// <param name="cancellation"></param>
         /// <returns></returns>
         /// <exception cref="Exception"></exception>
+        [Authorize]
         [HttpGet("/chat/message")]
         [ProducesResponseType(typeof(IReadOnlyCollection<InfoMessageResponse>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetMessageFromChatAsync(Guid user2_Id, CancellationToken cancellation)
         {
-            var user1_Id = await _userService.GetCurrentUserId(cancellation);
+            var user1_Id = Guid.Parse(await _identityService.GetCurrentUserId(cancellation));
 
             if (user1_Id == user2_Id)
                 throw new Exception("Нельзя создать чат с самим собой");
@@ -46,6 +50,7 @@ namespace Otiva.API.Controllers
         /// <param name="message"></param>
         /// <param name="cancellation"></param>
         /// <returns></returns>
+        [Authorize]
         [HttpPost("chat/postMessage")]
         [ProducesResponseType(typeof(IReadOnlyCollection<InfoMessageResponse>), (int)HttpStatusCode.Created)]
         public async Task<IActionResult> PostMessageAsync(PostMessageRequest message, CancellationToken cancellation)
@@ -61,6 +66,7 @@ namespace Otiva.API.Controllers
         /// <param name="id"></param>
         /// <param name="text"></param>
         /// <returns></returns>
+        [Authorize]
         [HttpPut("/chat/message/update/{id}")]
         [ProducesResponseType(typeof(IReadOnlyCollection<InfoReviewResponse>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> EditMessageAsync(Guid id, TextMessageRequest text)
@@ -75,6 +81,7 @@ namespace Otiva.API.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
+        [Authorize]
         [HttpDelete("/chat/message/delete/{id}")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
