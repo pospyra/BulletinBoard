@@ -46,7 +46,7 @@ namespace Otiva.AppServeces.Service.Ad
         /// </summary>
         /// <param name="id">Айди объявления</param>
         /// <returns></returns>
-        Task DeleteAsync(Guid id);
+        Task DeleteAsync(Guid id, CancellationToken cancellation);
 
         /// <summary>
         /// Редактирвоать объвление

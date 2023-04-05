@@ -6,8 +6,260 @@
     <members>
         <member name="T:Otiva.API.Controllers.AdController">
             <summary>
-            Контроллер объявлни
+            Контроллер для работы с объявлениями
             </summary>
+        </member>
+        <member name="M:Otiva.API.Controllers.AdController.GetAllAsync(System.Int32,System.Int32)">
+            <summary>
+            Получить все объявления
+            </summary>
+            <param name="take"></param>
+            <param name="skip"></param>
+            <returns></returns>
+            <exception cref="T:System.Exception"></exception>
+        </member>
+        <member name="M:Otiva.API.Controllers.AdController.GetMyAdsAsync(System.Int32,System.Int32,System.Threading.CancellationToken)">
+            <summary>
+            Получить все объявления, которые опубликовал текущий пользователь
+            </summary>
+            <param name="take"></param>
+            <param name="skip"></param>
+            <param name="cancellation"></param>
+            <returns></returns>
+            <exception cref="T:System.Exception"></exception>
+        </member>
+        <member name="M:Otiva.API.Controllers.AdController.GetByIdAsync(System.Guid)">
+            <summary>
+            Получить объявление по Id
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Otiva.API.Controllers.AdController.GetByFilter(Otiva.Contracts.AdDto.SearchFilterAd)">
+            <summary>
+            Получить объявления по фильтрам
+            </summary>
+            <param name="query"></param>
+            <returns></returns>
+            <exception cref="T:System.Exception"></exception>
+        </member>
+        <member name="M:Otiva.API.Controllers.AdController.CreateAdAsync(Otiva.Contracts.AdDto.CreateOrUpdateAdRequest,System.Threading.CancellationToken)">
+            <summary>
+            Создать объвления
+            </summary>
+            <param name="createAd"></param>
+            <param name="cancellation"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Otiva.API.Controllers.AdController.EditAdAsync(System.Guid,Otiva.Contracts.AdDto.CreateOrUpdateAdRequest)">
+            <summary>
+            Редактировать объявление
+            </summary>
+            <param name="id"></param>
+            <param name="edit"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Otiva.API.Controllers.AdController.DeleteAdAsync(System.Guid,System.Threading.CancellationToken)">
+            <summary>
+            Удалить объявление
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Otiva.API.Controllers.CategoryController.GetAllCategory">
+            <summary>
+            Получить все категории
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Otiva.API.Controllers.CategoryController.GetByIdCategory(System.Guid)">
+            <summary>
+            Получить категорию по Id
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Otiva.API.Controllers.CategoryController.CreateCategoryAsync(System.String)">
+            <summary>
+            Добавить категорию
+            </summary>
+            <param name="name"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Otiva.API.Controllers.CategoryController.EditCategoryAsync(System.Guid,System.String)">
+            <summary>
+            Редактировать категорию
+            </summary>
+            <param name="id"></param>
+            <param name="name"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Otiva.API.Controllers.CategoryController.DeleteCategoryAsync(System.Guid)">
+            <summary>
+            Удалить категорию
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Otiva.API.Controllers.MessageController.GetMessageFromChatAsync(System.Guid,System.Threading.CancellationToken)">
+            <summary>
+            Получить все сообщения с выбранным пользователем
+            </summary>
+            <param name="user2_Id"></param>
+            <param name="cancellation"></param>
+            <returns></returns>
+            <exception cref="T:System.Exception"></exception>
+        </member>
+        <member name="M:Otiva.API.Controllers.MessageController.PostMessageAsync(Otiva.Contracts.MessageDto.PostMessageRequest,System.Threading.CancellationToken)">
+            <summary>
+            Отправить сообщение
+            </summary>
+            <param name="message"></param>
+            <param name="cancellation"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Otiva.API.Controllers.MessageController.EditMessageAsync(System.Guid,Otiva.Contracts.MessageDto.TextMessageRequest)">
+            <summary>
+            Редактировать сообщение
+            </summary>
+            <param name="id"></param>
+            <param name="text"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Otiva.API.Controllers.MessageController.DeleteAsync(System.Guid)">
+            <summary>
+            Удалить сообщение
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Otiva.API.Controllers.PhotoController.CreatePhotoAsync(Microsoft.AspNetCore.Http.IFormFile)">
+            <summary>
+            Добавить фото в бд
+            </summary>
+            <param name="file"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Otiva.API.Controllers.PhotoController.DeletePhotoAsync(System.Guid)">
+            <summary>
+            Удалить фото из бд
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Otiva.API.Controllers.ReviewController.GetAllAsync(System.Guid)">
+            <summary>
+            Получить все отзывы на выбранного продавца
+            </summary>
+            <param name="SellerId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Otiva.API.Controllers.ReviewController.GetByIdAsync(System.Guid)">
+            <summary>
+            Получить отзыв по Id
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Otiva.API.Controllers.ReviewController.CreateReviewAsync(Otiva.Contracts.ReviewDto.CreateReviewRequest,System.Threading.CancellationToken)">
+            <summary>
+            Отправить отзыв
+            </summary>
+            <param name="createReview"></param>
+            <param name="cancellation"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Otiva.API.Controllers.ReviewController.EditReviewAsync(System.Guid,System.String)">
+            <summary>
+            Редактировать отзыв
+            </summary>
+            <param name="id"></param>
+            <param name="content"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Otiva.API.Controllers.ReviewController.DeleteAsync(System.Guid)">
+            <summary>
+            Удалить отзыв
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Otiva.API.Controllers.SelectedAdController.GetAll(System.Guid,System.Int32,System.Int32)">
+            <summary>
+            
+            </summary>
+            <param name="UserId"></param>
+            <param name="take"></param>
+            <param name="skip"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Otiva.API.Controllers.SelectedAdController.CreateAdAsync(System.Guid,System.Threading.CancellationToken)">
+            <summary>
+            Добавить объявление в избранные
+            </summary>
+            <param name="AdId"></param>
+            <param name="cancellation"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Otiva.API.Controllers.SelectedAdController.DeleteAdAsync(System.Guid)">
+            <summary>
+            Удалить объвление из избранных
+            </summary>
+            <param name="Id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Otiva.API.Controllers.UserController.GetAll(System.Int32,System.Int32)">
+            <summary>
+            Получить всех пользователе  
+            </summary>
+            <param name="take"></param>
+            <param name="skip"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Otiva.API.Controllers.UserController.GetCurrenUserI(System.Threading.CancellationToken)">
+            <summary>
+            Получить текущего пользователя
+            </summary>
+            <param name="cancellation"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Otiva.API.Controllers.UserController.GetById(System.Guid)">
+            <summary>
+            Получить пользователя по Id
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Otiva.API.Controllers.UserController.Login(Otiva.Contracts.UserDto.LoginRequest)">
+            <summary>
+            Аутентификация пользователя
+            </summary>
+            <param name="userLogin"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Otiva.API.Controllers.UserController.Registration(Otiva.Contracts.UserDto.RegistrationOrUpdateRequest)">
+            <summary>
+            Регистрация пользователя
+            </summary>
+            <param name="registration"></param>
+            <param name="file"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Otiva.API.Controllers.UserController.EditUserAsync(System.Guid,Otiva.Contracts.UserDto.RegistrationOrUpdateRequest,Microsoft.AspNetCore.Http.IFormFile)">
+            <summary>
+            Редактировать данные пользователя
+            </summary>
+            <param name="id"></param>
+            <param name="edit"></param>
+            <param name="file"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Otiva.API.Controllers.UserController.DeleteAdAsync(System.Guid)">
+            <summary>
+            Удалить пользователя
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
         </member>
     </members>
 </doc>

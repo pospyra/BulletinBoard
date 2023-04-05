@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Otiva.AppServeces.IRepository;
+using Otiva.Contracts.AdDto;
 using Otiva.Domain;
 using Otiva.Infrastructure.BaseRepository;
 using System;
@@ -48,9 +49,41 @@ namespace Otiva.DataAccess.Repository
             return await _baseRepository.GetByIdAsync(id);
         }
 
-        public IQueryable<Ad> GetAll()
+        public async Task<IReadOnlyCollection<Ad>> GetAllAsync()
         {
-            return _baseRepository.GetAll();
+             return await _baseRepository.GetAll()
+                .ToListAsync();
+        }
+
+        public async Task<IReadOnlyCollection<Ad>> GetByFilterAsync(SearchFilterAd search)
+        {
+            var query = await _baseRepository.GetAllAsync();
+
+            if (!string.IsNullOrEmpty(search.Name))
+                query =  query.Where(p => p.Name.ToLower().Contains(search.Name.ToLower()));
+
+            if (search.SubcategoryId.HasValue)
+                query = query.Where(c => c.SubcategoryId == search.SubcategoryId);
+
+            if (search.UserId.HasValue)
+                query = query.Where(c => c.DomainUserId == search.UserId);
+
+            if (search.PriceFrom != null)
+                query = query.Where(c => c.Price >= search.PriceFrom);
+
+            if (search.PriceTo != null)
+                query = query.Where(c => c.Price <= search.PriceTo);
+
+            return await query.Select(p => new Ad
+            {
+                Id = p.Id,
+                Name = p.Name,
+                SubcategoryId = p.SubcategoryId,
+                Description = p.Description,
+                Region = p.Region,
+                Price = p.Price,
+                CreateTime = p.CreateTime
+            }).ToListAsync();
         }
     }
 }

@@ -26,9 +26,6 @@ namespace Otiva.Domain.User
         public DateTime RegistrationDateTime { get; set; } = DateTime.UtcNow;
 
         public string? KodBase64 { get; set; }
-
-        public string IdentityUserId { get; set; } 
-        public IdentityUser IdentityUser { get; set; }
         
         public ICollection<Message> SentMessages { get; set; }
         public ICollection<Message> ReceivedMessages { get; set; }

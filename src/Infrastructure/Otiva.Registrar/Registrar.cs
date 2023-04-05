@@ -42,6 +42,8 @@ namespace Otiva.Registrar
             services.AddAutoMapper(typeof(UserMapProfile), typeof(AdMapProfile),
                 typeof(CategoryMapProfile), typeof(SubcategoryMapProfile), typeof(ReviewMapProfile), typeof(MessageMapProfile));
 
+            services.AddTransient<IIdentityUserService, IdentityUserService>();
+
             services.AddTransient<IAdService, AdService>();
             services.AddTransient<IAdRepository, AdRepository>();
 
@@ -65,7 +67,7 @@ namespace Otiva.Registrar
 
             services.AddTransient<IMessageService, MessageService>();
             services.AddTransient<IMessageRepository, MessageRepository>();
-            services.AddTransient<IIdentityUserService, IdentityUserService>();
+
 
             services.AddScoped<IClaimAccessor, HttpContextClaimsAccessor>();;
      

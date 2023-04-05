@@ -24,7 +24,7 @@ namespace Otiva.AppServeces.Service.User
     {
         private readonly IConfiguration _configuration;
         public readonly IUserRepository _userRepository;
-        public IIdentityUserService _identityService;
+        public readonly IIdentityUserService _identityService;
         public readonly IMapper _mapper;
         public UserService(
             IUserRepository userRepository, 
@@ -89,33 +89,20 @@ namespace Otiva.AppServeces.Service.User
         }
 
 
-        public async Task<Guid> RegistrationAsync(RegistrationOrUpdateRequest registration, byte[] photo)
+        public async Task<Guid> RegistrationAsync(RegistrationOrUpdateRequest registration)
         {
             var existingUser = _userRepository.GetAll().Where(x => x.Email == registration.Email).FirstOrDefault();
             if (existingUser != null)
-                throw new Exception("Такой пользователь уже существует");
+                throw new Exception("Пльзователь с таким email уже существует");
 
-            var newidentityUser = await _identityService.RegisterIdentityUser(registration);
+            var newidentityUserId = await _identityService.RegisterIdentityUser(registration);
 
             var registerAcc = _mapper.Map<Domain.User.DomainUser>(registration);
 
-            registerAcc.IdentityUserId = newidentityUser;
-
-            if(photo != null)
-            {
-                if (photo.Length > 5242880)
-                    throw new Exception("Слишклм большой размер фото");
-                registerAcc.KodBase64 = Convert.ToBase64String(photo, 0, photo.Length);
-            }         
-
+            registerAcc.Id = Guid.Parse(newidentityUserId);
+            
             await _userRepository.Add(registerAcc);
             return registerAcc.Id;
-        }
-
-        //убрать
-        public Task<Guid> GetCurrentUserId(CancellationToken cancellation)
-        {
-            throw new NotImplementedException();
         }
     }
 }

@@ -11,16 +11,13 @@ namespace Otiva.AppServeces.Service.User
 {
     public interface IUserService
     {
-        //убрать
-        public Task<Guid> GetCurrentUserId(CancellationToken cancellation);
-
         /// <summary>
         /// Добавление DomainUser
         /// </summary>
         /// <param name="registration"></param>
         /// <param name="photo"></param>
         /// <returns></returns>
-        Task<Guid> RegistrationAsync(RegistrationOrUpdateRequest registration, byte[] photo);
+        Task<Guid> RegistrationAsync(RegistrationOrUpdateRequest registration);
 
         /// <summary>
         /// Получить DomainUser по Id

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Otiva.AppServeces.IRepository;
@@ -21,51 +22,55 @@ namespace Otiva.AppServeces.Service.IdentityService
         private readonly UserManager<Domain.User.IdentityUser> _userManager;
         private readonly IClaimAccessor _claimAccessor;
         private readonly IConfiguration _configuration;
+        private readonly IMapper _mapper;
 
 
         public IdentityUserService(
             UserManager<Domain.User.IdentityUser> userManager,
             IClaimAccessor claimAccessor, 
-            IConfiguration configuration)
+            IConfiguration configuration,
+            IMapper mapper)
         {
             _userManager = userManager;
             _claimAccessor = claimAccessor;
             _configuration = configuration;
+            _mapper = mapper;
         }
 
-        //public async Task<InfoUserResponse> GetCurrent(CancellationToken cancellation)
-        //{
-        //    var claim = await _claimAccessor.GetClaims(cancellation);
-        //    var claimId = claim.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+        public async Task<InfoUserResponse> GetCurrentUser(CancellationToken cancellation)
+        {
+            var claim = await _claimAccessor.GetClaims(cancellation);
+            var claimId = claim.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
 
-        //    if (string.IsNullOrWhiteSpace(claimId))
-        //        return null;
+            if (string.IsNullOrWhiteSpace(claimId))
+                return null;
 
-        //    var id = Guid.Parse(claimId);
-        //    var user = await _userRepository.FindByIdAsync(id);
+            var user = await _userManager.FindByIdAsync(claimId);
 
-        //    if (user == null)
-        //        throw new Exception($"Не найдент пользователь с идентификаторром {id}");
+            if (user == null)
+                throw new Exception($"Не найдент пользователь с идентификаторром {claimId}");
 
-        //    return _mapper.Map<InfoUserResponse>(user);
-        //}
+            var userResponse = _mapper.Map<InfoUserResponse>(user);
+            userResponse.Id = Guid.Parse(user.Id);
+            userResponse.Role = await _userManager.GetRolesAsync(user);
+            return userResponse;
+        }
 
-        //public async Task<Guid> GetCurrentUserId(CancellationToken cancellation)
-        //{
-        //    var claim = await _claimAccessor.GetClaims(cancellation);
-        //    var claimId = claim.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+        public async Task<string> GetCurrentUserId(CancellationToken cancellation)
+        {
+            var claim = await _claimAccessor.GetClaims(cancellation);
+            var claimId = claim.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
 
-        //    if (string.IsNullOrWhiteSpace(claimId))
-        //        throw new Exception("Не найдент пользователь с идентификаторром");
+            if (string.IsNullOrWhiteSpace(claimId))
+                throw new Exception("Не найдент пользователь с идентификатором");
 
-        //    var id = Guid.Parse(claimId);
-        //    var user = await _userRepository.FindByIdAsync(id);
+            var user = await _userManager.FindByIdAsync(claimId);
 
-        //    if (user == null)
-        //        throw new Exception($"Не найдент пользователь с идентификаторром {id}");
+            if (user == null)
+                throw new Exception($"Не найдент пользователь с идентификаторром {claim}");
 
-        //    return user.Id;
-        //}
+            return user.Id;
+        }
 
         public async Task<string> Login(LoginRequest userLogin)
         {
@@ -118,8 +123,10 @@ namespace Otiva.AppServeces.Service.IdentityService
 
             var resRegister = await _userManager.CreateAsync(newIdentityUser, userReg.Password);
 
-            if (resRegister.Succeeded)
+            if (resRegister.Succeeded && userReg.Role != null)
                 await _userManager.AddToRoleAsync(newIdentityUser, userReg.Role);
+            else if (resRegister.Succeeded && userReg.Role == null)
+                await _userManager.AddToRoleAsync(newIdentityUser, "User");
 
             return newIdentityUser.Id;
         }

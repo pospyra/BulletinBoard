@@ -1,4 +1,5 @@
-﻿using Otiva.Domain;
+﻿using Otiva.Contracts.AdDto;
+using Otiva.Domain;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,7 +22,7 @@ namespace Otiva.AppServeces.IRepository
         /// Получить все объявления
         /// </summary>
         /// <returns></returns>
-        IQueryable<Ad> GetAll();
+        public Task<IReadOnlyCollection<Ad>> GetAllAsync();
 
         /// <summary>
         /// Добавить объявление
@@ -43,7 +44,20 @@ namespace Otiva.AppServeces.IRepository
         /// <param name="edit"></param>
         /// <returns></returns>
         Task EditAdAsync(Ad edit);
+
+        /// <summary>
+        /// Получить объявление по заданному параметру
+        /// </summary>
+        /// <param name="predicate"></param>
+        /// <returns></returns>
         public Task<Ad> FindWhere(Expression<Func<Ad, bool>> predicate);
+
+        /// <summary>
+        /// Получить объявления по фильтру
+        /// </summary>
+        /// <param name="search"></param>
+        /// <returns></returns>
+        public Task<IReadOnlyCollection<Ad>> GetByFilterAsync(SearchFilterAd search);
 
     }
 }

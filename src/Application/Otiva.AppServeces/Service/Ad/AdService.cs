@@ -2,12 +2,16 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query.Internal;
 using Otiva.AppServeces.IRepository;
+using Otiva.AppServeces.Service.IdentityService;
 using Otiva.AppServeces.Service.Photo;
 using Otiva.AppServeces.Service.User;
 using Otiva.Contracts.AdDto;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
+using System.Security.Claims;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -17,14 +21,16 @@ namespace Otiva.AppServeces.Service.Ad
     {
         public readonly IAdRepository _adRepository;
         public readonly IUserService _userService;
+        public readonly IIdentityUserService _identityService;
         public readonly IPhotoService _photoService;
         public readonly IMapper _mapper;
-        public AdService(IAdRepository adRepository, IPhotoService photoService, IMapper mapper, IUserService userService)
+        public AdService(IAdRepository adRepository, IPhotoService photoService, IMapper mapper, IUserService userService, IIdentityUserService identityService)
         {
             _photoService = photoService;
             _adRepository = adRepository;
             _mapper = mapper;
             _userService = userService;
+            _identityService = identityService;
         }
 
         public async Task<Guid> CreateAdAsync(CreateOrUpdateAdRequest createAd, CancellationToken cancellation)
@@ -32,12 +38,15 @@ namespace Otiva.AppServeces.Service.Ad
             try
             {
                 var newAd = _mapper.Map<Domain.Ad>(createAd);
-                newAd.DomainUserId = await _userService.GetCurrentUserId(cancellation);
+                newAd.DomainUserId = Guid.Parse(await _identityService.GetCurrentUserId(cancellation));
                 await _adRepository.Add(newAd);
 
-                foreach(var photoId in createAd.PhotoId)
+                if(createAd.PhotoId != null)
                 {
-                    await _photoService.SetAdPhotoAsync(photoId, newAd.Id);
+                    foreach (var photoId in createAd.PhotoId)
+                    {
+                        await _photoService.SetAdPhotoAsync(photoId, newAd.Id);
+                    }
                 }
 
                 return newAd.Id;
@@ -50,13 +59,19 @@ namespace Otiva.AppServeces.Service.Ad
         }
 
         /// <inheritdoc/>
-        public async Task DeleteAsync(Guid id)
+        public async Task DeleteAsync(Guid id, CancellationToken cancellation)
         {
-            var existingUser = await _adRepository.FindByIdAsync(id);
-            if (existingUser == null)
+            var existingAd = await _adRepository.FindByIdAsync(id);
+            if (existingAd == null)
                 throw new Exception("Объявления с таким идентификатором не сущесвует");
 
-            await _adRepository.DeleteAsync(existingUser);
+            var currentUser = await _identityService.GetCurrentUser(cancellation);
+
+            if (existingAd.DomainUserId != currentUser.Id
+                || currentUser.Role.Contains("User"))
+                throw new Exception("У вас не достаточно прав для работы с этим объвлением");
+
+            await _adRepository.DeleteAsync(existingAd);
         }
 
         public async Task<InfoAdResponse> EditAdAsync(Guid Id, CreateOrUpdateAdRequest editAd)
@@ -73,44 +88,30 @@ namespace Otiva.AppServeces.Service.Ad
 
         public async Task<IReadOnlyCollection<InfoAdResponse>> GetAllAsync(int take, int skip)
         {
-            return await _adRepository.GetAll()
-                 .Select(a => new InfoAdResponse
-                 {
-                     Id = a.Id,
-                     Name = a.Name,
-                     Description = a.Description,
-                     SubcategoryId = a.SubcategoryId,
-                     CreateTime = a.CreateTime,
-                     UserId= a.DomainUserId,
-                     Price = a.Price,
-                     Region = a.Region
-                 }).OrderBy(d=>d.CreateTime).Skip(skip).Take(take).ToListAsync();
+            var collectionAds = await _adRepository.GetAllAsync();
+            return collectionAds.Select(x => new InfoAdResponse
+            {
+                Id = x.Id,
+                Name = x.Name,
+                CreateTime = x.CreateTime,
+                Description = x.Description,
+                Price = x.Price,
+                Region = x.Region,
+                SubcategoryId = x.SubcategoryId,
+                UserId = x.DomainUserId,
+                //Photos = x.Photos.Select(a => new Contracts.PhotoDto.InfoPhotoResponse
+                //{
+                //    KodBase64 = a.KodBase64,
+                //}).ToList(),
+            }).OrderByDescending(a=>a.CreateTime).Skip(skip).Take(take).ToList();
         }
+
 
         public async Task<IReadOnlyCollection<InfoAdResponse>> GetByFilterAsync(SearchFilterAd search)
         {
-            var query = _adRepository.GetAll();
+            var query = await _adRepository.GetByFilterAsync(search);
 
-            if (search == null)
-                throw new Exception("Не задан фильтр");
-
-
-            if (!string.IsNullOrEmpty(search.Name))
-                query = query.Where(p => p.Name.ToLower().Contains(search.Name.ToLower()));
-
-            if (search.SubcategoryId.HasValue)
-                query = query.Where(c => c.SubcategoryId == search.SubcategoryId);
-
-            if(search.UserId.HasValue)
-                query = query.Where(c => c.DomainUserId == search.UserId);
-
-            if (search.PriceFrom != null)
-                query = query.Where(c => c.Price >= search.PriceFrom);
-
-            if (search.PriceTo != null)
-                query = query.Where(c => c.Price <= search.PriceTo);
-
-            return await query.Select(p => new InfoAdResponse
+            return query.Select(p => new InfoAdResponse
             {
                 Id = p.Id,
                 Name = p.Name,
@@ -120,7 +121,7 @@ namespace Otiva.AppServeces.Service.Ad
                 Region = p.Region,
                 Price = p.Price,
                 CreateTime = p.CreateTime
-            }).OrderBy(x => x.CreateTime).Skip(search.skip).Take(search.take).ToListAsync();
+            }).OrderBy(x => x.CreateTime).Skip(search.skip).Take(search.take).ToList();
         }
 
         public async  Task<InfoAdResponse> GetByIdAsync(Guid id)
@@ -133,10 +134,10 @@ namespace Otiva.AppServeces.Service.Ad
 
         public async Task<IReadOnlyCollection<InfoAdResponse>> GetMyAdsAsync(int take, int skip, CancellationToken cancellation)
         {
-            var currentUser = await _userService.GetCurrentUserId(cancellation);
+            var currentUser = await _identityService.GetCurrentUserId(cancellation);
 
-            return await _adRepository.GetAll()
-                .Where(p=>p.DomainUserId == currentUser)
+            var res = await _adRepository.GetAllAsync();
+            return res
                 .Select(a => new InfoAdResponse
                 {
                     Id = a.Id,
@@ -145,7 +146,7 @@ namespace Otiva.AppServeces.Service.Ad
                     SubcategoryId = a.SubcategoryId,
                     CreateTime = a.CreateTime,
                     UserId = a.DomainUserId,
-                }).OrderBy(d => d.CreateTime).Skip(skip).Take(take).ToListAsync();
+                }).OrderBy(d => d.CreateTime).Skip(skip).Take(take).ToList();
         }
     }
 }

@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualBasic;
 using Otiva.AppServeces.IRepository;
+using Otiva.AppServeces.Service.IdentityService;
 using Otiva.AppServeces.Service.User;
 using Otiva.Contracts.SelectedAdDto;
 using Otiva.Domain;
@@ -18,17 +19,19 @@ namespace Otiva.AppServeces.Service.SelectedAds
         public readonly ISelectedAdsRepository _selectedadRepository;
         public readonly IUserService _userService; 
         public readonly IMapper _mapper;
-        public SelectedAdsService(ISelectedAdsRepository selectedadRepository, IMapper mapper, IUserService userService)
+        public readonly IIdentityUserService _identityService;
+        public SelectedAdsService(ISelectedAdsRepository selectedadRepository, IMapper mapper, IUserService userService, IIdentityUserService identityService)
         {
             _selectedadRepository = selectedadRepository;
             _userService = userService;
             _mapper = mapper;
+            _identityService = identityService;
         }
 
 
         public async Task<InfoSelectedResponse> AddSelectedAsync( Guid AdId, CancellationToken cancellation)
         {
-            var userId = await _userService.GetCurrentUserId(cancellation);
+            var userId =  Guid.Parse(await _identityService.GetCurrentUserId(cancellation));
             var selected = new Domain.ItemSelectedAd()
             {
                 AdId = AdId,

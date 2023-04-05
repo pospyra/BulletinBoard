@@ -12,17 +12,15 @@ namespace Otiva.Contracts.AdDto
         [CheckCurseWord]
         public string Name { get; set; }
 
-        public Guid SubcategoryId { get; set; }
-
         [CheckCurseWord]
         public string Description { get; set; }
 
-        public decimal Price { get; set; }
+        public Guid SubcategoryId { get; set; }
 
-        public string Region { get; set; }
+        public decimal Price { get; set; }
 
         public bool PossibleOfDelivery { get; set; }
 
-        public ICollection<Guid> PhotoId { get; set; }
+        public ICollection<Guid>? PhotoId { get; set; }
     }
 }

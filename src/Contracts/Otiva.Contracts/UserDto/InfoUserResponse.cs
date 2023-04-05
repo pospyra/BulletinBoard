@@ -19,6 +19,8 @@ namespace Otiva.Contracts.UserDto
 
         public string Phone { get; set; }
 
+        public IList<string> Role { get; set; }
+
         public string KodBase64 { get; set; }
     }
 }

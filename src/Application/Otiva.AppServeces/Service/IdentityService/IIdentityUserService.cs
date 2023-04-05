@@ -12,5 +12,8 @@ namespace Otiva.AppServeces.Service.IdentityService
         public Task<string> Login(LoginRequest userLogin);
         public Task<string> RegisterIdentityUser(RegistrationOrUpdateRequest userReg);
 
+        public Task<string> GetCurrentUserId(CancellationToken cancellation);
+
+        public Task<InfoUserResponse> GetCurrentUser(CancellationToken cancellation);
     }
 }
