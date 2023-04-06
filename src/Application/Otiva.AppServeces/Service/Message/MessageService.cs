@@ -19,7 +19,11 @@ namespace Otiva.AppServeces.Service.Message
         public readonly IMapper _mapper;
         public readonly IIdentityUserService _identityService;
 
-        public MessageService(IMessageRepository messageRepository, IMapper mapper, IUserService userService, IIdentityUserService identityService)
+        public MessageService(
+            IMessageRepository messageRepository, 
+            IMapper mapper,
+            IUserService userService, 
+            IIdentityUserService identityService)
         {
             _messageRepository = messageRepository;
             _mapper = mapper;

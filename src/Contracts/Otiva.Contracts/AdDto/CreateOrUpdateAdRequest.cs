@@ -1,6 +1,7 @@
 ﻿using Otiva.Contracts.Attributs;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,7 +20,9 @@ namespace Otiva.Contracts.AdDto
 
         public decimal Price { get; set; }
 
-        public bool PossibleOfDelivery { get; set; }
+        public string Region { get; set; }
+
+        public bool IsActive { get; set; }
 
         public ICollection<Guid>? PhotoId { get; set; }
     }

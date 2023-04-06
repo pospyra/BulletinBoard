@@ -20,7 +20,7 @@ namespace Otiva.AppServeces.Service.SelectedAds
         Task<InfoSelectedResponse> AddSelectedAsync (Guid AdId, CancellationToken cancellation);
 
         /// <summary>
-        /// Получить все избранные пользователя !!!! ТУДУ убрать парметр юзерайди
+        /// Получить все избранные пользователя 
         /// </summary>
         /// <param name="UserId"></param>
         /// <param name="take"></param>

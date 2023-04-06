@@ -28,5 +28,7 @@ namespace Otiva.Contracts.UserDto
         public DateTime DateBirthday { get; set; }
 
         public string? Role { get; set; }
+
+        public ICollection<Guid>? PhotoId { get; set; }
     }
 }

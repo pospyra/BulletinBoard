@@ -6,6 +6,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.Win32;
 using Otiva.AppServeces.IRepository;
 using Otiva.AppServeces.Service.IdentityService;
+using Otiva.AppServeces.Service.Photo;
 using Otiva.Contracts.CategoryDto;
 using Otiva.Contracts.UserDto;
 using System;
@@ -26,6 +27,7 @@ namespace Otiva.AppServeces.Service.User
         public readonly IUserRepository _userRepository;
         public readonly IIdentityUserService _identityService;
         public readonly IMapper _mapper;
+        public readonly IPhotoService _photoService;
         public UserService(
             IUserRepository userRepository, 
             IMapper mapper,
@@ -43,8 +45,9 @@ namespace Otiva.AppServeces.Service.User
             var delUser = await _userRepository.FindByIdAsync(id, cancellation);
             if (delUser == null)
                 throw new Exception("Пользователь с таким идентификатором не найден");
-
             await _userRepository.DeleteAsync(delUser, cancellation);
+
+            await _identityService.DeleteAsync(id.ToString(), cancellation);
         }
 
         public async Task<InfoUserResponse> EditUserAsync(Guid Id, RegistrationOrUpdateRequest update, byte[] photo, CancellationToken cancellation)
@@ -102,8 +105,15 @@ namespace Otiva.AppServeces.Service.User
             var registerAcc = _mapper.Map<Domain.User.DomainUser>(registration);
 
             registerAcc.Id = Guid.Parse(newidentityUserId);
-            
             await _userRepository.Add(registerAcc, cancellation);
+
+            if(registration.PhotoId!= null)
+            {
+                foreach (var photoId in registration.PhotoId)
+                {
+                    await _photoService.SetPhotoUserAsync(photoId, registerAcc.Id, cancellation);
+                }
+            }
             return registerAcc.Id;
         }
     }

@@ -24,7 +24,12 @@ namespace Otiva.AppServeces.Service.Ad
         public readonly IIdentityUserService _identityService;
         public readonly IPhotoService _photoService;
         public readonly IMapper _mapper;
-        public AdService(IAdRepository adRepository, IPhotoService photoService, IMapper mapper, IUserService userService, IIdentityUserService identityService)
+        public AdService(
+            IAdRepository adRepository, 
+            IPhotoService photoService, 
+            IMapper mapper, 
+            IUserService userService, 
+            IIdentityUserService identityService)
         {
             _photoService = photoService;
             _adRepository = adRepository;

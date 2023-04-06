@@ -10,7 +10,7 @@ namespace Otiva.Contracts.SelectedAdDto
     {
         public Guid Id { get; set; }
 
-        public Guid UserId { get; set; }
+        public Guid DomainUserId { get; set; }
 
         public Guid AdId { get; set; }
 

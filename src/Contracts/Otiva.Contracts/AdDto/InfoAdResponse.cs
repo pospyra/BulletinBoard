@@ -15,15 +15,14 @@ namespace Otiva.Contracts.AdDto
 
         public string Description { get; set; }
 
-        public string Region { get; set; }
-
         public decimal? Price { get; set; }
+        public Guid SubcategoryId { get; set; }
+
+        public string Region { get; set; }
 
         public DateTime CreateTime { get; set; }
 
         public Guid? UserId { get; set; }
-
-        public Guid SubcategoryId { get; set; }
 
         public ICollection<InfoPhotoResponse> Photos { get; set; }
     }

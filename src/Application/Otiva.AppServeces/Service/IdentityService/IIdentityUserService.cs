@@ -14,6 +14,8 @@ namespace Otiva.AppServeces.Service.IdentityService
 
         public Task<string> GetCurrentUserId(CancellationToken cancellation);
 
+        public Task DeleteAsync(string Id, CancellationToken cancellation);
+
         public Task<InfoUserResponse> GetCurrentUser(CancellationToken cancellation);
     }
 }

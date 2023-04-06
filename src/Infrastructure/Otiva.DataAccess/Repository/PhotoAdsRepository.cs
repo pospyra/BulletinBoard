@@ -1,5 +1,5 @@
-﻿using Otiva.AppServeces.IRepository;
-using Otiva.Domain;
+﻿using Otiva.AppServeces.IRepository.Photos;
+using Otiva.Domain.Photos;
 using Otiva.Infrastructure.BaseRepository;
 using System;
 using System.Collections.Generic;
@@ -9,16 +9,16 @@ using System.Threading.Tasks;
 
 namespace Otiva.DataAccess.Repository
 {
-    public class PhotoRepository : IPhotoRepository
+    public class PhotoAdsRepository : IPhotoAdsRepository
     {
-        public readonly IBaseRepository<Photo> _baseRepository;
+        public readonly IBaseRepository<PhotoAds> _baseRepository;
 
-        public PhotoRepository(IBaseRepository<Photo> baseRepository)
+        public PhotoAdsRepository(IBaseRepository<PhotoAds> baseRepository)
         {
             _baseRepository = baseRepository;
         }
 
-        public Task Add(Photo model, CancellationToken cancellation)
+        public Task Add(PhotoAds model, CancellationToken cancellation)
         {
             if (cancellation.IsCancellationRequested)
                 throw new OperationCanceledException();
@@ -26,7 +26,7 @@ namespace Otiva.DataAccess.Repository
             return _baseRepository.AddAsync(model);
         }
 
-        public async Task DeleteAsync(Photo photo, CancellationToken cancellation)
+        public async Task DeleteAsync(PhotoAds photo, CancellationToken cancellation)
         {
             if (cancellation.IsCancellationRequested)
                 throw new OperationCanceledException();
@@ -34,7 +34,7 @@ namespace Otiva.DataAccess.Repository
             await _baseRepository.DeleteAsync(photo);
         }
 
-        public async Task UpdatePhotoAsync(Photo edit, CancellationToken cancellation)
+        public async Task UpdatePhotoAsync(PhotoAds edit, CancellationToken cancellation)
         {
             if (cancellation.IsCancellationRequested)
                 throw new OperationCanceledException();
@@ -42,14 +42,14 @@ namespace Otiva.DataAccess.Repository
             await _baseRepository.UpdateAsync(edit);
         }
 
-        public async Task<Photo> FindByIdAsync(Guid id, CancellationToken cancellation)
+        public async Task<PhotoAds> FindByIdAsync(Guid id, CancellationToken cancellation)
         {
             if (cancellation.IsCancellationRequested)
                 throw new OperationCanceledException();
             return await _baseRepository.GetByIdAsync(id);
         }
 
-        public IQueryable<Photo> GetAll( CancellationToken cancellation)
+        public IQueryable<PhotoAds> GetAll( CancellationToken cancellation)
         {
             if (cancellation.IsCancellationRequested)
                 throw new OperationCanceledException();

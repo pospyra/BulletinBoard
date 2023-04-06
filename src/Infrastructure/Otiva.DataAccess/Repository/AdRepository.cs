@@ -85,6 +85,9 @@ namespace Otiva.DataAccess.Repository
             if (search.UserId.HasValue)
                 query = query.Where(c => c.DomainUserId == search.UserId);
 
+            if (!string.IsNullOrEmpty(search.Region))
+                query = query.Where(p => p.Region.ToLower().Contains(search.Region.ToLower()));
+
             if (search.PriceFrom != null)
                 query = query.Where(c => c.Price >= search.PriceFrom);
 

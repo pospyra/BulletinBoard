@@ -135,14 +135,28 @@
         </member>
         <member name="M:Otiva.API.Controllers.PhotoController.CreatePhotoAsync(Microsoft.AspNetCore.Http.IFormFile,System.Threading.CancellationToken)">
             <summary>
-            Добавить фото в бд
+            Добавить фото объвления в бд
             </summary>
             <param name="file"></param>
             <returns></returns>
         </member>
         <member name="M:Otiva.API.Controllers.PhotoController.DeletePhotoAsync(System.Guid,System.Threading.CancellationToken)">
             <summary>
-            Удалить фото из бд
+            Удалить фото объявления из бд
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Otiva.API.Controllers.PhotoController.CreatePhotoUserAsync(Microsoft.AspNetCore.Http.IFormFile,System.Threading.CancellationToken)">
+            <summary>
+            Добавить фото пользователя в бд
+            </summary>
+            <param name="file"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Otiva.API.Controllers.PhotoController.DeletePhotoUserAsync(System.Guid,System.Threading.CancellationToken)">
+            <summary>
+            Удалить фото пользователя из бд
             </summary>
             <param name="id"></param>
             <returns></returns>

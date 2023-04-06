@@ -37,6 +37,13 @@ namespace Otiva.AppServeces.Service.IdentityService
             _mapper = mapper;
         }
 
+        public async Task DeleteAsync(string Id, CancellationToken cancellation)
+        {
+            var identityUSer = await _userManager.FindByIdAsync(Id);
+
+            await _userManager.DeleteAsync(identityUSer);
+        }
+
         public async Task<InfoUserResponse> GetCurrentUser(CancellationToken cancellation)
         {
             var claim = await _claimAccessor.GetClaims(cancellation);
@@ -104,9 +111,8 @@ namespace Otiva.AppServeces.Service.IdentityService
                 notBefore: DateTime.UtcNow,
                 signingCredentials: new SigningCredentials(
                     new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey)),
-                    SecurityAlgorithms.HmacSha256
-                    )
-                );
+                    SecurityAlgorithms.HmacSha256)
+               );
 
             var result = new JwtSecurityTokenHandler().WriteToken(token);
 

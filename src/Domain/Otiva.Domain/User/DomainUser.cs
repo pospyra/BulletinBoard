@@ -1,5 +1,6 @@
 ﻿
 using Microsoft.AspNetCore.Identity;
+using Otiva.Domain.Photos;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -34,7 +35,7 @@ namespace Otiva.Domain.User
 
         public ICollection<Ad> Ads { get; set; }
         public ICollection<Review> Reviews { get; set; }
-
+        public ICollection<PhotoUsers> Photos { get; set; }
         public ICollection<ItemSelectedAd> ItemSelectedAds { get; set; }
     }
 }

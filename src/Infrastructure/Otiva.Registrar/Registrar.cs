@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Otiva.AppServeces.IRepository;
+using Otiva.AppServeces.IRepository.Photos;
 using Otiva.AppServeces.MapProfile;
 using Otiva.AppServeces.Service.Ad;
 using Otiva.AppServeces.Service.Category;
@@ -48,7 +49,8 @@ namespace Otiva.Registrar
             services.AddTransient<IAdRepository, AdRepository>();
 
             services.AddTransient<IPhotoService, PhotoService>();
-            services.AddTransient<IPhotoRepository, PhotoRepository>();
+            services.AddTransient<IPhotoAdsRepository, PhotoAdsRepository>();
+            services.AddTransient<IPhotoUsersRepository, PhotoUsersRepository>();
 
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<IUserRepository, UserRepository>();

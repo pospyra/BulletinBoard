@@ -16,12 +16,12 @@ namespace Otiva.API.Controllers
         }
 
         /// <summary>
-        /// Добавить фото в бд
+        /// Добавить фото объвления в бд
         /// </summary>
         /// <param name="file"></param>
         /// <returns></returns>
         [Authorize]
-        [HttpPost("photo/create")]
+        [HttpPost("photoAd/create")]
         [ProducesResponseType(typeof(IReadOnlyCollection<>), (int)HttpStatusCode.Created)]
         public async Task<IActionResult> CreatePhotoAsync(IFormFile file, CancellationToken cancellation)
         {
@@ -33,23 +33,64 @@ namespace Otiva.API.Controllers
                 photo = ms.ToArray();
             }
 
-            var result = await _photoService.AddPhotoAsync(photo, cancellation);
+            var result = await _photoService.AddPhotoAdAsync(photo, cancellation);
 
             return Created("", result);
         }
 
         /// <summary>
-        /// Удалить фото из бд
+        /// Удалить фото объявления из бд
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
         [Authorize]
-        [HttpDelete("/photo/delete/{id}")]
+        [HttpDelete("/photoAd/delete/{id}")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
         public async Task<IActionResult> DeletePhotoAsync(Guid id, CancellationToken cancellation)
         {
-            await _photoService.DeleteAsync(id, cancellation);
+            await _photoService.DeletePhotoAdAsync(id, cancellation);
+
+            return NoContent();
+        }
+
+
+
+        /// <summary>
+        /// Добавить фото пользователя в бд
+        /// </summary>
+        /// <param name="file"></param>
+        /// <returns></returns>
+        [Authorize]
+        [HttpPost("photoUser/create")]
+        [ProducesResponseType(typeof(IReadOnlyCollection<>), (int)HttpStatusCode.Created)]
+        public async Task<IActionResult> CreatePhotoUserAsync(IFormFile file, CancellationToken cancellation)
+        {
+            byte[] photo;
+            await using (var ms = new MemoryStream())
+            await using (var fs = file.OpenReadStream())
+            {
+                await fs.CopyToAsync(ms);
+                photo = ms.ToArray();
+            }
+
+            var result = await _photoService.AddPhotoUserAsync(photo, cancellation);
+
+            return Created("", result);
+        }
+
+        /// <summary>
+        /// Удалить фото пользователя из бд
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [Authorize]
+        [HttpDelete("/photoUser/delete/{id}")]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        public async Task<IActionResult> DeletePhotoUserAsync(Guid id, CancellationToken cancellation)
+        {
+            await _photoService.DeletePhotoUserAsync(id, cancellation);
 
             return NoContent();
         }

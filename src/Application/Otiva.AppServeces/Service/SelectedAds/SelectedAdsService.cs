@@ -56,7 +56,7 @@ namespace Otiva.AppServeces.Service.SelectedAds
                .Select(a=> new InfoSelectedResponse()
                {
                    Id= a.Id,
-                   UserId = a.DomainUserId,
+                   DomainUserId = a.DomainUserId,
                    AdId= a.AdId,
                    DateAdded= a.DateAdded,
                }).OrderBy(x =>x.DateAdded).Skip(skip).Take(take).ToListAsync();

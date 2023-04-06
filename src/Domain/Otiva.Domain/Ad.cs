@@ -1,4 +1,5 @@
-﻿using Otiva.Domain.User;
+﻿using Otiva.Domain.Photos;
+using Otiva.Domain.User;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,10 +26,12 @@ namespace Otiva.Domain
 
         public string Region { get; set; }
 
+        public bool IsActive { get; set; } = true;
+
         public Subcategory Subcategory { get; set; }
 
         public DomainUser DomainUser { get; set; }
 
-        public ICollection<Photo> Photos { get; set; }
+        public ICollection<PhotoAds> Photos { get; set; }
     }
 }
