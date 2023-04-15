@@ -47,7 +47,7 @@ namespace Otiva.API.Controllers
         public async Task<IActionResult> GetCurrenUserId(CancellationToken cancellation)
         {
             var result = await _identityService.GetCurrentUserId(cancellation);
-            return Ok();
+            return Ok(result);
         }
 
         /// <summary>
@@ -62,6 +62,20 @@ namespace Otiva.API.Controllers
             var result = await _userService.GetByIdAsync(id, cancellation);
 
             return Ok(result);
+        }
+
+        /// <summary>
+        /// Подтвердить почту
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="code">Код подтверждения</param>
+        /// <returns></returns>
+        [HttpGet("confirmEmail")]
+        [AllowAnonymous]
+        public async Task<IActionResult> ConfirmEmail(string userId, string code, CancellationToken cancellation)
+        {
+            await _identityService.ConfirmEmail(userId, code, cancellation);
+            return Ok();
         }
 
         //[HttpPost("addRole")]
@@ -133,7 +147,7 @@ namespace Otiva.API.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [Authorize]
+       // [Authorize]
         [HttpDelete("/user/delete/{id}")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]

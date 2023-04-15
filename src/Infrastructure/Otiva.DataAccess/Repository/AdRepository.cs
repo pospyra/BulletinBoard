@@ -77,7 +77,7 @@ namespace Otiva.DataAccess.Repository
             var query = await _baseRepository.GetAllAsync();
 
             if (!string.IsNullOrEmpty(search.Name))
-                query =  query.Where(p => p.Name.ToLower().Contains(search.Name.ToLower()));
+               query =  query.Where(p => p.Name.ToLower().Contains(search.Name.ToLower()));
 
             if (search.SubcategoryId.HasValue)
                 query = query.Where(c => c.SubcategoryId == search.SubcategoryId);
@@ -93,6 +93,7 @@ namespace Otiva.DataAccess.Repository
 
             if (search.PriceTo != null)
                 query = query.Where(c => c.Price <= search.PriceTo);
+
 
             return await query.Select(p => new Ad
             {

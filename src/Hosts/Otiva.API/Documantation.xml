@@ -244,6 +244,14 @@
             <param name="id"></param>
             <returns></returns>
         </member>
+        <member name="M:Otiva.API.Controllers.UserController.ConfirmEmail(System.String,System.String,System.Threading.CancellationToken)">
+            <summary>
+            Подтвердить почту
+            </summary>
+            <param name="userId"></param>
+            <param name="code">Код подтверждения</param>
+            <returns></returns>
+        </member>
         <member name="M:Otiva.API.Controllers.UserController.Login(Otiva.Contracts.UserDto.LoginRequest,System.Threading.CancellationToken)">
             <summary>
             Аутентификация пользователя

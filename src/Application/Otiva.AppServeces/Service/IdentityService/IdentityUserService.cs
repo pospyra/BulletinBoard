@@ -14,6 +14,8 @@ using System.Net.Http.Headers;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
+using Otiva.AppServeces.Service.EmailService;
 
 namespace Otiva.AppServeces.Service.IdentityService
 {
@@ -27,7 +29,7 @@ namespace Otiva.AppServeces.Service.IdentityService
 
         public IdentityUserService(
             UserManager<Domain.User.IdentityUser> userManager,
-            IClaimAccessor claimAccessor, 
+            IClaimAccessor claimAccessor,
             IConfiguration configuration,
             IMapper mapper)
         {
@@ -36,6 +38,7 @@ namespace Otiva.AppServeces.Service.IdentityService
             _configuration = configuration;
             _mapper = mapper;
         }
+
 
         public async Task DeleteAsync(string Id, CancellationToken cancellation)
         {
@@ -50,7 +53,7 @@ namespace Otiva.AppServeces.Service.IdentityService
             var claimId = claim.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
 
             if (string.IsNullOrWhiteSpace(claimId))
-                return null;
+                throw new Exception("Пользователь не авторизован");
 
             var user = await _userManager.FindByIdAsync(claimId);
 
@@ -85,12 +88,17 @@ namespace Otiva.AppServeces.Service.IdentityService
         public async Task<string> Login(LoginRequest userLogin, CancellationToken cancellation)
         {
             var existingUser = await _userManager.FindByEmailAsync(userLogin.Email);
+
             if (existingUser == null)
                 throw new Exception($"Пользователь с email '{userLogin.Email}' не существует");
 
             var checkPass = await _userManager.CheckPasswordAsync(existingUser, userLogin.Password);
-            if(!checkPass)
+            if (!checkPass)
                 throw new Exception("Неверная почта или пароль");
+
+            var IsEmailConfirm = await _userManager.IsEmailConfirmedAsync(existingUser);
+            if (!IsEmailConfirm)
+                throw new Exception("Почта не подтверждена");
 
             var claims = new List<Claim>
             {
@@ -100,7 +108,6 @@ namespace Otiva.AppServeces.Service.IdentityService
 
             var userRole = await _userManager.GetRolesAsync(existingUser);
             claims.AddRange(userRole.Select(role => new Claim(ClaimTypes.Role, role)));
-
 
             var secretKey = _configuration["Token:SecretKey"];
 
@@ -118,7 +125,6 @@ namespace Otiva.AppServeces.Service.IdentityService
 
             if (cancellation.IsCancellationRequested)
                 throw new OperationCanceledException();
-
 
             return result;
         }
@@ -140,11 +146,46 @@ namespace Otiva.AppServeces.Service.IdentityService
 
             if (resRegister.Succeeded && userReg.Role != null)
                 await _userManager.AddToRoleAsync(newIdentityUser, userReg.Role);
+
             else if (resRegister.Succeeded && userReg.Role == null)
                 await _userManager.AddToRoleAsync(newIdentityUser, "User");
 
+            await SendConfirmMail(newIdentityUser.Id, cancellation);
+
             return newIdentityUser.Id;
         }
-    }
 
+        public async Task SendConfirmMail(string userId, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var identityUser = await _userManager.FindByIdAsync(userId);
+                var code = await _userManager.GenerateEmailConfirmationTokenAsync(identityUser);
+               //поменять юрл
+                var callbackUrl = $"https://localhost:7278/confirmEmail?userId={identityUser.Id}&code={HttpUtility.UrlEncode(code)}";
+                EmailService.EmailService emailService = new EmailService.EmailService();
+                await emailService.SendEmailAsync(identityUser.Email, "Confirm your account",
+                    $"Подтвердите регистрацию, перейдя по ссылке: <a href='{callbackUrl}'>link</a>");
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
+
+        public async Task ConfirmEmail(string userId, string code, CancellationToken cancellationToken)
+        {
+            if (userId == null || code == null)
+                throw new Exception("Поля не могут быть пустыми");
+
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+                throw new Exception("Не найден пользователь");
+
+            var result = await _userManager.ConfirmEmailAsync(user, code);
+
+            if (!result.Succeeded)
+                throw new Exception("Ошибка подтверждения");
+        }
+    }
 }

@@ -54,6 +54,7 @@ namespace Otiva.Infrastructure.BaseRepository
 
         public IQueryable<TEntity> GetAllFiltered(Expression<Func<TEntity, bool>> filter)
         {
+
             if (filter == null)
             {
                 throw new ArgumentNullException(nameof(filter));

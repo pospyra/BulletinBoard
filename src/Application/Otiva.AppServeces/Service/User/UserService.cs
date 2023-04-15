@@ -42,12 +42,13 @@ namespace Otiva.AppServeces.Service.User
 
         public async Task DeleteAsync(Guid id, CancellationToken cancellation)
         {
+            await _identityService.DeleteAsync(id.ToString(), cancellation);
+
             var delUser = await _userRepository.FindByIdAsync(id, cancellation);
             if (delUser == null)
                 throw new Exception("Пользователь с таким идентификатором не найден");
             await _userRepository.DeleteAsync(delUser, cancellation);
 
-            await _identityService.DeleteAsync(id.ToString(), cancellation);
         }
 
         public async Task<InfoUserResponse> EditUserAsync(Guid Id, RegistrationOrUpdateRequest update, byte[] photo, CancellationToken cancellation)
