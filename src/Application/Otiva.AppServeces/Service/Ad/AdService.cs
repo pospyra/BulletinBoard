@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query.Internal;
+using Microsoft.Extensions.Logging;
 using Otiva.AppServeces.IRepository;
 using Otiva.AppServeces.Service.IdentityService;
 using Otiva.AppServeces.Service.Photo;
@@ -24,47 +25,42 @@ namespace Otiva.AppServeces.Service.Ad
         public readonly IIdentityUserService _identityService;
         public readonly IPhotoService _photoService;
         public readonly IMapper _mapper;
+        public readonly ILogger _logger;
         public AdService(
             IAdRepository adRepository, 
             IPhotoService photoService, 
             IMapper mapper, 
             IUserService userService, 
-            IIdentityUserService identityService)
+            IIdentityUserService identityService,
+            ILogger logger)
         {
             _photoService = photoService;
             _adRepository = adRepository;
             _mapper = mapper;
             _userService = userService;
             _identityService = identityService;
+            _logger = logger;
         }
 
         public async Task<Guid> CreateAdAsync(CreateOrUpdateAdRequest createAd, CancellationToken cancellation)
         {
-            try
+            if (cancellation.IsCancellationRequested)
+                throw new OperationCanceledException();
+
+            var newAd = _mapper.Map<Domain.Ad>(createAd);
+            newAd.DomainUserId = Guid.Parse(await _identityService.GetCurrentUserId(cancellation));
+
+            await _adRepository.Add(newAd, cancellation);
+
+            if (createAd.PhotoId != null)
             {
-                if(cancellation.IsCancellationRequested)
-                    throw new OperationCanceledException();
-
-                var newAd = _mapper.Map<Domain.Ad>(createAd);
-                newAd.DomainUserId = Guid.Parse(await _identityService.GetCurrentUserId(cancellation));
-
-                await _adRepository.Add(newAd, cancellation);
-
-                if(createAd.PhotoId != null)
+                foreach (var photoId in createAd.PhotoId)
                 {
-                    foreach (var photoId in createAd.PhotoId)
-                    {
-                        await _photoService.SetAdPhotoAsync(photoId, newAd.Id, cancellation);
-                    }
+                    await _photoService.SetAdPhotoAsync(photoId, newAd.Id, cancellation);
                 }
-
-                return newAd.Id;
             }
 
-            catch(Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
+            return newAd.Id;
         }
 
         /// <inheritdoc/>
@@ -108,10 +104,10 @@ namespace Otiva.AppServeces.Service.Ad
                 Region = x.Region,
                 SubcategoryId = x.SubcategoryId,
                 UserId = x.DomainUserId,
-                //Photos = x.Photos.Select(a => new Contracts.PhotoDto.InfoPhotoResponse
-                //{
-                //    KodBase64 = a.KodBase64,
-                //}).ToList(),
+                Photos = x.Photos?.Select(a => new Contracts.PhotoDto.InfoPhotoResponse
+                {
+                    KodBase64 = a.KodBase64,
+                }).ToList(),
             }).OrderByDescending(a=>a.CreateTime).Skip(skip).Take(take).ToList();
         }
 
@@ -129,7 +125,11 @@ namespace Otiva.AppServeces.Service.Ad
                 Description = p.Description,
                 Region = p.Region,
                 Price = p.Price,
-                CreateTime = p.CreateTime
+                CreateTime = p.CreateTime,
+                Photos = p.Photos?.Select(a => new Contracts.PhotoDto.InfoPhotoResponse
+                {
+                    KodBase64 = a.KodBase64,
+                }).ToList(),
             }).OrderBy(x => x.CreateTime).Skip(search.skip).Take(search.take).ToList();
         }
 
@@ -147,14 +147,20 @@ namespace Otiva.AppServeces.Service.Ad
 
             var res = await _adRepository.GetAllAsync(cancellation);
             return res
-                .Select(a => new InfoAdResponse
+                .Select(p => new InfoAdResponse
                 {
-                    Id = a.Id,
-                    Name = a.Name,
-                    Description = a.Description,
-                    SubcategoryId = a.SubcategoryId,
-                    CreateTime = a.CreateTime,
-                    UserId = a.DomainUserId,
+                    Id = p.Id,
+                    Name = p.Name,
+                    UserId = p.DomainUserId,
+                    SubcategoryId = p.SubcategoryId,
+                    Description = p.Description,
+                    Region = p.Region,
+                    Price = p.Price,
+                    CreateTime = p.CreateTime,
+                    Photos = p.Photos?.Select(a => new Contracts.PhotoDto.InfoPhotoResponse
+                    {
+                        KodBase64 = a.KodBase64,
+                    }).ToList(),
                 }).OrderBy(d => d.CreateTime).Skip(skip).Take(take).ToList();
         }
     }

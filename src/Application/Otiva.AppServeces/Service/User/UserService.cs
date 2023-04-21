@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Win32;
+using Org.BouncyCastle.Asn1.Ocsp;
 using Otiva.AppServeces.IRepository;
 using Otiva.AppServeces.Service.IdentityService;
 using Otiva.AppServeces.Service.Photo;
@@ -15,6 +16,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
@@ -46,7 +48,8 @@ namespace Otiva.AppServeces.Service.User
 
             var delUser = await _userRepository.FindByIdAsync(id, cancellation);
             if (delUser == null)
-                throw new Exception("Пользователь с таким идентификатором не найден");
+               throw new Exception("Пользователь с данным идентификатором не найден");
+
             await _userRepository.DeleteAsync(delUser, cancellation);
 
         }
@@ -95,8 +98,8 @@ namespace Otiva.AppServeces.Service.User
 
         public async Task<Guid> RegistrationAsync(RegistrationOrUpdateRequest registration, CancellationToken cancellation)
         {
-            var existingUser = _userRepository.GetAll(cancellation)
-                .Where(x => x.Email == registration.Email).FirstOrDefault();
+           var existingUser = _userRepository.GetAll(cancellation)
+           .Where(x => x.Email == registration.Email).FirstOrDefault();
 
             if (existingUser != null)
                 throw new Exception("Пльзователь с таким email уже существует");
@@ -106,6 +109,7 @@ namespace Otiva.AppServeces.Service.User
             var registerAcc = _mapper.Map<Domain.User.DomainUser>(registration);
 
             registerAcc.Id = Guid.Parse(newidentityUserId);
+            registerAcc.DateBirthday = registration.DateBirthday.ToUniversalTime();
             await _userRepository.Add(registerAcc, cancellation);
 
             if(registration.PhotoId!= null)

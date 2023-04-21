@@ -9,6 +9,9 @@ using System.Threading.Tasks;
 
 namespace Otiva.AppServeces.Service.EmailService
 {
+    /// <summary>
+    /// Сервис отправки сообщений с кодом подтверждения
+    /// </summary>
     public class EmailService 
     {
         public async Task SendEmailAsync(string email, string subject, string message)

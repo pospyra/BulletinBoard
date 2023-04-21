@@ -31,7 +31,6 @@ namespace Otiva.API.Controllers
         [ProducesResponseType(typeof(IReadOnlyCollection<InfoUserResponse>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetAll(int take, int skip, CancellationToken cancellation)
         {
-
             var result = await _userService.GetAllAsync(take, skip, cancellation);
 
             return Ok(result);
@@ -109,7 +108,7 @@ namespace Otiva.API.Controllers
         /// <returns></returns>
         [HttpPost("/registration")]
         [ProducesResponseType(typeof(IReadOnlyCollection<InfoUserResponse>), (int)HttpStatusCode.Created)]
-        public async Task<IActionResult> Registration([FromBody]RegistrationOrUpdateRequest registration, CancellationToken cancellation)
+        public async Task<IActionResult> Registration([FromQuery]RegistrationOrUpdateRequest registration, CancellationToken cancellation)
         {
 
             var result = await _userService.RegistrationAsync(registration, cancellation);

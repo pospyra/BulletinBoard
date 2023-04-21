@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using Otiva.AppServeces.IRepository;
 using Otiva.Contracts.AdDto;
 using Otiva.Contracts.CategoryDto;
@@ -14,14 +15,20 @@ namespace Otiva.AppServeces.Service.Category
 {
     public class CategoryService : ICategoryService
     {
+        public const string ActiveCategoriesCachingKey = "ActiveCategories";
         public readonly ICategoryRepository _categoryRepository;
         public readonly ISubcategoryRepository _subcategoryRepository;
         public readonly IMapper _mapper;
-        public CategoryService(ICategoryRepository acategoryRepository, IMapper mapper, ISubcategoryRepository subcategoryRepository)
+        private readonly IMemoryCache _memoryCache;
+        public CategoryService(ICategoryRepository acategoryRepository,
+            IMapper mapper, 
+            ISubcategoryRepository subcategoryRepository,
+            IMemoryCache memoryCache)
         {
             _categoryRepository = acategoryRepository;
             _mapper = mapper;
             _subcategoryRepository = subcategoryRepository;
+            _memoryCache = memoryCache;
         }
         public async Task<Guid> CreateCategoryAsync(string name, CancellationToken cancellation)
         {
@@ -65,7 +72,12 @@ namespace Otiva.AppServeces.Service.Category
 
         public async Task<IReadOnlyCollection<InfoCategoryResponse>> GetAllAsync(CancellationToken cancellation)
         {
-            return await _categoryRepository.GetAll(cancellation)
+            if (_memoryCache.TryGetValue(ActiveCategoriesCachingKey, out IReadOnlyCollection<InfoCategoryResponse> result))
+            {
+                return result;
+            }
+
+             result = await _categoryRepository.GetAll(cancellation)
                 .Select(a => new InfoCategoryResponse()
                 {
                     Id = a.Id,
@@ -76,6 +88,14 @@ namespace Otiva.AppServeces.Service.Category
                         Name = c.Name,
                     }).ToList()
                 }).ToListAsync();
+
+            var options = new MemoryCacheEntryOptions
+            {
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(30)
+            };
+            _memoryCache.Set(ActiveCategoriesCachingKey, result, options);
+
+            return result;
         }
 
         public async Task<InfoCategoryResponse> GetByIdAsync(Guid id, CancellationToken cancellation)

@@ -43,7 +43,8 @@ namespace Otiva.AppServeces.Service.IdentityService
         public async Task DeleteAsync(string Id, CancellationToken cancellation)
         {
             var identityUSer = await _userManager.FindByIdAsync(Id);
-
+            if (identityUSer == null)
+                throw new Exception("Пользователь с данным идентификатором не найден");
             await _userManager.DeleteAsync(identityUSer);
         }
 
@@ -131,6 +132,10 @@ namespace Otiva.AppServeces.Service.IdentityService
 
         public async Task<string> RegisterIdentityUser(RegistrationOrUpdateRequest userReg, CancellationToken cancellation)
         {
+            var userNameCheck = await _userManager.FindByNameAsync(userReg.UserName);
+            if (userNameCheck != null)
+                throw new Exception("Пользователь с таким именем уже существует");
+
             var newIdentityUser = new Domain.User.IdentityUser
             {
                 UserName = userReg.UserName,
@@ -161,7 +166,6 @@ namespace Otiva.AppServeces.Service.IdentityService
             {
                 var identityUser = await _userManager.FindByIdAsync(userId);
                 var code = await _userManager.GenerateEmailConfirmationTokenAsync(identityUser);
-               //поменять юрл
                 var callbackUrl = $"https://localhost:7278/confirmEmail?userId={identityUser.Id}&code={HttpUtility.UrlEncode(code)}";
                 EmailService.EmailService emailService = new EmailService.EmailService();
                 await emailService.SendEmailAsync(identityUser.Email, "Confirm your account",

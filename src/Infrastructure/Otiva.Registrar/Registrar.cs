@@ -30,6 +30,8 @@ namespace Otiva.Registrar
     {
         public static IServiceCollection AddServices(this IServiceCollection services)
         {
+            services.AddLogging();
+
             services.AddSingleton<IDbContextOptionsConfigurator<OtivaContext>, OtivaContextConfiguration>();
 
             services.AddDbContext<OtivaContext>((Action<IServiceProvider, DbContextOptionsBuilder>)
