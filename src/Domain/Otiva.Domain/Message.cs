@@ -15,7 +15,7 @@ namespace Otiva.Domain
 
         public DateTime SendingTime { get; set; } = DateTime.UtcNow;
 
-        public bool Read { get; set; }
+        public bool Read { get; set; } = false;
 
         public Guid SenderId { get; set; }
 

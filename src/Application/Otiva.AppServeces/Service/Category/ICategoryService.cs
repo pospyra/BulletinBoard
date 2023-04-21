@@ -43,7 +43,7 @@ namespace Otiva.AppServeces.Service.Category
         /// <param name="Id"></param>
         /// <param name="name"></param>
         /// <returns></returns>
-        Task<InfoCategoryResponse> EditCategoryAsync(Guid Id,string name, CancellationToken cancellation);
+        Task<InfoCategoryResponse> EditCategoryAsync(Guid id,string name, CancellationToken cancellation);
 
     }
 }

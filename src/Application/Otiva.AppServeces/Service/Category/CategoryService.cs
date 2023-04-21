@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Logging;
 using Otiva.AppServeces.IRepository;
 using Otiva.Contracts.AdDto;
 using Otiva.Contracts.CategoryDto;
@@ -15,54 +16,56 @@ namespace Otiva.AppServeces.Service.Category
 {
     public class CategoryService : ICategoryService
     {
-        public const string ActiveCategoriesCachingKey = "ActiveCategories";
-        public readonly ICategoryRepository _categoryRepository;
-        public readonly ISubcategoryRepository _subcategoryRepository;
-        public readonly IMapper _mapper;
+        private const string ActiveCategoriesCachingKey = "ActiveCategories";
+        private readonly ICategoryRepository _categoryRepository;
+        private readonly ISubcategoryRepository _subcategoryRepository;
+        private readonly IMapper _mapper;
         private readonly IMemoryCache _memoryCache;
-        public CategoryService(ICategoryRepository acategoryRepository,
+        private readonly ILogger<CategoryService> _logger;
+        public CategoryService(
+            ICategoryRepository acategoryRepository,
             IMapper mapper, 
             ISubcategoryRepository subcategoryRepository,
-            IMemoryCache memoryCache)
+            IMemoryCache memoryCache,
+            ILogger<CategoryService> logger)
         {
             _categoryRepository = acategoryRepository;
             _mapper = mapper;
             _subcategoryRepository = subcategoryRepository;
             _memoryCache = memoryCache;
+            _logger = logger;
         }
         public async Task<Guid> CreateCategoryAsync(string name, CancellationToken cancellation)
         {
-            try
-            {
-                var newCategory = new Domain.Category()
-                {
-                    Name = name,
-                };
+            _logger.LogInformation("Добавление новой категории");
 
-                await _categoryRepository.Add(newCategory, cancellation);
-                return newCategory.Id;
-            }
-            catch(Exception ex)
+            var newCategory = new Domain.Category() 
             {
-                throw new Exception(ex.Message);
-            }
+                Name = name,
+            };
 
+            await _categoryRepository.Add(newCategory, cancellation);
+            return newCategory.Id;
         }
 
         public async Task DeleteAsync(Guid id, CancellationToken cancellation)
         {
+            _logger.LogInformation($"Удаление категории с id {id}");
+
             var category = await _categoryRepository.FindByIdAsync(id, cancellation);
             if(category == null)
-                throw new Exception("Категории с таким идентификатором не существует");
+                throw new InvalidOperationException("Категории с таким идентификатором не существует");
 
             await _categoryRepository.DeleteAsync(category, cancellation);
         }
 
-        public async Task<InfoCategoryResponse> EditCategoryAsync(Guid Id, string name, CancellationToken cancellation)
+        public async Task<InfoCategoryResponse> EditCategoryAsync(Guid id, string name, CancellationToken cancellation)
         {
-            var existingCategory = await _categoryRepository.FindByIdAsync(Id, cancellation);
+            _logger.LogInformation($"Редактирование категории с id {id}");
+
+            var existingCategory = await _categoryRepository.FindByIdAsync(id, cancellation);
             if (existingCategory == null)
-                throw new Exception("Категории с таким идентификатором не сущесвует");
+                throw new InvalidOperationException("Категории с таким идентификатором не сущесвует");
 
             existingCategory.Name = name;
             await _categoryRepository.EditAdAsync(existingCategory, cancellation);
@@ -77,7 +80,13 @@ namespace Otiva.AppServeces.Service.Category
                 return result;
             }
 
-             result = await _categoryRepository.GetAll(cancellation)
+            var options = new MemoryCacheEntryOptions
+            {
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(30)
+            };
+            _memoryCache.Set(ActiveCategoriesCachingKey, result, options);
+
+            return await _categoryRepository.GetAll(cancellation)
                 .Select(a => new InfoCategoryResponse()
                 {
                     Id = a.Id,
@@ -88,14 +97,6 @@ namespace Otiva.AppServeces.Service.Category
                         Name = c.Name,
                     }).ToList()
                 }).ToListAsync();
-
-            var options = new MemoryCacheEntryOptions
-            {
-                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(30)
-            };
-            _memoryCache.Set(ActiveCategoriesCachingKey, result, options);
-
-            return result;
         }
 
         public async Task<InfoCategoryResponse> GetByIdAsync(Guid id, CancellationToken cancellation)

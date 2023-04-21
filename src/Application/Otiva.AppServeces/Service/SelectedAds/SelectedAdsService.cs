@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Microsoft.VisualBasic;
 using Otiva.AppServeces.IRepository;
 using Otiva.AppServeces.Service.IdentityService;
@@ -16,16 +17,22 @@ namespace Otiva.AppServeces.Service.SelectedAds
 {
     public class SelectedAdsService : ISelectedAdsService
     {
-        public readonly ISelectedAdsRepository _selectedadRepository;
-        public readonly IUserService _userService; 
-        public readonly IMapper _mapper;
-        public readonly IIdentityUserService _identityService;
-        public SelectedAdsService(ISelectedAdsRepository selectedadRepository, IMapper mapper, IUserService userService, IIdentityUserService identityService)
+        private readonly ISelectedAdsRepository _selectedadRepository;
+        private readonly IMapper _mapper;
+        private readonly IIdentityUserService _identityService;
+        private readonly ILogger<SelectedAdsService> _logger;
+
+
+        public SelectedAdsService(
+            ISelectedAdsRepository selectedadRepository, 
+            IIdentityUserService identityService,
+            IMapper mapper,
+            ILogger<SelectedAdsService> logger)
         {
             _selectedadRepository = selectedadRepository;
-            _userService = userService;
             _mapper = mapper;
             _identityService = identityService;
+            _logger = logger;
         }
 
 
@@ -44,6 +51,8 @@ namespace Otiva.AppServeces.Service.SelectedAds
 
         public async Task DeleteAsync(Guid Id, CancellationToken cancellation)
         {
+            _logger.LogInformation("Удаление объявления из избранных");
+
             var selectedDel = await _selectedadRepository.FindByIdAsync(Id, cancellation);
             await _selectedadRepository.DeleteAsync(selectedDel, cancellation);
         }

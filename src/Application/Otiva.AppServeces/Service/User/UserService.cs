@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Win32;
 using Org.BouncyCastle.Asn1.Ocsp;
@@ -26,20 +27,25 @@ namespace Otiva.AppServeces.Service.User
     public class UserService : IUserService
     {
         private readonly IConfiguration _configuration;
-        public readonly IUserRepository _userRepository;
-        public readonly IIdentityUserService _identityService;
-        public readonly IMapper _mapper;
-        public readonly IPhotoService _photoService;
+        private readonly IUserRepository _userRepository;
+        private readonly IIdentityUserService _identityService;
+        private readonly IMapper _mapper;
+        private readonly IPhotoService _photoService;
+        private readonly ILogger<UserService> _logger;
+
         public UserService(
             IUserRepository userRepository, 
             IMapper mapper,
             IConfiguration configuration,
-            IIdentityUserService identityService)
+            IIdentityUserService identityService,
+            ILogger<UserService> logger
+            )
         {
             _userRepository = userRepository;
             _mapper = mapper;
             _configuration = configuration;
             _identityService = identityService;
+            _logger = logger;
         }
 
         public async Task DeleteAsync(Guid id, CancellationToken cancellation)

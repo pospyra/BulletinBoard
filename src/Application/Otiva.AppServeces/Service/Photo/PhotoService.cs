@@ -1,4 +1,5 @@
-﻿using Otiva.AppServeces.IRepository.Photos;
+﻿using Microsoft.Extensions.Logging;
+using Otiva.AppServeces.IRepository.Photos;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,20 +8,29 @@ using System.Threading.Tasks;
 
 namespace Otiva.AppServeces.Service.Photo
 {
+    //TODO Переписать! Код нарушает DRY
     public class PhotoService : IPhotoService
     {
-        public readonly IPhotoAdsRepository _photoAdsRepository;
-        public readonly IPhotoUsersRepository _photoUsersRepository;
-        public PhotoService(IPhotoAdsRepository photoAdsRepository, IPhotoUsersRepository photoUsersRepository)
+        private readonly IPhotoAdsRepository _photoAdsRepository;
+        private readonly IPhotoUsersRepository _photoUsersRepository;
+        private readonly ILogger<PhotoService> _logger; 
+
+        public PhotoService(
+            IPhotoAdsRepository photoAdsRepository, 
+            IPhotoUsersRepository photoUsersRepository,
+            ILogger<PhotoService> logger)
         {
             _photoAdsRepository = photoAdsRepository;
             _photoUsersRepository = photoUsersRepository;   
+            _logger = logger;
         }
 
         public async Task<Guid> AddPhotoAdAsync(byte[] photo, CancellationToken cancellation)
         {
+            _logger.LogInformation("Добавление фотографии объявления в бд");
+
             if (photo.Length > 5242880)
-                throw new Exception("Слишком большой размер фотографий");
+                throw new ArgumentException("Слишком большой размер фотографий");
 
             var newPhoto = new Domain.Photos.PhotoAds()
             {
@@ -33,7 +43,11 @@ namespace Otiva.AppServeces.Service.Photo
 
         public async Task DeletePhotoAdAsync(Guid photoId, CancellationToken cancellation)
         {
+            _logger.LogInformation("Удаление фотографии объявления в бд");
             var photoDel = await _photoAdsRepository.FindByIdAsync(photoId, cancellation);
+            if (photoDel == null)
+                throw new InvalidOperationException("Фотография не найдена");
+
             await _photoAdsRepository.DeleteAsync(photoDel, cancellation);
         }
 
@@ -44,12 +58,10 @@ namespace Otiva.AppServeces.Service.Photo
             await _photoAdsRepository.UpdatePhotoAsync(photo, cancellation);
         }
 
-
-
         public async Task<Guid> AddPhotoUserAsync(byte[] photoUser, CancellationToken cancellation)
         {
             if (photoUser.Length > 5242880)
-                throw new Exception("Слишком большой размер фотографий");
+                throw new ArgumentException("Слишком большой размер фотографий");
 
             var newPhoto = new Domain.Photos.PhotoUsers()
             {

@@ -14,36 +14,35 @@ using System.Linq;
 using System.Security.Claims;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Otiva.AppServeces.Service.Ad
 {
     public class AdService : IAdService
     {
-        public readonly IAdRepository _adRepository;
-        public readonly IUserService _userService;
-        public readonly IIdentityUserService _identityService;
-        public readonly IPhotoService _photoService;
-        public readonly IMapper _mapper;
-        public readonly ILogger _logger;
+        private readonly IAdRepository _adRepository;
+        private readonly IIdentityUserService _identityService;
+        private readonly IPhotoService _photoService;
+        private readonly IMapper _mapper;
+        private readonly ILogger<AdService> _logger;
         public AdService(
             IAdRepository adRepository, 
             IPhotoService photoService, 
             IMapper mapper, 
-            IUserService userService, 
             IIdentityUserService identityService,
-            ILogger logger)
+            ILogger<AdService> logger)
         {
             _photoService = photoService;
             _adRepository = adRepository;
             _mapper = mapper;
-            _userService = userService;
             _identityService = identityService;
             _logger = logger;
         }
 
         public async Task<Guid> CreateAdAsync(CreateOrUpdateAdRequest createAd, CancellationToken cancellation)
         {
+            _logger.LogInformation("Создание объявления");
             if (cancellation.IsCancellationRequested)
                 throw new OperationCanceledException();
 
@@ -66,9 +65,10 @@ namespace Otiva.AppServeces.Service.Ad
         /// <inheritdoc/>
         public async Task DeleteAsync(Guid id, CancellationToken cancellation)
         {
+            _logger.LogInformation("Удаление объявления");
             var existingAd = await _adRepository.FindByIdAsync(id, cancellation);
             if (existingAd == null)
-                throw new Exception("Объявления с таким идентификатором не сущесвует");
+                throw new InvalidOperationException("Объявления с таким идентификатором не сущесвует");
 
             var currentUser = await _identityService.GetCurrentUser(cancellation);
 
@@ -81,6 +81,8 @@ namespace Otiva.AppServeces.Service.Ad
 
         public async Task<InfoAdResponse> EditAdAsync(Guid Id, CreateOrUpdateAdRequest editAd, CancellationToken cancellation)
         {
+            _logger.LogInformation("Редактирование объявления");
+
             var existingAd = await _adRepository.FindByIdAsync(Id, cancellation);
             if (existingAd == null)
                 throw new Exception("Объявления с таким идентификатором не сущесвует");
@@ -93,6 +95,7 @@ namespace Otiva.AppServeces.Service.Ad
 
         public async Task<IReadOnlyCollection<InfoAdResponse>> GetAllAsync(int take, int skip, CancellationToken cancellation)
         {
+            _logger.LogInformation("Получение всех объявлений. Этот метод тестировочный. Его надо убрать");
             var collectionAds = await _adRepository.GetAllAsync(cancellation);
             return collectionAds.Select(x => new InfoAdResponse
             {
@@ -114,6 +117,8 @@ namespace Otiva.AppServeces.Service.Ad
 
         public async Task<IReadOnlyCollection<InfoAdResponse>> GetByFilterAsync(SearchFilterAd search, CancellationToken cancellation)
         {
+            _logger.LogInformation("Получение объявлений. Получение объявлений по заданному фильтру");
+
             var query = await _adRepository.GetByFilterAsync(search, cancellation);
 
             return query.Select(p => new InfoAdResponse
@@ -135,6 +140,8 @@ namespace Otiva.AppServeces.Service.Ad
 
         public async  Task<InfoAdResponse> GetByIdAsync(Guid id, CancellationToken cancellation)
         {
+            _logger.LogInformation($"Получение объявления по идентификатору {id}");
+
             var exitAd = await _adRepository.FindByIdAsync(id, cancellation);
             if (exitAd == null)
                 throw new Exception("Объявления с таким идентификатором не сущесвует");
@@ -143,10 +150,13 @@ namespace Otiva.AppServeces.Service.Ad
 
         public async Task<IReadOnlyCollection<InfoAdResponse>> GetMyAdsAsync(int take, int skip, CancellationToken cancellation)
         {
+            _logger.LogInformation("Получение объявлений принадлежавших текущему пользователя");
+
             var currentUser = await _identityService.GetCurrentUserId(cancellation);
 
             var res = await _adRepository.GetAllAsync(cancellation);
             return res
+                .Where(user=> user.DomainUserId == Guid.Parse(currentUser))
                 .Select(p => new InfoAdResponse
                 {
                     Id = p.Id,

@@ -4,6 +4,8 @@ using Otiva.Registrar;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddMemoryCache();
+
 builder.Services.AddServices();
 
 builder.Services.AddControllers();

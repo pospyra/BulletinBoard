@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Otiva.AppServeces.IRepository;
 using Otiva.AppServeces.Service.IdentityService;
 using Otiva.AppServeces.Service.User;
@@ -14,28 +15,39 @@ namespace Otiva.AppServeces.Service.Message
 {
     public class MessageService : IMessageService
     {
-        public readonly IMessageRepository _messageRepository;
-        public readonly IUserService _userService;
-        public readonly IMapper _mapper;
-        public readonly IIdentityUserService _identityService;
+        private readonly IMessageRepository _messageRepository;
+        private readonly IMapper _mapper;
+        private readonly IIdentityUserService _identityService;
+        private readonly ILogger<MessageService> _logger;
 
         public MessageService(
             IMessageRepository messageRepository, 
-            IMapper mapper,
-            IUserService userService, 
-            IIdentityUserService identityService)
+            IIdentityUserService identityService,
+            ILogger<MessageService> logger,
+            IMapper mapper)
         {
             _messageRepository = messageRepository;
             _mapper = mapper;
-            _userService = userService;
             _identityService = identityService;
+            _logger = logger;
+        }  
 
-        }
         public async Task DeleteMessageAsync(Guid id, CancellationToken cancellation)
         {
             var mesDel = await _messageRepository.FindByIdAsync(id, cancellation);
             if (mesDel == null)
-                throw new Exception("Сообщения с таким айди не найдено");
+                throw new InvalidOperationException("Сообщения с таким идентификатором не найдено");
+
+            var existingUser = Guid.Parse(await _identityService.GetCurrentUserId(cancellation));
+
+            if (mesDel.SenderId != existingUser)
+            {
+                _logger.LogWarning("Попытка удалить сообщение другого пользователя");
+                throw new Exception("Пользователь не имеет права удалять не свои сообщения");
+            }
+
+            if (mesDel.SendingTime < DateTime.UtcNow.AddDays(-1))
+                throw new Exception("Удалить сообщение можно было только в течении одного дня после отправки");
 
             await _messageRepository.DeleteAsync(mesDel, cancellation);
         }
@@ -45,13 +57,23 @@ namespace Otiva.AppServeces.Service.Message
             var existingMessage = await _messageRepository.FindByIdAsync(id, cancellation);
 
             if (existingMessage == null)
-                throw new Exception("Сообщения с таким айди не найдено");
+                throw new InvalidOperationException("Сообщения с таким идентификатором не найдено");
+
+            var existingUser = Guid.Parse(await _identityService.GetCurrentUserId(cancellation));
+
+            if (existingMessage.SenderId != existingUser)
+            {
+                _logger.LogWarning("Попытка редактировать сообщение другого пользователя");
+                throw new InvalidOperationException("Пользователь не имеет права редактировать не свои сообщения");
+            } 
+
+            if (existingMessage.SendingTime > DateTime.UtcNow.AddDays(-1))
+                throw new ApplicationException("Редактировать сообщение можно было только в течении одного дня после отправки");
 
             existingMessage.Content = text.Text;
             await _messageRepository.EditAdAsync(existingMessage, cancellation);
 
             return _mapper.Map<InfoMessageResponse>(existingMessage);
-
         }
 
         public async Task<IReadOnlyCollection<InfoMessageResponse>> GetMessageFromChatAsync(Guid user2_Id, CancellationToken cancellation)
@@ -68,13 +90,15 @@ namespace Otiva.AppServeces.Service.Message
                     ReceiverId = a.ReceiverId,
                     Content= a.Content,
                     SendingTime= a.SendingTime
-                }).ToListAsync();
+                }).OrderByDescending(mes => mes.SendingTime)
+                //TODO пагинация сообщений
+                .ToListAsync();
         }
 
         public async Task<Guid> PostMessageAsync(PostMessageRequest message, CancellationToken cancellation)
         {
             var newMessage = _mapper.Map<Domain.Message>(message);
-             newMessage.SenderId = Guid.Parse(await _identityService.GetCurrentUserId(cancellation));
+            newMessage.SenderId = Guid.Parse(await _identityService.GetCurrentUserId(cancellation));
 
             await _messageRepository.Add(newMessage, cancellation);
             return newMessage.Id;

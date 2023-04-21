@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 using Otiva.AppServeces.Service.Ad;
 using Otiva.Contracts.AdDto;
 using System.Net;
@@ -13,10 +14,12 @@ namespace Otiva.API.Controllers
     public class AdController : ControllerBase
     {
         public readonly IAdService _adService;
+        public readonly ILogger<AdController> _logger;
 
-        public AdController(IAdService adService)
+        public AdController(IAdService adService, ILogger<AdController> logger)
         {
             _adService = adService;
+            _logger = logger;
         }
 
         /// <summary>
@@ -35,6 +38,7 @@ namespace Otiva.API.Controllers
                 throw new Exception("Некорректные данные. Убедитесь, что skip >= 0, take > 0 и !null ");
 
             var result = await _adService.GetAllAsync(take, skip, cancellation);
+
 
             return Ok(result);
         }

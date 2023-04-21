@@ -14,9 +14,11 @@ namespace Otiva.AppServeces.Service.Subcategory
 {
     public class SubcategoryService : ISubcategoryService
     {
-        public readonly ISubcategoryRepository _subcategoryRepository;
-        public readonly IMapper _mapper;
-        public SubcategoryService(ISubcategoryRepository subcategoryRepository, IMapper mapper)
+        private readonly ISubcategoryRepository _subcategoryRepository;
+        private readonly IMapper _mapper;
+        public SubcategoryService(
+            ISubcategoryRepository subcategoryRepository,
+            IMapper mapper)
         {
             _subcategoryRepository = subcategoryRepository;
             _mapper = mapper;

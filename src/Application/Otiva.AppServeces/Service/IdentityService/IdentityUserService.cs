@@ -16,6 +16,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using Otiva.AppServeces.Service.EmailService;
+using Microsoft.Extensions.Logging;
 
 namespace Otiva.AppServeces.Service.IdentityService
 {
@@ -25,23 +26,28 @@ namespace Otiva.AppServeces.Service.IdentityService
         private readonly IClaimAccessor _claimAccessor;
         private readonly IConfiguration _configuration;
         private readonly IMapper _mapper;
+        private readonly ILogger<IdentityUserService> _logger;
 
 
         public IdentityUserService(
             UserManager<Domain.User.IdentityUser> userManager,
             IClaimAccessor claimAccessor,
             IConfiguration configuration,
-            IMapper mapper)
+            IMapper mapper,
+            ILogger<IdentityUserService> logger)
         {
             _userManager = userManager;
             _claimAccessor = claimAccessor;
             _configuration = configuration;
             _mapper = mapper;
+            _logger = logger;
         }
 
 
         public async Task DeleteAsync(string Id, CancellationToken cancellation)
         {
+            _logger.LogInformation("Удаление IdentityUser из базы данных");
+
             var identityUSer = await _userManager.FindByIdAsync(Id);
             if (identityUSer == null)
                 throw new Exception("Пользователь с данным идентификатором не найден");
@@ -50,6 +56,8 @@ namespace Otiva.AppServeces.Service.IdentityService
 
         public async Task<InfoUserResponse> GetCurrentUser(CancellationToken cancellation)
         {
+            _logger.LogInformation("Получение текущего пользователя");
+
             var claim = await _claimAccessor.GetClaims(cancellation);
             var claimId = claim.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
 
@@ -64,11 +72,13 @@ namespace Otiva.AppServeces.Service.IdentityService
             var userResponse = _mapper.Map<InfoUserResponse>(user);
             userResponse.Id = Guid.Parse(user.Id);
             userResponse.Role = await _userManager.GetRolesAsync(user);
+
             return userResponse;
         }
 
         public async Task<string> GetCurrentUserId(CancellationToken cancellation)
         {
+            _logger.LogInformation("Получение Id текущего пользователя");
             if (cancellation.IsCancellationRequested)
                 throw new OperationCanceledException();
 
@@ -88,6 +98,8 @@ namespace Otiva.AppServeces.Service.IdentityService
 
         public async Task<string> Login(LoginRequest userLogin, CancellationToken cancellation)
         {
+            _logger.LogInformation("Аутентификация пользователя в системе");
+
             var existingUser = await _userManager.FindByEmailAsync(userLogin.Email);
 
             if (existingUser == null)
@@ -127,11 +139,15 @@ namespace Otiva.AppServeces.Service.IdentityService
             if (cancellation.IsCancellationRequested)
                 throw new OperationCanceledException();
 
+            _logger.LogInformation("Аутентификация прошла успешно");
+
             return result;
         }
 
         public async Task<string> RegisterIdentityUser(RegistrationOrUpdateRequest userReg, CancellationToken cancellation)
         {
+            _logger.LogInformation("Регистрация пользователя в системе");
+
             var userNameCheck = await _userManager.FindByNameAsync(userReg.UserName);
             if (userNameCheck != null)
                 throw new Exception("Пользователь с таким именем уже существует");
@@ -155,8 +171,14 @@ namespace Otiva.AppServeces.Service.IdentityService
             else if (resRegister.Succeeded && userReg.Role == null)
                 await _userManager.AddToRoleAsync(newIdentityUser, "User");
 
+            else
+            {
+                _logger.LogWarning("Не удалось зарегистрировать IdentityUser");
+                throw new Exception("Не удалось зарегистрировать пользователя");
+            }
             await SendConfirmMail(newIdentityUser.Id, cancellation);
 
+            _logger.LogInformation("Пользователь успешно зарегистрирвоался в системе");
             return newIdentityUser.Id;
         }
 
@@ -164,9 +186,13 @@ namespace Otiva.AppServeces.Service.IdentityService
         {
             try
             {
-                var identityUser = await _userManager.FindByIdAsync(userId);
+                _logger.LogInformation("Отправка кода подтверждения на почту пользователя");
+                 var identityUser = await _userManager.FindByIdAsync(userId);
                 var code = await _userManager.GenerateEmailConfirmationTokenAsync(identityUser);
                 var callbackUrl = $"https://localhost:7278/confirmEmail?userId={identityUser.Id}&code={HttpUtility.UrlEncode(code)}";
+
+                _logger.LogInformation("Отправка кода подтверждения на почту пользователя");
+
                 EmailService.EmailService emailService = new EmailService.EmailService();
                 await emailService.SendEmailAsync(identityUser.Email, "Confirm your account",
                     $"Подтвердите регистрацию, перейдя по ссылке: <a href='{callbackUrl}'>link</a>");
@@ -180,7 +206,7 @@ namespace Otiva.AppServeces.Service.IdentityService
         public async Task ConfirmEmail(string userId, string code, CancellationToken cancellationToken)
         {
             if (userId == null || code == null)
-                throw new Exception("Поля не могут быть пустыми");
+                throw new ArgumentException("Поля не могут быть пустыми");
 
             var user = await _userManager.FindByIdAsync(userId);
             if (user == null)
@@ -190,6 +216,8 @@ namespace Otiva.AppServeces.Service.IdentityService
 
             if (!result.Succeeded)
                 throw new Exception("Ошибка подтверждения");
+
+            _logger.LogInformation($"Пользователь с id {userId} подтвердил свою почту {DateTime.UtcNow}");
         }
     }
 }
