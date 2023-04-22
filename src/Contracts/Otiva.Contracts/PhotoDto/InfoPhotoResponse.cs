@@ -8,6 +8,7 @@ namespace Otiva.Contracts.PhotoDto
 {
     public class InfoPhotoResponse
     {
+        public Guid PhotoId { get; set; }
         public string KodBase64 { get; set; }
     }
 }

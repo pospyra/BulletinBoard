@@ -16,7 +16,10 @@ namespace Otiva.Contracts.AdDto
         public string Description { get; set; }
 
         public decimal? Price { get; set; }
+
         public Guid SubcategoryId { get; set; }
+
+        public Guid? CategoryId { get; set; }
 
         public string Region { get; set; }
 

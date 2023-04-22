@@ -18,7 +18,7 @@ namespace Otiva.API.Controllers
         }
 
         /// <summary>
-        /// 
+        /// Получить избранные текущего пользоваеля
         /// </summary>
         /// <param name="UserId"></param>
         /// <param name="take"></param>

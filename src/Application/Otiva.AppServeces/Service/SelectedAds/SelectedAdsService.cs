@@ -21,8 +21,6 @@ namespace Otiva.AppServeces.Service.SelectedAds
         private readonly IMapper _mapper;
         private readonly IIdentityUserService _identityService;
         private readonly ILogger<SelectedAdsService> _logger;
-
-
         public SelectedAdsService(
             ISelectedAdsRepository selectedadRepository, 
             IIdentityUserService identityService,
@@ -34,7 +32,6 @@ namespace Otiva.AppServeces.Service.SelectedAds
             _identityService = identityService;
             _logger = logger;
         }
-
 
         public async Task<InfoSelectedResponse> AddSelectedAsync(Guid AdId, CancellationToken cancellation)
         {

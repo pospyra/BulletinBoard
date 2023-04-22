@@ -21,7 +21,6 @@ namespace Otiva.Contracts.AdDto
 
         public string? Region { get; set; }
 
-
         public bool IsActive { get; set; }
 
         public ICollection<Guid>? PhotoId { get; set; }

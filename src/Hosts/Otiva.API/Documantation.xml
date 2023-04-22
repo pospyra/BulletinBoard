@@ -35,7 +35,7 @@
             <param name="id"></param>
             <returns></returns>
         </member>
-        <member name="M:Otiva.API.Controllers.AdController.GetByFilter(Otiva.Contracts.AdDto.SearchFilterAd,System.Threading.CancellationToken)">
+        <member name="M:Otiva.API.Controllers.AdController.GetByFilter(Otiva.Contracts.AdDto.SearchFilterAd,Otiva.Contracts.AdDto.SortAdsRequest,System.Threading.CancellationToken)">
             <summary>
             Получить объявления по фильтрам
             </summary>
@@ -200,7 +200,7 @@
         </member>
         <member name="M:Otiva.API.Controllers.SelectedAdController.GetAll(System.Int32,System.Int32,System.Threading.CancellationToken)">
             <summary>
-            
+            Получить избранные текущего пользоваеля
             </summary>
             <param name="UserId"></param>
             <param name="take"></param>
