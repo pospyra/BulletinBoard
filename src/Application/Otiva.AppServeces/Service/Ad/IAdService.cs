@@ -61,7 +61,7 @@ namespace Otiva.AppServeces.Service.Ad
         /// </summary>
         /// <param name="search"></param>
         /// <returns>Коллекцию объвлений</returns>
-        Task<IReadOnlyCollection<InfoAdResponse>> GetByFilterAsync(SearchFilterAd search, CancellationToken cancellation);
+        Task<IReadOnlyCollection<InfoAdResponse>> GetByFilterAsync(SearchFilterAd search, SortAdsRequest sortArguments, CancellationToken cancellation);
 
 
     }

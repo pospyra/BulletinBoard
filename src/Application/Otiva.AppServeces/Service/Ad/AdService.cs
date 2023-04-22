@@ -115,28 +115,37 @@ namespace Otiva.AppServeces.Service.Ad
             }).OrderByDescending(a=>a.CreateTime).Skip(skip).Take(take).ToList();
         }
 
-
-        public async Task<IReadOnlyCollection<InfoAdResponse>> GetByFilterAsync(SearchFilterAd search, CancellationToken cancellation)
+        public async Task<IReadOnlyCollection<InfoAdResponse>> GetByFilterAsync(SearchFilterAd search, SortAdsRequest sortArguments, CancellationToken cancellation)
         {
             _logger.LogInformation("Получение объявлений. Получение объявлений по заданному фильтру");
 
             var query = await _adRepository.GetByFilterAsync(search, cancellation);
-
-            return query.Select(p => new InfoAdResponse
+            var res = query.Select(p => new InfoAdResponse
             {
                 Id = p.Id,
                 Name = p.Name,
                 UserId = p.DomainUserId,
+                CategoryId = search.CategoryId,
                 SubcategoryId = p.SubcategoryId,
                 Description = p.Description,
                 Region = p.Region,
                 Price = p.Price,
-                CreateTime = p.CreateTime,
                 Photos = p.Photos?.Select(a => new Contracts.PhotoDto.InfoPhotoResponse
                 {
-                    KodBase64 = a.KodBase64,
+                    PhotoId = a.Id,
                 }).ToList(),
-            }).OrderBy(x => x.CreateTime).Skip(search.skip).Take(search.take).ToList();
+            });
+
+            if (sortArguments.ByCreatedDate)
+               res = res.OrderByDescending(x => x.CreateTime);
+
+            else if (sortArguments.ByDesPrice)
+               res =  res.OrderByDescending(p => p.Price);
+
+            else if (sortArguments.ByAscPrice) 
+               res = res.OrderBy(p=>p.Price);
+
+            return res.Skip(search.skip).Take(search.take).ToList(); 
         }
 
         public async  Task<InfoAdResponse> GetByIdAsync(Guid id, CancellationToken cancellation)

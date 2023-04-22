@@ -87,12 +87,12 @@ namespace Otiva.API.Controllers
         [AllowAnonymous]
         [HttpGet("/ad/filter")]
         [ProducesResponseType(typeof(IReadOnlyCollection<InfoAdResponse>), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> GetByFilter([FromQuery] SearchFilterAd query, CancellationToken cancellation)
+        public async Task<IActionResult> GetByFilter([FromQuery] SearchFilterAd query, [FromQuery] SortAdsRequest sortArguments, CancellationToken cancellation)
         {
             if (query.skip < 0 || query.take <= 0 || query.take == null)
                 throw new Exception("Некорректные данные. Убедитесь, что skip >= 0, take > 0 и !null ");
 
-            var result = await _adService.GetByFilterAsync(query, cancellation);
+            var result = await _adService.GetByFilterAsync(query, sortArguments, cancellation);
 
             return Ok(result);
         }
