@@ -82,6 +82,9 @@ namespace Otiva.DataAccess.Repository
             if (search.SubcategoryId.HasValue)
                 query = query.Where(c => c.SubcategoryId == search.SubcategoryId);
 
+            if (search.CategoryId != null)
+                query = query.Where(c => c.Subcategory.CategoryId == search.CategoryId);
+
             if (search.UserId.HasValue)
                 query = query.Where(c => c.DomainUserId == search.UserId);
 
@@ -103,7 +106,9 @@ namespace Otiva.DataAccess.Repository
                 Description = p.Description,
                 Region = p.Region,
                 Price = p.Price,
-                CreateTime = p.CreateTime
+                CreateTime = p.CreateTime,
+                DomainUserId = p.DomainUserId,
+                Photos = p.Photos
             }).ToListAsync();
         }
     }
