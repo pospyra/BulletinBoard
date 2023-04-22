@@ -31,7 +31,7 @@ namespace Otiva.AppServeces.Service.Ad
         /// <param name="createAd"></param>
         /// <param name="cancellation"></param>
         /// <returns></returns>
-        Task<Guid> CreateAdAsync(CreateOrUpdateAdRequest createAd, CancellationToken cancellation);
+        Task<Guid> CreateAdAsync(CreateAdRequest createAd, CancellationToken cancellation);
 
         /// <summary>
         /// Получить все объявления
@@ -54,7 +54,7 @@ namespace Otiva.AppServeces.Service.Ad
         /// <param name="Id"></param>
         /// <param name="editAd"></param>
         /// <returns></returns>
-        Task<InfoAdResponse> EditAdAsync(Guid Id, CreateOrUpdateAdRequest editAd, CancellationToken cancellation);
+        Task<InfoAdResponse> EditAdAsync(Guid Id, UpdateAdRequest editAdRequest, CancellationToken cancellation);
 
         /// <summary>
         /// Получить объвления по фильтрам

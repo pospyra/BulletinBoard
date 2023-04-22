@@ -14,7 +14,7 @@ namespace Otiva.AppServeces.Service.Photo
         /// <param name="photoUser"></param>
         /// <param name="cancellation"></param>
         /// <returns></returns>
-        public Task<Guid> AddPhotoUserAsync(byte[] photoUser, CancellationToken cancellation);
+        public Task<Guid> UploadPhotoUserAsync(byte[] photoUser, CancellationToken cancellation);
 
         /// <summary>
         /// Удалить фото пользователя из бд
@@ -56,6 +56,6 @@ namespace Otiva.AppServeces.Service.Photo
         /// <param name="photo"></param>
         /// <param name="cancellation"></param>
         /// <returns></returns>
-        public Task<Guid> AddPhotoAdAsync(byte[] photo, CancellationToken cancellation);
+        public Task<Guid> UploadPhotoAdAsync(byte[] photo, CancellationToken cancellation);
     }
 }

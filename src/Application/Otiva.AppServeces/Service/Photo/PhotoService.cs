@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Otiva.AppServeces.Service.Photo
 {
-    //TODO Переписать! Код нарушает DRY
+    //TODO вроде как нарушает dry, разделить на два сервиса
     public class PhotoService : IPhotoService
     {
         private readonly IPhotoAdsRepository _photoAdsRepository;
@@ -25,7 +25,8 @@ namespace Otiva.AppServeces.Service.Photo
             _logger = logger;
         }
 
-        public async Task<Guid> AddPhotoAdAsync(byte[] photo, CancellationToken cancellation)
+        //методы для работы с фотографиями объявлений
+        public async Task<Guid> UploadPhotoAdAsync(byte[] photo, CancellationToken cancellation)
         {
             _logger.LogInformation("Добавление фотографии объявления в бд");
 
@@ -58,7 +59,8 @@ namespace Otiva.AppServeces.Service.Photo
             await _photoAdsRepository.UpdatePhotoAsync(photo, cancellation);
         }
 
-        public async Task<Guid> AddPhotoUserAsync(byte[] photoUser, CancellationToken cancellation)
+        //методы для работы фотографий пользователей 
+        public async Task<Guid> UploadPhotoUserAsync(byte[] photoUser, CancellationToken cancellation)
         {
             if (photoUser.Length > 5242880)
                 throw new ArgumentException("Слишком большой размер фотографий");

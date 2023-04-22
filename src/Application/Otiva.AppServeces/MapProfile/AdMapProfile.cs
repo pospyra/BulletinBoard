@@ -15,7 +15,8 @@ namespace Otiva.AppServeces.MapProfile
         public AdMapProfile() 
         {
             CreateMap<Ad, InfoAdResponse>().ReverseMap();
-            CreateMap<Ad, CreateOrUpdateAdRequest>().ReverseMap();
+            CreateMap<Ad, CreateAdRequest>().ReverseMap();
+            CreateMap<Ad, UpdateAdRequest>().ReverseMap();
             CreateMap<ItemSelectedAd, InfoSelectedResponse>().ReverseMap();
         }   
        

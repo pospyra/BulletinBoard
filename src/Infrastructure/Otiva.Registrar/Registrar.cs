@@ -31,6 +31,8 @@ namespace Otiva.Registrar
         public static IServiceCollection AddServices(this IServiceCollection services)
         {
             services.AddLogging();
+            services.AddCors();
+            services.AddMemoryCache();
 
             services.AddSingleton<IDbContextOptionsConfigurator<OtivaContext>, OtivaContextConfiguration>();
 
@@ -45,7 +47,7 @@ namespace Otiva.Registrar
             services.AddAutoMapper(typeof(UserMapProfile), typeof(AdMapProfile),
                 typeof(CategoryMapProfile), typeof(SubcategoryMapProfile), typeof(ReviewMapProfile), typeof(MessageMapProfile));
 
-            services.AddTransient<IIdentityUserService, IdentityUserService>();
+            services.AddScoped<IIdentityUserService, IdentityUserService>();
 
             services.AddTransient<IAdService, AdService>();
             services.AddTransient<IAdRepository, AdRepository>();
@@ -60,7 +62,7 @@ namespace Otiva.Registrar
             services.AddTransient<ISubcategoryService, SubcategoryService>();
             services.AddTransient<ISubcategoryRepository, SubcategoryRepository>();
 
-            services.AddTransient<ICategoryService, CategoryService>();
+            services.AddScoped<ICategoryService, CategoryService>();
             services.AddTransient<ICategoryRepository, CategoryRepository>();
 
             services.AddTransient<ISelectedAdsService, SelectedAdsService>();
@@ -71,7 +73,6 @@ namespace Otiva.Registrar
 
             services.AddTransient<IMessageService, MessageService>();
             services.AddTransient<IMessageRepository, MessageRepository>();
-
 
             services.AddScoped<IClaimAccessor, HttpContextClaimsAccessor>();;
      

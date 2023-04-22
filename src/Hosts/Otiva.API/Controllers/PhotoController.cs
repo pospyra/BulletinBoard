@@ -10,7 +10,7 @@ namespace Otiva.API.Controllers
     public class PhotoController : ControllerBase
     {
         public readonly IPhotoService _photoService;
-        public PhotoController(IPhotoService photoService) 
+        public PhotoController(IPhotoService photoService)
         {
             _photoService = photoService;
         }
@@ -33,7 +33,7 @@ namespace Otiva.API.Controllers
                 photo = ms.ToArray();
             }
 
-            var result = await _photoService.AddPhotoAdAsync(photo, cancellation);
+            var result = await _photoService.UploadPhotoAdAsync(photo, cancellation);
 
             return Created("", result);
         }
@@ -74,7 +74,7 @@ namespace Otiva.API.Controllers
                 photo = ms.ToArray();
             }
 
-            var result = await _photoService.AddPhotoUserAsync(photo, cancellation);
+            var result = await _photoService.UploadPhotoUserAsync(photo, cancellation);
 
             return Created("", result);
         }

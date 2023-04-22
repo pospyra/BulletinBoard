@@ -106,7 +106,7 @@ namespace Otiva.API.Controllers
         [Authorize]
         [HttpPost("ad/createAd")]
         [ProducesResponseType(typeof(IReadOnlyCollection<InfoAdResponse>), (int)HttpStatusCode.Created)]
-        public async Task<IActionResult> CreateAdAsync([FromQuery]CreateOrUpdateAdRequest createAd, CancellationToken cancellation)
+        public async Task<IActionResult> CreateAdAsync([FromQuery] CreateAdRequest createAd, CancellationToken cancellation)
         {
             var result = await _adService.CreateAdAsync(createAd, cancellation);
 
@@ -121,7 +121,7 @@ namespace Otiva.API.Controllers
         /// <returns></returns>
         [HttpPut("/ad/update/{id}")]
         [ProducesResponseType(typeof(IReadOnlyCollection<InfoAdResponse>), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> EditAdAsync(Guid id, CreateOrUpdateAdRequest edit, CancellationToken cancellation)
+        public async Task<IActionResult> EditAdAsync(Guid id, UpdateAdRequest edit, CancellationToken cancellation)
         {
             var res = await _adService.EditAdAsync(id, edit, cancellation);
 

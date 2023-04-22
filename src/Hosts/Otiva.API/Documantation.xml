@@ -43,7 +43,7 @@
             <returns></returns>
             <exception cref="T:System.Exception"></exception>
         </member>
-        <member name="M:Otiva.API.Controllers.AdController.CreateAdAsync(Otiva.Contracts.AdDto.CreateOrUpdateAdRequest,System.Threading.CancellationToken)">
+        <member name="M:Otiva.API.Controllers.AdController.CreateAdAsync(Otiva.Contracts.AdDto.CreateAdRequest,System.Threading.CancellationToken)">
             <summary>
             Создать объвления
             </summary>
@@ -51,7 +51,7 @@
             <param name="cancellation"></param>
             <returns></returns>
         </member>
-        <member name="M:Otiva.API.Controllers.AdController.EditAdAsync(System.Guid,Otiva.Contracts.AdDto.CreateOrUpdateAdRequest,System.Threading.CancellationToken)">
+        <member name="M:Otiva.API.Controllers.AdController.EditAdAsync(System.Guid,Otiva.Contracts.AdDto.UpdateAdRequest,System.Threading.CancellationToken)">
             <summary>
             Редактировать объявление
             </summary>

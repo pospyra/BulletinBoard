@@ -2,21 +2,13 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
-using Otiva.AppServeces.IRepository;
-using Otiva.AppServeces.Service.User;
 using Otiva.Contracts.UserDto;
-using Otiva.Domain.User;
-using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Net.Http.Headers;
 using System.Security.Claims;
 using System.Text;
-using System.Threading.Tasks;
 using System.Web;
-using Otiva.AppServeces.Service.EmailService;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace Otiva.AppServeces.Service.IdentityService
 {
@@ -26,6 +18,7 @@ namespace Otiva.AppServeces.Service.IdentityService
         private readonly IClaimAccessor _claimAccessor;
         private readonly IConfiguration _configuration;
         private readonly IMapper _mapper;
+        private readonly IMemoryCache _memoryCache;
         private readonly ILogger<IdentityUserService> _logger;
 
 
@@ -34,6 +27,7 @@ namespace Otiva.AppServeces.Service.IdentityService
             IClaimAccessor claimAccessor,
             IConfiguration configuration,
             IMapper mapper,
+            IMemoryCache memoryCache,
             ILogger<IdentityUserService> logger)
         {
             _userManager = userManager;
@@ -41,6 +35,7 @@ namespace Otiva.AppServeces.Service.IdentityService
             _configuration = configuration;
             _mapper = mapper;
             _logger = logger;
+            _memoryCache = memoryCache;
         }
 
 
@@ -78,7 +73,17 @@ namespace Otiva.AppServeces.Service.IdentityService
 
         public async Task<string> GetCurrentUserId(CancellationToken cancellation)
         {
+            var cacheKey = "CurrentUserId";
+            var userId = _memoryCache.Get<string>(cacheKey);
+
+            if (userId != null)
+            {
+                _logger.LogInformation("Идентификатор текущего пользователя взят из кэша");
+                return userId;
+            }
+
             _logger.LogInformation("Получение Id текущего пользователя");
+
             if (cancellation.IsCancellationRequested)
                 throw new OperationCanceledException();
 
@@ -93,6 +98,12 @@ namespace Otiva.AppServeces.Service.IdentityService
             if (user == null)
                 throw new Exception($"Не найдент пользователь с идентификаторром {claim}");
 
+            var options = new MemoryCacheEntryOptions
+            {
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10)
+            };
+
+            _memoryCache.Set(cacheKey, user.Id, options); 
             return user.Id;
         }
 
@@ -187,7 +198,7 @@ namespace Otiva.AppServeces.Service.IdentityService
             try
             {
                 _logger.LogInformation("Отправка кода подтверждения на почту пользователя");
-                 var identityUser = await _userManager.FindByIdAsync(userId);
+                var identityUser = await _userManager.FindByIdAsync(userId);
                 var code = await _userManager.GenerateEmailConfirmationTokenAsync(identityUser);
                 var callbackUrl = $"https://localhost:7278/confirmEmail?userId={identityUser.Id}&code={HttpUtility.UrlEncode(code)}";
 

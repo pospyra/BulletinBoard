@@ -7,6 +7,7 @@ using Otiva.AppServeces.Service.IdentityService;
 using Otiva.AppServeces.Service.Photo;
 using Otiva.AppServeces.Service.User;
 using Otiva.Contracts.AdDto;
+using Otiva.Domain;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -40,7 +41,7 @@ namespace Otiva.AppServeces.Service.Ad
             _logger = logger;
         }
 
-        public async Task<Guid> CreateAdAsync(CreateOrUpdateAdRequest createAd, CancellationToken cancellation)
+        public async Task<Guid> CreateAdAsync(CreateAdRequest createAd, CancellationToken cancellation)
         {
             _logger.LogInformation("Создание объявления");
             if (cancellation.IsCancellationRequested)
@@ -79,7 +80,7 @@ namespace Otiva.AppServeces.Service.Ad
             await _adRepository.DeleteAsync(existingAd,cancellation);
         }
 
-        public async Task<InfoAdResponse> EditAdAsync(Guid Id, CreateOrUpdateAdRequest editAd, CancellationToken cancellation)
+        public async Task<InfoAdResponse> EditAdAsync(Guid Id, UpdateAdRequest editAdRequest, CancellationToken cancellation)
         {
             _logger.LogInformation("Редактирование объявления");
 
@@ -87,9 +88,9 @@ namespace Otiva.AppServeces.Service.Ad
             if (existingAd == null)
                 throw new Exception("Объявления с таким идентификатором не сущесвует");
 
-            await _adRepository.EditAdAsync(_mapper.Map(editAd, existingAd), cancellation);
+            await _adRepository.EditAdAsync(_mapper.Map(editAdRequest, existingAd), cancellation);
 
-            return _mapper.Map<InfoAdResponse>(editAd);
+            return _mapper.Map<InfoAdResponse>(existingAd);
 
         }
 
