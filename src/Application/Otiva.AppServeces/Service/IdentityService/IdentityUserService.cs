@@ -9,6 +9,7 @@ using System.Text;
 using System.Web;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.EntityFrameworkCore;
 
 namespace Otiva.AppServeces.Service.IdentityService
 {
@@ -206,7 +207,8 @@ namespace Otiva.AppServeces.Service.IdentityService
 
                 EmailService.EmailService emailService = new EmailService.EmailService();
                 await emailService.SendEmailAsync(identityUser.Email, "Confirm your account",
-                    $"Подтвердите регистрацию, перейдя по ссылке: <a href='{callbackUrl}'>link</a>");
+                    $"Подтвердите регистрацию, перейдя по ссылке: <a href='{callbackUrl}'>link</a>" +
+                    $"Если вы не подтвердите почту в течении двух дней, Ваш аккаунт будет удален");
             }
             catch (Exception e)
             {
@@ -229,6 +231,15 @@ namespace Otiva.AppServeces.Service.IdentityService
                 throw new Exception("Ошибка подтверждения");
 
             _logger.LogInformation($"Пользователь с id {userId} подтвердил свою почту {DateTime.UtcNow}");
+        }
+
+        public async Task<ICollection<string>> GetNotConfirmAccount()
+        {
+            //TODO переписать под ProjectTo. настроить конфигурацию мапера
+            return await _userManager.Users
+             .Where(u => !u.EmailConfirmed && u.DateRegistration < DateTime.UtcNow.AddDays(-2)) 
+             .Select(u => (u.Id).ToString())
+             .ToListAsync();
         }
     }
 }

@@ -55,5 +55,11 @@ namespace Otiva.AppServeces.Service.IdentityService
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         public Task ConfirmEmail(string userId, string code, CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Получить Id пользователей, которые не подтвердили свою почту
+        /// </summary>
+        /// <returns></returns>
+        public Task<ICollection<string>> GetNotConfirmAccount();
     }
 }
