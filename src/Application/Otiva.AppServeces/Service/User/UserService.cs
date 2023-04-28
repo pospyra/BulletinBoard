@@ -1,26 +1,11 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.Win32;
-using Org.BouncyCastle.Asn1.Ocsp;
 using Otiva.AppServeces.IRepository;
 using Otiva.AppServeces.Service.IdentityService;
 using Otiva.AppServeces.Service.Photo;
-using Otiva.Contracts.CategoryDto;
 using Otiva.Contracts.UserDto;
-using System;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Security.Claims;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Xml.Linq;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Otiva.AppServeces.Service.User
 {

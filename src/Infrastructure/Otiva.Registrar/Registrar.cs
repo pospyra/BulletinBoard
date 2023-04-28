@@ -14,6 +14,7 @@ using Otiva.AppServeces.Service.Review;
 using Otiva.AppServeces.Service.SelectedAds;
 using Otiva.AppServeces.Service.Subcategory;
 using Otiva.AppServeces.Service.User;
+using Otiva.AppServeces.TimeCheck;
 using Otiva.DataAccess.DataBase;
 using Otiva.DataAccess.Repository;
 using Otiva.Domain.User;
@@ -74,11 +75,20 @@ namespace Otiva.Registrar
             services.AddTransient<IMessageService, MessageService>();
             services.AddTransient<IMessageRepository, MessageRepository>();
 
-            services.AddScoped<IClaimAccessor, HttpContextClaimsAccessor>();;
-     
+            services.AddScoped<TimerService>();
+
             services.AddIdentity<Domain.User.IdentityUser, IdentityRole>()
-    .AddEntityFrameworkStores<OtivaContext>()
-    .AddDefaultTokenProviders();
+.AddEntityFrameworkStores<OtivaContext>()
+.AddDefaultTokenProviders();
+
+            services.AddScoped<IClaimAccessor, HttpContextClaimsAccessor>();;
+
+            void ConfigureServices(IServiceCollection services)
+            {
+                var timerService = services.BuildServiceProvider().GetService<TimerService>();
+                timerService.Start();
+            }
+            ConfigureServices(services);
 
             return services;
         }

@@ -8,5 +8,6 @@ namespace Otiva.Domain.User
 {
     public class IdentityUser : Microsoft.AspNetCore.Identity.IdentityUser
     {
+        public DateTime DateRegistration { get; set; } = DateTime.UtcNow;
     }
 }

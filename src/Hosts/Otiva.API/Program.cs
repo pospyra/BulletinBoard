@@ -1,4 +1,5 @@
 using Otiva.API.Modules;
+using Otiva.AppServeces.TimeCheck;
 using Otiva.Registrar;
 
 var builder = WebApplication.CreateBuilder(args);

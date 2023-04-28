@@ -1,22 +1,9 @@
 ﻿using AutoMapper;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Query.Internal;
 using Microsoft.Extensions.Logging;
 using Otiva.AppServeces.IRepository;
 using Otiva.AppServeces.Service.IdentityService;
 using Otiva.AppServeces.Service.Photo;
-using Otiva.AppServeces.Service.User;
 using Otiva.Contracts.AdDto;
-using Otiva.Domain;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Security.Claims;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Otiva.AppServeces.Service.Ad
 {

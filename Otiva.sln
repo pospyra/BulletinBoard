@@ -29,7 +29,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Otiva.DataAccess", "src\Inf
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Otiva.Contracts", "src\Contracts\Otiva.Contracts\Otiva.Contracts.csproj", "{21AB32E0-E53C-42EA-A232-0D2445599472}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Otiva.Infrastructure", "src\Infrastructure\Otiva.Infrastructure\Otiva.Infrastructure.csproj", "{0D4AEBAA-1379-46B3-B59B-4291C7D661B5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Otiva.Infrastructure", "src\Infrastructure\Otiva.Infrastructure\Otiva.Infrastructure.csproj", "{0D4AEBAA-1379-46B3-B59B-4291C7D661B5}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{D8AF2E0A-98BB-45AD-881A-BF26B77ADB1F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
