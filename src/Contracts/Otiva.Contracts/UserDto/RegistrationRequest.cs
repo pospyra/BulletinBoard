@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Otiva.Contracts.UserDto
 {
-    public class RegistrationOrUpdateRequest
+    public class RegistrationRequest
     {
         [Required]
         public string UserName { get; set; }

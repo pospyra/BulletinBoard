@@ -35,7 +35,7 @@ namespace Otiva.AppServeces.Service.Ad
                 throw new OperationCanceledException();
 
             var newAd = _mapper.Map<Domain.Ad>(createAd);
-            newAd.DomainUserId = Guid.Parse(await _identityService.GetCurrentUserId(cancellation));
+            newAd.DomainUserId = Guid.Parse(await _identityService.GetCurrentUserIdAsync(cancellation));
 
             await _adRepository.Add(newAd, cancellation);
 
@@ -60,7 +60,7 @@ namespace Otiva.AppServeces.Service.Ad
 
             var currentUser = await _identityService.GetCurrentUser(cancellation);
 
-            if (existingAd.DomainUserId != currentUser.Id
+            if (existingAd.DomainUserId != Guid.Parse(currentUser.Id)
                 || currentUser.Role.Contains("User"))
                 throw new Exception("У вас не достаточно прав для работы с этим объвлением");
 
@@ -149,7 +149,7 @@ namespace Otiva.AppServeces.Service.Ad
         {
             _logger.LogInformation("Получение объявлений принадлежавших текущему пользователя");
 
-            var currentUser = await _identityService.GetCurrentUserId(cancellation);
+            var currentUser = await _identityService.GetCurrentUserIdAsync(cancellation);
 
             var res = await _adRepository.GetAllAsync(cancellation);
             return res

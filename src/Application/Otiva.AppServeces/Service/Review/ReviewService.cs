@@ -37,7 +37,7 @@ namespace Otiva.AppServeces.Service.Review
         {
             _logger.LogInformation($"Оставление отзыва на продавца");
             var newReview = _mapper.Map<Domain.Review>(createReview);
-            newReview.CustomerId = Guid.Parse(await _identityService.GetCurrentUserId(cancellation));
+            newReview.CustomerId = Guid.Parse(await _identityService.GetCurrentUserIdAsync(cancellation));
 
             await _reviewRepository.Add(newReview, cancellation);
             return newReview.Id;

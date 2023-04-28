@@ -35,7 +35,7 @@ namespace Otiva.AppServeces.Service.SelectedAds
 
         public async Task<InfoSelectedResponse> AddSelectedAsync(Guid AdId, CancellationToken cancellation)
         {
-            var userId =  Guid.Parse(await _identityService.GetCurrentUserId(cancellation));
+            var userId =  Guid.Parse(await _identityService.GetCurrentUserIdAsync(cancellation));
             var selected = new Domain.ItemSelectedAd()
             {
                 AdId = AdId,
@@ -56,7 +56,7 @@ namespace Otiva.AppServeces.Service.SelectedAds
 
         public async Task<IReadOnlyCollection<InfoSelectedResponse>> GetSelectedUsersAsync(int take, int skip, CancellationToken cancellation)
         {
-            var currentUserId = Guid.Parse(await _identityService.GetCurrentUserId(cancellation));
+            var currentUserId = Guid.Parse(await _identityService.GetCurrentUserIdAsync(cancellation));
             return await _selectedadRepository.GetAll(cancellation)
                .Where(x => x.DomainUserId == currentUserId)
                .Select(a=> new InfoSelectedResponse()

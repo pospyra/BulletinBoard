@@ -14,11 +14,9 @@ namespace Otiva.API.Controllers
     public class UserController : ControllerBase
     {
         public readonly IUserService _userService;
-        public readonly IIdentityUserService _identityService;
-        public UserController(IUserService userService, IIdentityUserService identityService)
+        public UserController(IUserService userService)
         {
             _userService = userService;
-            _identityService = identityService;
         }
 
         /// <summary>
@@ -37,19 +35,6 @@ namespace Otiva.API.Controllers
         }
 
         /// <summary>
-        /// Получить текущего пользователя
-        /// </summary>
-        /// <param name="cancellation"></param>
-        /// <returns></returns>
-        [HttpGet("currentUser")]
-        [ProducesResponseType(typeof(IReadOnlyCollection<InfoUserResponse>), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> GetCurrenUserId(CancellationToken cancellation)
-        {
-            var result = await _identityService.GetCurrentUserId(cancellation);
-            return Ok(result);
-        }
-
-        /// <summary>
         /// Получить пользователя по Id
         /// </summary>
         /// <param name="id"></param>
@@ -64,40 +49,16 @@ namespace Otiva.API.Controllers
         }
 
         /// <summary>
-        /// Подтвердить почту
+        /// Получить текущего пользователя
         /// </summary>
-        /// <param name="userId"></param>
-        /// <param name="code">Код подтверждения</param>
+        /// <param name="id"></param>
         /// <returns></returns>
-        [HttpGet("confirmEmail")]
-        [AllowAnonymous]
-        public async Task<IActionResult> ConfirmEmail(string userId, string code, CancellationToken cancellation)
+        [HttpGet("/user/current")]
+        [ProducesResponseType(typeof(IReadOnlyCollection<InfoUserResponse>), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> GetCurrentDomainUser( CancellationToken cancellation)
         {
-            await _identityService.ConfirmEmail(userId, code, cancellation);
-            return Ok();
-        }
-
-        //[HttpPost("addRole")]
-        //[ProducesResponseType(typeof(IReadOnlyCollection<InfoUserResponse>), StatusCodes.Status200OK)]
-        //public async Task<IActionResult> AddUserToRole(Guid userId, string roleName)
-        //{
-        //    var res = await _userService.AddUserToRole(userId, roleName);
-
-        //    return Ok(res);
-        //}
-
-        /// <summary>
-        /// Аутентификация пользователя
-        /// </summary>
-        /// <param name="userLogin"></param>
-        /// <returns></returns>
-        [HttpPost("login")]
-        [ProducesResponseType(typeof(IReadOnlyCollection<InfoUserResponse>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> Login(LoginRequest userLogin, CancellationToken cancellation)
-        {
-            var token = await _identityService.Login(userLogin, cancellation);
-
-            return Ok(new { Token = token, Message = "Success" });
+            var result = await _userService.GetCurrentDomainUserAsync( cancellation);
+            return Ok(result);
         }
 
         /// <summary>
@@ -108,7 +69,7 @@ namespace Otiva.API.Controllers
         /// <returns></returns>
         [HttpPost("/registration")]
         [ProducesResponseType(typeof(IReadOnlyCollection<InfoUserResponse>), (int)HttpStatusCode.Created)]
-        public async Task<IActionResult> Registration([FromQuery]RegistrationOrUpdateRequest registration, CancellationToken cancellation)
+        public async Task<IActionResult> Registration([FromQuery]RegistrationRequest registration, CancellationToken cancellation)
         {
 
             var result = await _userService.RegistrationAsync(registration, cancellation);
@@ -126,19 +87,10 @@ namespace Otiva.API.Controllers
         [Authorize]
         [HttpPut("/user/update/{id}")]
         [ProducesResponseType(typeof(IReadOnlyCollection<InfoUserResponse>), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> EditUserAsync(Guid id, RegistrationOrUpdateRequest edit, IFormFile file, CancellationToken cancellation)
+        public async Task<IActionResult> EditUserAsync(Guid id, UpdateUserRequest edit, CancellationToken cancellation)
         {
-            byte[] photo;
-            await using (var ms = new MemoryStream())
-            await using (var fs = file.OpenReadStream())
-            {
-                await fs.CopyToAsync(ms);
-                photo = ms.ToArray();
-
-                var res = await _userService.EditUserAsync(id, edit, photo, cancellation);
-
+                var res = await _userService.EditUserAsync(id, edit, cancellation);
                 return Ok(res);
-            }
         }
 
         /// <summary>
@@ -146,7 +98,7 @@ namespace Otiva.API.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-       // [Authorize]
+        [Authorize]
         [HttpDelete("/user/delete/{id}")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]

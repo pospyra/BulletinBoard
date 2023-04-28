@@ -11,24 +11,20 @@ namespace Otiva.AppServeces.Service.User
 {
     public class UserService : IUserService
     {
-        private readonly IConfiguration _configuration;
         private readonly IUserRepository _userRepository;
         private readonly IIdentityUserService _identityService;
         private readonly IMapper _mapper;
         private readonly IPhotoService _photoService;
         private readonly ILogger<UserService> _logger;
 
-        public UserService(
-            IUserRepository userRepository, 
+        public UserService
+            (IUserRepository userRepository, 
             IMapper mapper,
-            IConfiguration configuration,
             IIdentityUserService identityService,
-            ILogger<UserService> logger
-            )
+            ILogger<UserService> logger)
         {
             _userRepository = userRepository;
             _mapper = mapper;
-            _configuration = configuration;
             _identityService = identityService;
             _logger = logger;
         }
@@ -39,28 +35,28 @@ namespace Otiva.AppServeces.Service.User
 
             var delUser = await _userRepository.FindByIdAsync(id, cancellation);
             if (delUser == null)
-               throw new Exception("Пользователь с данным идентификатором не найден");
+                throw new Exception("Пользователь с данным идентификатором не найден");
 
             await _userRepository.DeleteAsync(delUser, cancellation);
-
         }
 
-        public async Task<InfoUserResponse> EditUserAsync(Guid Id, RegistrationOrUpdateRequest update, byte[] photo, CancellationToken cancellation)
+        public async Task<InfoUserResponse> EditUserAsync(Guid Id, UpdateUserRequest update, CancellationToken cancellation)
         {
             var existingAccount = await _userRepository.FindByIdAsync(Id, cancellation);
             if (existingAccount == null)
                 throw new Exception("Пользователь с таким идентификатором не найден");
 
-            if (photo != null)
+            if (update.PhotoId != null)
             {
-                if (photo.Length > 5242880)
-                    throw new Exception("Слишклм большой размер фото");
-                existingAccount.KodBase64 = Convert.ToBase64String(photo, 0, photo.Length);
+                foreach (var photoId in update.PhotoId)
+                {
+                    await _photoService.SetPhotoUserAsync(photoId, existingAccount.Id, cancellation);
+                }
             }
+            await _userRepository.EditUserAsync(_mapper.Map(update, existingAccount), cancellation);
+            await _identityService.EditIdentityUser(Id.ToString(), update, cancellation);
 
-            await _userRepository.EditAdAsync(_mapper.Map(update, existingAccount), cancellation);
-
-            return _mapper.Map<InfoUserResponse>(update);
+            return _mapper.Map<InfoUserResponse>(existingAccount);
         }
 
         public async Task<IReadOnlyCollection<InfoUserResponse>> GetAllAsync(int take, int skip, CancellationToken cancellation)
@@ -72,8 +68,7 @@ namespace Otiva.AppServeces.Service.User
                     UserName= a.UserName,
                     Email= a.Email,
                     Region   = a.Region,
-                    PhoneNumber = a.PhoneNumber,
-                    KodBase64 = a.KodBase64
+                    PhoneNumber = a.PhoneNumber
                 }).ToListAsync();
         }
 
@@ -86,8 +81,14 @@ namespace Otiva.AppServeces.Service.User
             return _mapper.Map<InfoUserResponse>(existingUser);
         }
 
+        public async Task<InfoUserResponse> GetCurrentDomainUserAsync( CancellationToken cancellation)
+        {
+            var existingUserId = await _identityService.GetCurrentUserIdAsync(cancellation);
+            var existingUser = await _userRepository.FindByIdAsync(Guid.Parse(existingUserId), cancellation);
+            return _mapper.Map<InfoUserResponse>(existingUser);
+        }
 
-        public async Task<Guid> RegistrationAsync(RegistrationOrUpdateRequest registration, CancellationToken cancellation)
+        public async Task<Guid> RegistrationAsync(RegistrationRequest registration, CancellationToken cancellation)
         {
            var existingUser = _userRepository.GetAll(cancellation)
            .Where(x => x.Email == registration.Email).FirstOrDefault();

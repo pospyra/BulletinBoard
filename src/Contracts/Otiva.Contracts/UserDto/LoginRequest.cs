@@ -16,7 +16,6 @@ namespace Otiva.Contracts.UserDto
         public string Email { get; set; }
 
         [Required]
-      //  [MinLength(6, ErrorMessage ="Пароль должен содержать не менее 6ти символов")]
         public string Password { get; set; }
     }
 }

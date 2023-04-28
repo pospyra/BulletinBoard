@@ -20,15 +20,13 @@ namespace Otiva.Domain.User
 
         public string Password { get; set; }
 
-        public string Region { get; set; }
+        public string Region { get; set; } 
 
         public string PhoneNumber { get; set; }
 
         public DateTime DateBirthday { get; set; }
 
-        public DateTime RegistrationDateTime { get; set; } = DateTime.UtcNow;
-
-        public string? KodBase64 { get; set; }
+        public DateTime DateRegistration { get; set; } = DateTime.UtcNow;
         
         public ICollection<Message> SentMessages { get; set; }
         public ICollection<Message> ReceivedMessages { get; set; }

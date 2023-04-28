@@ -35,7 +35,7 @@ namespace Otiva.DataAccess.Repository
             await _baseRepository.DeleteAsync(del);
         }
 
-        public async Task EditAdAsync(DomainUser edit, CancellationToken cancellation)
+        public async Task EditUserAsync(DomainUser edit, CancellationToken cancellation)
         {
             if (cancellation.IsCancellationRequested)
                 throw new OperationCanceledException();

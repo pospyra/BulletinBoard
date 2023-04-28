@@ -38,7 +38,7 @@ namespace Otiva.AppServeces.Service.Message
             if (mesDel == null)
                 throw new InvalidOperationException("Сообщения с таким идентификатором не найдено");
 
-            var existingUser = Guid.Parse(await _identityService.GetCurrentUserId(cancellation));
+            var existingUser = Guid.Parse(await _identityService.GetCurrentUserIdAsync(cancellation));
 
             if (mesDel.SenderId != existingUser)
             {
@@ -59,7 +59,7 @@ namespace Otiva.AppServeces.Service.Message
             if (existingMessage == null)
                 throw new InvalidOperationException("Сообщения с таким идентификатором не найдено");
 
-            var existingUser = Guid.Parse(await _identityService.GetCurrentUserId(cancellation));
+            var existingUser = Guid.Parse(await _identityService.GetCurrentUserIdAsync(cancellation));
 
             if (existingMessage.SenderId != existingUser)
             {
@@ -78,7 +78,7 @@ namespace Otiva.AppServeces.Service.Message
 
         public async Task<IReadOnlyCollection<InfoMessageResponse>> GetMessageFromChatAsync(Guid user2_Id, CancellationToken cancellation)
         {
-            var user1_Id = Guid.Parse(await _identityService.GetCurrentUserId(cancellation));
+            var user1_Id = Guid.Parse(await _identityService.GetCurrentUserIdAsync(cancellation));
 
             return await _messageRepository.GetAll(cancellation)
                 .Where(x=>x.SenderId == user1_Id && x.ReceiverId == user2_Id 
@@ -98,7 +98,7 @@ namespace Otiva.AppServeces.Service.Message
         public async Task<Guid> PostMessageAsync(PostMessageRequest message, CancellationToken cancellation)
         {
             var newMessage = _mapper.Map<Domain.Message>(message);
-            newMessage.SenderId = Guid.Parse(await _identityService.GetCurrentUserId(cancellation));
+            newMessage.SenderId = Guid.Parse(await _identityService.GetCurrentUserIdAsync(cancellation));
 
             await _messageRepository.Add(newMessage, cancellation);
             return newMessage.Id;

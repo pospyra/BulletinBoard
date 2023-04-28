@@ -4,6 +4,36 @@
         <name>Otiva.API</name>
     </assembly>
     <members>
+        <member name="M:Otiva.API.Controllers.AccountController.GetCurrenUserId(System.Threading.CancellationToken)">
+            <summary>
+            Получить id текущего пользователя
+            </summary>
+            <param name="cancellation"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Otiva.API.Controllers.AccountController.ConfirmEmail(System.String,System.String,System.Threading.CancellationToken)">
+            <summary>
+            Подтвердить почту
+            </summary>
+            <param name="userId"></param>
+            <param name="code">Код подтверждения</param>
+            <returns></returns>
+        </member>
+        <member name="M:Otiva.API.Controllers.AccountController.ChangePasswordAsync(Otiva.Contracts.UserDto.ChangePassword,System.Threading.CancellationToken)">
+            <summary>
+            Изменить пароль
+            </summary>
+            <param name="changePass"></param>
+            <param name="cancellation"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Otiva.API.Controllers.AccountController.Login(Otiva.Contracts.UserDto.LoginRequest,System.Threading.CancellationToken)">
+            <summary>
+            Аутентификация пользователя
+            </summary>
+            <param name="userLogin"></param>
+            <returns></returns>
+        </member>
         <member name="T:Otiva.API.Controllers.AdController">
             <summary>
             Контроллер для работы с объявлениями
@@ -230,13 +260,6 @@
             <param name="skip"></param>
             <returns></returns>
         </member>
-        <member name="M:Otiva.API.Controllers.UserController.GetCurrenUserId(System.Threading.CancellationToken)">
-            <summary>
-            Получить текущего пользователя
-            </summary>
-            <param name="cancellation"></param>
-            <returns></returns>
-        </member>
         <member name="M:Otiva.API.Controllers.UserController.GetById(System.Guid,System.Threading.CancellationToken)">
             <summary>
             Получить пользователя по Id
@@ -244,22 +267,14 @@
             <param name="id"></param>
             <returns></returns>
         </member>
-        <member name="M:Otiva.API.Controllers.UserController.ConfirmEmail(System.String,System.String,System.Threading.CancellationToken)">
+        <member name="M:Otiva.API.Controllers.UserController.GetCurrentDomainUser(System.Threading.CancellationToken)">
             <summary>
-            Подтвердить почту
+            Получить текущего пользователя
             </summary>
-            <param name="userId"></param>
-            <param name="code">Код подтверждения</param>
+            <param name="id"></param>
             <returns></returns>
         </member>
-        <member name="M:Otiva.API.Controllers.UserController.Login(Otiva.Contracts.UserDto.LoginRequest,System.Threading.CancellationToken)">
-            <summary>
-            Аутентификация пользователя
-            </summary>
-            <param name="userLogin"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Otiva.API.Controllers.UserController.Registration(Otiva.Contracts.UserDto.RegistrationOrUpdateRequest,System.Threading.CancellationToken)">
+        <member name="M:Otiva.API.Controllers.UserController.Registration(Otiva.Contracts.UserDto.RegistrationRequest,System.Threading.CancellationToken)">
             <summary>
             Регистрация пользователя
             </summary>
@@ -267,7 +282,7 @@
             <param name="file"></param>
             <returns></returns>
         </member>
-        <member name="M:Otiva.API.Controllers.UserController.EditUserAsync(System.Guid,Otiva.Contracts.UserDto.RegistrationOrUpdateRequest,Microsoft.AspNetCore.Http.IFormFile,System.Threading.CancellationToken)">
+        <member name="M:Otiva.API.Controllers.UserController.EditUserAsync(System.Guid,Otiva.Contracts.UserDto.UpdateUserRequest,System.Threading.CancellationToken)">
             <summary>
             Редактировать данные пользователя
             </summary>

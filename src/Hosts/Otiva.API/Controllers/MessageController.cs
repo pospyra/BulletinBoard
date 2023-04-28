@@ -34,7 +34,7 @@ namespace Otiva.API.Controllers
         [ProducesResponseType(typeof(IReadOnlyCollection<InfoMessageResponse>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetMessageFromChatAsync(Guid user2_Id, CancellationToken cancellation)
         {
-            var user1_Id = Guid.Parse(await _identityService.GetCurrentUserId(cancellation));
+            var user1_Id = Guid.Parse(await _identityService.GetCurrentUserIdAsync(cancellation));
 
             if (user1_Id == user2_Id)
                 throw new Exception("Нельзя создать чат с самим собой");

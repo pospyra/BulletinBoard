@@ -23,14 +23,16 @@ namespace Otiva.AppServeces.Service.IdentityService
         /// <param name="userReg"></param>
         /// <param name="cancellation"></param>
         /// <returns></returns>
-        public Task<string> RegisterIdentityUser(RegistrationOrUpdateRequest userReg, CancellationToken cancellation);
+        public Task<string> RegisterIdentityUser(RegistrationRequest userReg, CancellationToken cancellation);
+
+        public Task EditIdentityUser(string id,UpdateUserRequest userUpdate, CancellationToken cancellation);
 
         /// <summary>
         /// Получить Id текущего пользователя
         /// </summary>
         /// <param name="cancellation"></param>
         /// <returns></returns>
-        public Task<string> GetCurrentUserId(CancellationToken cancellation);
+        public Task<string> GetCurrentUserIdAsync(CancellationToken cancellation);
 
         /// <summary>
         /// Удалить IdentityUser
@@ -45,7 +47,7 @@ namespace Otiva.AppServeces.Service.IdentityService
         /// </summary>
         /// <param name="cancellation"></param>
         /// <returns></returns>
-        public Task<InfoUserResponse> GetCurrentUser(CancellationToken cancellation);
+        public Task<InfoIdentityUserResponse> GetCurrentUser(CancellationToken cancellation);
 
         /// <summary>
         /// Подтвердить пчту
@@ -57,9 +59,17 @@ namespace Otiva.AppServeces.Service.IdentityService
         public Task ConfirmEmail(string userId, string code, CancellationToken cancellationToken);
 
         /// <summary>
+        /// Поменять пароль
+        /// </summary>
+        /// <param name="changePassword"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public Task ChangePasswordAsync(ChangePassword changePassword, CancellationToken cancellationToken);
+
+        /// <summary>
         /// Получить Id пользователей, которые не подтвердили свою почту
         /// </summary>
         /// <returns></returns>
-        public Task<ICollection<string>> GetNotConfirmAccount();
+        public Task<ICollection<Guid>> GetNotConfirmAccount();
     }
 }

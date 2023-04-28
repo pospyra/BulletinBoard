@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using Otiva.AppServeces.Service.IdentityService;
+using Otiva.AppServeces.Service.User;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,18 +15,21 @@ namespace Otiva.AppServeces.TimeCheck
     {
         private static Timer _timer;
         private IIdentityUserService _identityService;
-        ILogger<TimerService> _logger;
+        private ILogger<TimerService> _logger;
+        private IUserService _userService;
         public TimerService(
             IIdentityUserService identityService,
+            IUserService userService,
             ILogger<TimerService> logger)
         { 
             _identityService = identityService;
             _logger = logger;
+            _userService = userService;
         }
 
         public void Start()
         {
-            const int millisecond = 240000;//4 часа 
+            const int millisecond = 240000;//4 часа //на защите для демонстрации поменять на 60000 - 1 минута 
             _timer = new Timer(millisecond); 
             _timer.Elapsed += new ElapsedEventHandler(DeleteUnverifiedAccount);
             _timer.AutoReset = true;
@@ -38,7 +42,7 @@ namespace Otiva.AppServeces.TimeCheck
             var delUsers = await _identityService.GetNotConfirmAccount();
             foreach (var userId in delUsers)
             {
-                await _identityService.DeleteAsync(userId, cancellation);
+                await _userService.DeleteAsync(userId, cancellation);
             }
 
             _logger.LogInformation("Из базы данных были удалены пользователи, которые не подтвердили свою почту");

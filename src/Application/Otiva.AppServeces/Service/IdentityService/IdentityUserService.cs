@@ -22,9 +22,8 @@ namespace Otiva.AppServeces.Service.IdentityService
         private readonly IMemoryCache _memoryCache;
         private readonly ILogger<IdentityUserService> _logger;
 
-
-        public IdentityUserService(
-            UserManager<Domain.User.IdentityUser> userManager,
+        public IdentityUserService
+            (UserManager<Domain.User.IdentityUser> userManager,
             IClaimAccessor claimAccessor,
             IConfiguration configuration,
             IMapper mapper,
@@ -39,7 +38,6 @@ namespace Otiva.AppServeces.Service.IdentityService
             _memoryCache = memoryCache;
         }
 
-
         public async Task DeleteAsync(string Id, CancellationToken cancellation)
         {
             _logger.LogInformation("Удаление IdentityUser из базы данных");
@@ -47,116 +45,19 @@ namespace Otiva.AppServeces.Service.IdentityService
             var identityUSer = await _userManager.FindByIdAsync(Id);
             if (identityUSer == null)
                 throw new Exception("Пользователь с данным идентификатором не найден");
+
             await _userManager.DeleteAsync(identityUSer);
         }
 
-        public async Task<InfoUserResponse> GetCurrentUser(CancellationToken cancellation)
+        public async Task EditIdentityUser(string id, UpdateUserRequest userUpdate, CancellationToken cancellation)
         {
-            _logger.LogInformation("Получение текущего пользователя");
-
-            var claim = await _claimAccessor.GetClaims(cancellation);
-            var claimId = claim.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-
-            if (string.IsNullOrWhiteSpace(claimId))
-                throw new Exception("Пользователь не авторизован");
-
-            var user = await _userManager.FindByIdAsync(claimId);
-
-            if (user == null)
-                throw new Exception($"Не найдент пользователь с идентификаторром {claimId}");
-
-            var userResponse = _mapper.Map<InfoUserResponse>(user);
-            userResponse.Id = Guid.Parse(user.Id);
-            userResponse.Role = await _userManager.GetRolesAsync(user);
-
-            return userResponse;
+            var existingUser = await _userManager.FindByIdAsync(id);
+            var resUpdating = await _userManager.UpdateAsync(_mapper.Map(userUpdate, existingUser));
+            if (!resUpdating.Succeeded)
+                throw new Exception("Данные IdentityUser не удалось обновить");
         }
 
-        public async Task<string> GetCurrentUserId(CancellationToken cancellation)
-        {
-            var cacheKey = "CurrentUserId";
-            var userId = _memoryCache.Get<string>(cacheKey);
-
-            if (userId != null)
-            {
-                _logger.LogInformation("Идентификатор текущего пользователя взят из кэша");
-                return userId;
-            }
-
-            _logger.LogInformation("Получение Id текущего пользователя");
-
-            if (cancellation.IsCancellationRequested)
-                throw new OperationCanceledException();
-
-            var claim = await _claimAccessor.GetClaims(cancellation);
-            var claimId = claim.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-
-            if (string.IsNullOrWhiteSpace(claimId))
-                throw new Exception("Не найдент пользователь с идентификатором");
-
-            var user = await _userManager.FindByIdAsync(claimId);
-
-            if (user == null)
-                throw new Exception($"Не найдент пользователь с идентификаторром {claim}");
-
-            var options = new MemoryCacheEntryOptions
-            {
-                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10)
-            };
-
-            _memoryCache.Set(cacheKey, user.Id, options); 
-            return user.Id;
-        }
-
-        public async Task<string> Login(LoginRequest userLogin, CancellationToken cancellation)
-        {
-            _logger.LogInformation("Аутентификация пользователя в системе");
-
-            var existingUser = await _userManager.FindByEmailAsync(userLogin.Email);
-
-            if (existingUser == null)
-                throw new Exception($"Пользователь с email '{userLogin.Email}' не существует");
-
-            var checkPass = await _userManager.CheckPasswordAsync(existingUser, userLogin.Password);
-            if (!checkPass)
-                throw new Exception("Неверная почта или пароль");
-
-            var IsEmailConfirm = await _userManager.IsEmailConfirmedAsync(existingUser);
-            if (!IsEmailConfirm)
-                throw new Exception("Почта не подтверждена");
-
-            var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.NameIdentifier, existingUser.Id.ToString()),
-                new Claim(ClaimTypes.Name, existingUser.UserName)
-            };
-
-            var userRole = await _userManager.GetRolesAsync(existingUser);
-            claims.AddRange(userRole.Select(role => new Claim(ClaimTypes.Role, role)));
-
-            var secretKey = _configuration["Token:SecretKey"];
-
-            var token = new JwtSecurityToken
-                (
-                claims: claims,
-                expires: DateTime.UtcNow.AddDays(1),
-                notBefore: DateTime.UtcNow,
-                signingCredentials: new SigningCredentials(
-                    new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey)),
-                    SecurityAlgorithms.HmacSha256)
-               );
-
-            var result = new JwtSecurityTokenHandler().WriteToken(token);
-
-            if (cancellation.IsCancellationRequested)
-                throw new OperationCanceledException();
-
-            _logger.LogInformation("Аутентификация прошла успешно");
-
-            return result;
-        }
-
-        public async Task<string> RegisterIdentityUser(RegistrationOrUpdateRequest userReg, CancellationToken cancellation)
+        public async Task<string> RegisterIdentityUser(RegistrationRequest userReg, CancellationToken cancellation)
         {
             _logger.LogInformation("Регистрация пользователя в системе");
 
@@ -192,6 +93,110 @@ namespace Otiva.AppServeces.Service.IdentityService
 
             _logger.LogInformation("Пользователь успешно зарегистрирвоался в системе");
             return newIdentityUser.Id;
+        }
+
+        public async Task<string> Login(LoginRequest userLogin, CancellationToken cancellation)
+        {
+            _logger.LogInformation("Аутентификация пользователя в системе");
+
+            var existingUser = await _userManager.FindByEmailAsync(userLogin.Email);
+
+            if (existingUser == null)
+                throw new Exception($"Пользователь с email '{userLogin.Email}' не существует");
+
+            var checkPass = await _userManager.CheckPasswordAsync(existingUser, userLogin.Password);
+            if (!checkPass)
+                throw new Exception("Неверная почта или пароль");
+
+            var IsEmailConfirm = await _userManager.IsEmailConfirmedAsync(existingUser);
+            if (!IsEmailConfirm)
+                throw new Exception("Почта не подтверждена");
+
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.NameIdentifier, existingUser.Id.ToString()),
+                new Claim(ClaimTypes.Name, existingUser.UserName)
+            };
+            var userRole = await _userManager.GetRolesAsync(existingUser);
+            claims.AddRange(userRole.Select(role => new Claim(ClaimTypes.Role, role)));
+
+            var secretKey = _configuration["Token:SecretKey"];
+
+            var token = new JwtSecurityToken
+                (
+                claims: claims,
+                expires: DateTime.UtcNow.AddDays(1),
+                notBefore: DateTime.UtcNow,
+                signingCredentials: new SigningCredentials(
+                    new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey)),
+                    SecurityAlgorithms.HmacSha256)
+               );
+
+            var result = new JwtSecurityTokenHandler().WriteToken(token);
+
+            if (cancellation.IsCancellationRequested)
+                throw new OperationCanceledException();
+
+            _logger.LogInformation("Аутентификация прошла успешно");
+
+            return result;
+        }
+
+        public async Task<InfoIdentityUserResponse> GetCurrentUser(CancellationToken cancellation)
+        {
+            _logger.LogInformation("Получение текущего пользователя");
+
+            var claim = await _claimAccessor.GetClaims(cancellation);
+            var claimId = claim.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+
+            if (string.IsNullOrWhiteSpace(claimId))
+                throw new Exception("Пользователь не авторизован");
+
+            var user = await _userManager.FindByIdAsync(claimId);
+
+            if (user == null)
+                throw new Exception($"Не найдент пользователь с идентификаторром {claimId}");
+
+            var userResponse = _mapper.Map<InfoIdentityUserResponse>(user);
+            userResponse.Role = await _userManager.GetRolesAsync(user);
+
+            return userResponse;
+        }
+
+        public async Task<string> GetCurrentUserIdAsync(CancellationToken cancellation)
+        {
+            var cacheKey = "CurrentUserId";
+            var userId = _memoryCache.Get<string>(cacheKey);
+
+            if (userId != null)
+            {
+                _logger.LogInformation("Идентификатор текущего пользователя взят из кэша");
+                return userId;
+            }
+
+            _logger.LogInformation("Получение Id текущего пользователя");
+
+            if (cancellation.IsCancellationRequested)
+                throw new OperationCanceledException();
+
+            var claim = await _claimAccessor.GetClaims(cancellation);
+            var claimId = claim.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+
+            if (string.IsNullOrWhiteSpace(claimId))
+                throw new Exception("Не найдент пользователь с идентификатором");
+
+            var user = await _userManager.FindByIdAsync(claimId);
+
+            if (user == null)
+                throw new Exception($"Не найдент пользователь с идентификаторром {claim}");
+
+            var options = new MemoryCacheEntryOptions
+            {
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10)
+            };
+
+            _memoryCache.Set(cacheKey, user.Id, options); 
+            return user.Id;
         }
 
         public async Task SendConfirmMail(string userId, CancellationToken cancellationToken)
@@ -233,12 +238,25 @@ namespace Otiva.AppServeces.Service.IdentityService
             _logger.LogInformation($"Пользователь с id {userId} подтвердил свою почту {DateTime.UtcNow}");
         }
 
-        public async Task<ICollection<string>> GetNotConfirmAccount()
+        public async Task ChangePasswordAsync(ChangePassword changePassword, CancellationToken cancellationToken)
+        {
+            var currntUserId = await GetCurrentUserIdAsync(cancellationToken);
+            var currntUser = await _userManager.FindByIdAsync(currntUserId);
+
+            var result = await _userManager.ChangePasswordAsync(currntUser, changePassword.CurrentPassword, changePassword.NewPassword);
+            if (!result.Succeeded)
+            {
+                _logger.LogInformation("Попытка изменения пароля");
+                throw new ArgumentException("Не удалось изменить пароль. Повторите попытку");
+            }
+        }
+
+        public async Task<ICollection<Guid>> GetNotConfirmAccount()
         {
             //TODO переписать под ProjectTo. настроить конфигурацию мапера
             return await _userManager.Users
              .Where(u => !u.EmailConfirmed && u.DateRegistration < DateTime.UtcNow.AddDays(-2)) 
-             .Select(u => (u.Id).ToString())
+             .Select(u => Guid.Parse(u.Id))
              .ToListAsync();
         }
     }

@@ -19,10 +19,8 @@ namespace Otiva.Contracts.UserDto
 
         public string PhoneNumber { get; set; }
 
+        public DateTime RegistrationDateTime { get; set; }
+
         public DateTime DateBirthday { get; set; }
-
-        public IList<string> Role { get; set; }
-
-        public string KodBase64 { get; set; }
     }
 }

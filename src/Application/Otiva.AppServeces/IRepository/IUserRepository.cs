@@ -20,6 +20,6 @@ namespace Otiva.AppServeces.IRepository
 
         Task DeleteAsync(DomainUser model, CancellationToken cancellation);
 
-        Task EditAdAsync(DomainUser model, CancellationToken cancellation);
+        Task EditUserAsync(DomainUser model, CancellationToken cancellation);
     }
 }
