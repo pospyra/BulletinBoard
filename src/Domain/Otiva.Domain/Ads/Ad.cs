@@ -28,7 +28,7 @@ namespace Otiva.Domain.Ads
 
         public bool IsActive { get; set; } = true;
 
-        public Guid? StatisticsTableAdsId { get; set; }
+        public Guid StatisticsTableAdsId { get; set; }
 
         public Subcategory Subcategory { get; set; }
 

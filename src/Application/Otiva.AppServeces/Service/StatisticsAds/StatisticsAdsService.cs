@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Otiva.AppServeces.IRepository;
 using Otiva.Contracts.CategoryDto;
 using Otiva.Contracts.Statistics;
@@ -28,20 +29,33 @@ namespace Otiva.AppServeces.Service.StatisticsAds
             _statisticsAdsRepository = statisticsAdsRepository;
         }
 
-        public async Task<Guid> CreateStaticsTableAsync(Guid AdId, CancellationToken cancellation)
+        public async Task<IReadOnlyCollection<InfoAdStatisticsResponse>> GetAllAsync(CancellationToken cancellation)
         {
-            var newStatisticsTable = new StatisticsTableAds
+            var statistics = await _statisticsAdsRepository.GetAllAsync(cancellation);
+            return statistics.Select(a=> new InfoAdStatisticsResponse
             {
-                AdId = AdId,
-            };
-
-            await _statisticsAdsRepository.CreateStatistics(newStatisticsTable);
-            return newStatisticsTable.Id;
+                Id = a.Id,
+                AdId = a.AdId,
+                QuantityAddToFavorites = a.QuantityAddToFavorites,
+                QuantityView = a.QuantityView,
+            }).ToList();
         }
 
-        public Task<IReadOnlyCollection<InfoAdStatisticsResponse>> GetAllAsync(CancellationToken cancellation)
+        public async Task<InfoAdStatisticsResponse> GetByAdIdAsync(Guid AdId, CancellationToken cancellation)
         {
-            throw new NotImplementedException();
+            var cacheKey = "AdStatistics";
+            var adStatistics = _memoryCache.Get<InfoAdStatisticsResponse>(cacheKey);
+
+            if (adStatistics != null)
+                return adStatistics;
+
+            var statisticsToAd = await _statisticsAdsRepository.FindWhere(a => a.AdId == AdId);
+            if (statisticsToAd == null)
+                throw new ApplicationException("Статистика по данному объявлению не найдена ");
+
+            var staticsDto = _mapper.Map<InfoAdStatisticsResponse>(statisticsToAd);
+            _memoryCache.Set(cacheKey, staticsDto, TimeSpan.FromMinutes(2));
+            return staticsDto;
         }
     }
 }

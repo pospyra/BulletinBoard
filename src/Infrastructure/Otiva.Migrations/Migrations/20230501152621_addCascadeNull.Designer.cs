@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Otiva.Migrations;
@@ -11,9 +12,11 @@ using Otiva.Migrations;
 namespace Otiva.Migrations.Migrations
 {
     [DbContext(typeof(MigrationsDbContext))]
-    partial class MigrationsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230501152621_addCascadeNull")]
+    partial class addCascadeNull
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -82,7 +85,7 @@ namespace Otiva.Migrations.Migrations
                     b.Property<string>("Region")
                         .HasColumnType("text");
 
-                    b.Property<Guid>("StatisticsTableAdsId")
+                    b.Property<Guid?>("StatisticsTableAdsId")
                         .HasColumnType("uuid");
 
                     b.Property<Guid>("SubcategoryId")
@@ -91,6 +94,8 @@ namespace Otiva.Migrations.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("DomainUserId");
+
+                    b.HasIndex("StatisticsTableAdsId");
 
                     b.HasIndex("SubcategoryId");
 
@@ -113,9 +118,6 @@ namespace Otiva.Migrations.Migrations
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("AdId")
-                        .IsUnique();
 
                     b.ToTable("StatisticsTableAds");
                 });
@@ -362,6 +364,10 @@ namespace Otiva.Migrations.Migrations
                         .WithMany("Ads")
                         .HasForeignKey("DomainUserId");
 
+                    b.HasOne("Otiva.Domain.Ads.StatisticsTableAds", "StatisticsAds")
+                        .WithMany("Ads")
+                        .HasForeignKey("StatisticsTableAdsId");
+
                     b.HasOne("Otiva.Domain.Subcategory", "Subcategory")
                         .WithMany()
                         .HasForeignKey("SubcategoryId")
@@ -370,15 +376,9 @@ namespace Otiva.Migrations.Migrations
 
                     b.Navigation("DomainUser");
 
-                    b.Navigation("Subcategory");
-                });
+                    b.Navigation("StatisticsAds");
 
-            modelBuilder.Entity("Otiva.Domain.Ads.StatisticsTableAds", b =>
-                {
-                    b.HasOne("Otiva.Domain.Ads.Ad", null)
-                        .WithOne("StatisticsAds")
-                        .HasForeignKey("Otiva.Domain.Ads.StatisticsTableAds", "AdId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                    b.Navigation("Subcategory");
                 });
 
             modelBuilder.Entity("Otiva.Domain.ItemSelectedAd", b =>
@@ -453,8 +453,11 @@ namespace Otiva.Migrations.Migrations
             modelBuilder.Entity("Otiva.Domain.Ads.Ad", b =>
                 {
                     b.Navigation("Photos");
+                });
 
-                    b.Navigation("StatisticsAds");
+            modelBuilder.Entity("Otiva.Domain.Ads.StatisticsTableAds", b =>
+                {
+                    b.Navigation("Ads");
                 });
 
             modelBuilder.Entity("Otiva.Domain.Category", b =>

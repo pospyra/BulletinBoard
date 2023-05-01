@@ -11,18 +11,16 @@ namespace Otiva.AppServeces.Service.StatisticsAds
 {
     public interface IStatisticsAdsService
     {
-
         /// <summary>
-        /// Создать категорию
-        /// </summary>
-        /// <param name="name"></param>
-        /// <returns>Id созданной категории</returns>
-        Task<Guid> CreateStaticsTableAsync(Guid AdId, CancellationToken cancellation);
-        
-        /// <summary>
-        /// Получить все категории
+        /// Получить статистику по всем объявлениям 
         /// </summary>
         /// <returns></returns
         Task<IReadOnlyCollection<InfoAdStatisticsResponse>> GetAllAsync(CancellationToken cancellation);
+
+        /// <summary>
+        /// Получить статистику по объявлению
+        /// </summary>
+        /// <returns></returns
+        Task<InfoAdStatisticsResponse> GetByAdIdAsync(Guid AdId, CancellationToken cancellation);
     }
 }

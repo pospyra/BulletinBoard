@@ -16,7 +16,7 @@ namespace Otiva.Contracts.Statistics
         /// <summary>
         /// Идентификатор объявления
         /// </summary>
-        public Guid AdId { get; set; }
+        public Guid? AdId { get; set; }
 
         /// <summary>
         /// Количество просмотров 

@@ -277,6 +277,13 @@
             <param name="Id"></param>
             <returns></returns>
         </member>
+        <member name="M:Otiva.API.Controllers.StatisticsController.GetStatisticsBiAdIdId(System.Guid,System.Threading.CancellationToken)">
+            <summary>
+            Получить статистику объявления
+            </summary>
+            <param name="cancellation"></param>
+            <returns></returns>
+        </member>
         <member name="M:Otiva.API.Controllers.UserController.GetAll(System.Int32,System.Int32,System.Threading.CancellationToken)">
             <summary>
             Получить всех пользователе  

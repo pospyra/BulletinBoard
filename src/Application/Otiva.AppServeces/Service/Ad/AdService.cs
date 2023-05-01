@@ -84,8 +84,7 @@ namespace Otiva.AppServeces.Service.Ad
 
             var currentUser = await _identityService.GetCurrentUser(cancellation);
 
-            if (existingAd.DomainUserId != Guid.Parse(currentUser.Id)
-                || currentUser.Role.Contains("User"))
+            if (existingAd.DomainUserId != Guid.Parse(currentUser.Id))
                 throw new Exception("У вас не достаточно прав для работы с этим объвлением");
 
             await _adRepository.DeleteAsync(existingAd,cancellation);
@@ -102,7 +101,6 @@ namespace Otiva.AppServeces.Service.Ad
             await _adRepository.EditAdAsync(_mapper.Map(editAdRequest, existingAd), cancellation);
 
             return _mapper.Map<InfoAdResponse>(existingAd);
-
         }
 
         public async Task<IReadOnlyCollection<InfoAdResponse>> GetAllAsync(int take, int skip, CancellationToken cancellation)

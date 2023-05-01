@@ -50,7 +50,7 @@ namespace Otiva.Registrar
                 typeof(UserMapProfile), typeof(AdMapProfile),
                 typeof(CategoryMapProfile), typeof(SubcategoryMapProfile),
                 typeof(ReviewMapProfile), typeof(MessageMapProfile),
-                typeof(PhotoMapProfile));
+                typeof(PhotoMapProfile), typeof(StatisticsMapProfile));
 
             services.AddScoped<IIdentityUserService, IdentityUserService>();
 

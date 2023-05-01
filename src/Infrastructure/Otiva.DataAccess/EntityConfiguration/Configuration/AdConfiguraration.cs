@@ -31,6 +31,11 @@ namespace Otiva.DataAccess.EntityConfiguration.Configuration
                 .WithOne(p => p.Ad)
                 .HasForeignKey(p => p.AdId)
                  .OnDelete(DeleteBehavior.Cascade);
+
+            builder.HasOne(a => a.StatisticsAds)
+                .WithOne()
+                .HasForeignKey<StatisticsTableAds>(s => s.AdId)
+                .OnDelete(DeleteBehavior.Cascade);
         } 
     }
 }

@@ -27,10 +27,5 @@ namespace Otiva.Domain.Ads
         /// Количество добавлений объявления в избранные
         /// </summary>
         public int QuantityAddToFavorites { get; set; } = 0;
-
-        /// <summary>
-        /// Коллекция объявлений
-        /// </summary>
-        public ICollection<Ad> Ads { get; set; }
     }
 }
