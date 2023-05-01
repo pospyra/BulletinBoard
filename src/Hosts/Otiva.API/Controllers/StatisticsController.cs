@@ -28,11 +28,18 @@ namespace Otiva.API.Controllers
         /// <returns></returns>
         [HttpGet("statisticsByAdId")]
         [ProducesResponseType(typeof(InfoAdStatisticsResponse), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> GetStatisticsBiAdIdId(Guid adId, CancellationToken cancellation)
+        public async Task<IActionResult> GetStatisticsByAdIdId(Guid adId, CancellationToken cancellation)
         {
             var result = await _statisticsService.GetByAdIdAsync(adId, cancellation);
             return Ok(result);
         }
 
+        [HttpGet("statisticsAllAds")]
+        [ProducesResponseType(typeof(IReadOnlyCollection<InfoAdStatisticsResponse>), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> GetAllStatisticsAd (CancellationToken cancellation)
+        {
+            var result = await _statisticsService.GetAllAsync(cancellation);
+            return Ok(result);
+        }
     }
 }

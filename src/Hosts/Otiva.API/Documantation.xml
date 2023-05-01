@@ -277,7 +277,7 @@
             <param name="Id"></param>
             <returns></returns>
         </member>
-        <member name="M:Otiva.API.Controllers.StatisticsController.GetStatisticsBiAdIdId(System.Guid,System.Threading.CancellationToken)">
+        <member name="M:Otiva.API.Controllers.StatisticsController.GetStatisticsByAdIdId(System.Guid,System.Threading.CancellationToken)">
             <summary>
             Получить статистику объявления
             </summary>
