@@ -12,6 +12,7 @@ using Otiva.AppServeces.Service.Message;
 using Otiva.AppServeces.Service.Photo;
 using Otiva.AppServeces.Service.Review;
 using Otiva.AppServeces.Service.SelectedAds;
+using Otiva.AppServeces.Service.StatisticsAds;
 using Otiva.AppServeces.Service.Subcategory;
 using Otiva.AppServeces.Service.User;
 using Otiva.AppServeces.TimeCheck;
@@ -45,35 +46,41 @@ namespace Otiva.Registrar
 
             services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
 
-            services.AddAutoMapper(typeof(UserMapProfile), typeof(AdMapProfile),
-                typeof(CategoryMapProfile), typeof(SubcategoryMapProfile), typeof(ReviewMapProfile), typeof(MessageMapProfile));
+            services.AddAutoMapper(
+                typeof(UserMapProfile), typeof(AdMapProfile),
+                typeof(CategoryMapProfile), typeof(SubcategoryMapProfile),
+                typeof(ReviewMapProfile), typeof(MessageMapProfile),
+                typeof(PhotoMapProfile));
 
             services.AddScoped<IIdentityUserService, IdentityUserService>();
 
-            services.AddTransient<IAdService, AdService>();
-            services.AddTransient<IAdRepository, AdRepository>();
+            services.AddScoped<IStatisticsAdsRepository, StatisticsAdsRepository>();
+            services.AddScoped<IStatisticsAdsService, StatisticsAdsService>();
 
-            services.AddTransient<IPhotoService, PhotoService>();
-            services.AddTransient<IPhotoAdsRepository, PhotoAdsRepository>();
-            services.AddTransient<IPhotoUsersRepository, PhotoUsersRepository>();
+            services.AddScoped<IAdService, AdService>();
+            services.AddScoped<IAdRepository, AdRepository>();
 
-            services.AddTransient<IUserService, UserService>();
-            services.AddTransient<IUserRepository, UserRepository>();
+            services.AddScoped<IPhotoService, PhotoService>();
+            services.AddScoped<IPhotoAdsRepository, PhotoAdsRepository>();
+            services.AddScoped<IPhotoUsersRepository, PhotoUsersRepository>();
 
-            services.AddTransient<ISubcategoryService, SubcategoryService>();
-            services.AddTransient<ISubcategoryRepository, SubcategoryRepository>();
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IUserRepository, UserRepository>();
+
+            services.AddScoped<ISubcategoryService, SubcategoryService>();
+            services.AddScoped<ISubcategoryRepository, SubcategoryRepository>();
 
             services.AddScoped<ICategoryService, CategoryService>();
-            services.AddTransient<ICategoryRepository, CategoryRepository>();
+            services.AddScoped<ICategoryRepository, CategoryRepository>();
 
-            services.AddTransient<ISelectedAdsService, SelectedAdsService>();
-            services.AddTransient<ISelectedAdsRepository, SelectedAdsRepository>();
+            services.AddScoped<ISelectedAdsService, SelectedAdsService>();
+            services.AddScoped<ISelectedAdsRepository, SelectedAdsRepository>();
 
-            services.AddTransient<IReviewService, ReviewService>();
-            services.AddTransient<IReviewRepository, ReviewRepository>();
+            services.AddScoped<IReviewService, ReviewService>();
+            services.AddScoped<IReviewRepository, ReviewRepository>();
 
-            services.AddTransient<IMessageService, MessageService>();
-            services.AddTransient<IMessageRepository, MessageRepository>();
+            services.AddScoped<IMessageService, MessageService>();
+            services.AddScoped<IMessageRepository, MessageRepository>();
 
             services.AddScoped<TimerService>();
 
