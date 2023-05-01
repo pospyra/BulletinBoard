@@ -2,6 +2,7 @@
 using Otiva.Contracts.AdDto;
 using Otiva.Contracts.SelectedAdDto;
 using Otiva.Domain;
+using Otiva.Domain.Ads;
 using System;
 using System.Collections.Generic;
 using System.Linq;

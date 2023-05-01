@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Otiva.Contracts.PhotoDto;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -22,5 +23,7 @@ namespace Otiva.Contracts.UserDto
         public DateTime RegistrationDateTime { get; set; }
 
         public DateTime DateBirthday { get; set; }
+
+        public ICollection<InfoPhotoResponse> Photos { get; set; }
     }
 }

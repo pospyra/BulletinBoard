@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Otiva.AppServeces.IRepository;
+using Otiva.Domain;
 using Otiva.Domain.User;
 using Otiva.Infrastructure.BaseRepository;
 using System;
@@ -58,12 +59,13 @@ namespace Otiva.DataAccess.Repository
             return await data.Where(predicate).FirstOrDefaultAsync();
         }
 
-        public IQueryable<DomainUser> GetAll(CancellationToken cancellation)
+        public async Task<IReadOnlyCollection<DomainUser>> GetAllAsync(CancellationToken cancellation)
         {
             if (cancellation.IsCancellationRequested)
                 throw new OperationCanceledException();
 
-            return _baseRepository.GetAll();
+            return await _baseRepository.GetAll()
+                .ToListAsync();
         }
     }
 }

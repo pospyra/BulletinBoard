@@ -8,7 +8,9 @@ using Otiva.AppServeces.Service.IdentityService;
 using Otiva.AppServeces.Service.Photo;
 using Otiva.AppServeces.Service.StatisticsAds;
 using Otiva.Contracts.AdDto;
+using Otiva.Contracts.PhotoDto;
 using Otiva.Domain.Ads;
+using Otiva.Domain.Photos;
 
 namespace Otiva.AppServeces.Service.Ad
 {
@@ -116,7 +118,7 @@ namespace Otiva.AppServeces.Service.Ad
                 Price = x.Price,
                 Region = x.Region,
                 SubcategoryId = x.SubcategoryId,
-                UserId = x.DomainUserId,
+                DomainUserId = x.DomainUserId,
                 Photos = x.Photos?.Select(a => new Contracts.PhotoDto.InfoPhotoResponse
                 {
                     PhotoId = a.Id,
@@ -134,10 +136,10 @@ namespace Otiva.AppServeces.Service.Ad
             {
                 Id = p.Id,
                 Name = p.Name,
-                UserId = p.DomainUserId,
-                CategoryId = search.CategoryId,
+                DomainUserId = p.DomainUserId,
                 SubcategoryId = p.SubcategoryId,
                 Description = p.Description,
+                CreateTime= p.CreateTime,
                 Region = p.Region,
                 Price = p.Price,
                 QuantityView = p.StatisticsAds.QuantityView,
@@ -167,17 +169,25 @@ namespace Otiva.AppServeces.Service.Ad
         {
             _logger.LogInformation($"Получение объявления по идентификатору {id}");
 
-            var exitAd = _adRepository.GetAll(cancellation).Include(x=>x.StatisticsAds).Where(x => x.Id == id).FirstOrDefault();
+            var existAd = _adRepository.GetAll(cancellation)
+                .Include(x=>x.StatisticsAds).Include(a=>a.Photos)
+                .Where(x => x.Id == id).FirstOrDefault();
 
-            if (exitAd == null)
+            if (existAd == null)
                 throw new Exception("Объявления с таким идентификатором не сущесвует");
 
-            var statistics = exitAd.StatisticsAds;
+            var statistics = existAd.StatisticsAds;
             statistics.QuantityView = statistics.QuantityView +1;
             statistics.QuantityAddToFavorites = statistics.QuantityAddToFavorites +1 ;
             _statisticsAdsRepository.UpdateStatistics(statistics);
 
-            return _mapper.Map<InfoAdResponse>(exitAd);
+            var infoAd  = _mapper.Map<InfoAdResponse>(existAd);
+            infoAd.Photos = existAd.Photos?.Select(a => new Contracts.PhotoDto.InfoPhotoResponse
+            {
+                PhotoId = a.Id,
+            }).ToList();
+            infoAd.QuantityView = existAd.StatisticsAds.QuantityView;
+            return infoAd;
         }
 
         public async Task<IReadOnlyCollection<InfoAdResponse>> GetMyAdsAsync(int take, int skip, CancellationToken cancellation)
@@ -193,7 +203,7 @@ namespace Otiva.AppServeces.Service.Ad
                 {
                     Id = p.Id,
                     Name = p.Name,
-                    UserId = p.DomainUserId,
+                    DomainUserId = p.DomainUserId,
                     SubcategoryId = p.SubcategoryId,
                     Description = p.Description,
                     Region = p.Region,

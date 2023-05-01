@@ -1,8 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Org.BouncyCastle.Math.EC.Rfc7748;
 using Otiva.AppServeces.IRepository;
 using Otiva.Contracts.AdDto;
-using Otiva.Domain;
+using Otiva.Domain.Ads;
 using Otiva.Infrastructure.BaseRepository;
 using System;
 using System.Collections.Generic;
@@ -69,6 +70,14 @@ namespace Otiva.DataAccess.Repository
                 .ToListAsync();
         }
 
+        public IQueryable<Ad> GetAll(CancellationToken cancellation)
+        {
+            if (cancellation.IsCancellationRequested)
+                throw new OperationCanceledException();
+
+            return _baseRepository.GetAll();
+        }
+
         public async Task<IReadOnlyCollection<Ad>> GetByFilterAsync(SearchFilterAd search, CancellationToken cancellation)
         {
             if (cancellation.IsCancellationRequested)
@@ -108,7 +117,8 @@ namespace Otiva.DataAccess.Repository
                 Price = p.Price,
                 CreateTime = p.CreateTime,
                 DomainUserId = p.DomainUserId,
-                Photos = p.Photos
+                Photos = p.Photos,
+                StatisticsAds = p.StatisticsAds,
             }).ToListAsync();
         }
     }

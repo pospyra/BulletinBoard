@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using Otiva.AppServeces.IRepository;
 using Otiva.AppServeces.Service.IdentityService;
 using Otiva.AppServeces.Service.Photo;
+using Otiva.Contracts.PhotoDto;
 using Otiva.Contracts.UserDto;
 
 namespace Otiva.AppServeces.Service.User
@@ -44,7 +45,7 @@ namespace Otiva.AppServeces.Service.User
         {
             var existingAccount = await _userRepository.FindByIdAsync(Id, cancellation);
             if (existingAccount == null)
-                throw new Exception("Пользователь с таким идентификатором не найден");
+                throw new Exception("DomainUser с данным идентификатором не найден");
 
             if (update.PhotoId != null)
             {
@@ -61,20 +62,25 @@ namespace Otiva.AppServeces.Service.User
 
         public async Task<IReadOnlyCollection<InfoUserResponse>> GetAllAsync(int take, int skip, CancellationToken cancellation)
         {
-            return await _userRepository.GetAll(cancellation)
-                .Select(a=> new InfoUserResponse()
+            var collectionsUsers = await _userRepository.GetAllAsync(cancellation);
+            return collectionsUsers.Select(a=> new InfoUserResponse
                 {
                     Id = a.Id,
                     UserName= a.UserName,
                     Email= a.Email,
                     Region   = a.Region,
-                    PhoneNumber = a.PhoneNumber
-                }).ToListAsync();
+                    PhoneNumber = a.PhoneNumber,
+                    Photos = a.Photos?.Select(p => new InfoPhotoResponse
+                    {
+                        PhotoId = p.Id,
+                    }).ToList(),
+                }).ToList();
         }
 
         public async Task<InfoUserResponse> GetByIdAsync(Guid id, CancellationToken cancellation)
         {
             var existingUser = await _userRepository.FindByIdAsync(id, cancellation);
+
             if (existingUser == null)
                 throw new Exception("Пользователь с таким идентификатором не найден");
 
@@ -90,11 +96,10 @@ namespace Otiva.AppServeces.Service.User
 
         public async Task<Guid> RegistrationAsync(RegistrationRequest registration, CancellationToken cancellation)
         {
-           var existingUser = _userRepository.GetAll(cancellation)
-           .Where(x => x.Email == registration.Email).FirstOrDefault();
+            var existingUser = await _userRepository.FindWhere(x => x.Email == registration.Email);
 
             if (existingUser != null)
-                throw new Exception("Пльзователь с таким email уже существует");
+                throw new Exception("Пользователь с таким email уже существует");
 
             var newidentityUserId = await _identityService.RegisterIdentityUser(registration, cancellation);
 
@@ -104,7 +109,7 @@ namespace Otiva.AppServeces.Service.User
             registerAcc.DateBirthday = registration.DateBirthday.ToUniversalTime();
             await _userRepository.Add(registerAcc, cancellation);
 
-            if(registration.PhotoId!= null)
+            if(registration.PhotoId != null)
             {
                 foreach (var photoId in registration.PhotoId)
                 {

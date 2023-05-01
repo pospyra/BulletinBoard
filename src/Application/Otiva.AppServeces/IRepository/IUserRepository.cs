@@ -1,4 +1,5 @@
-﻿using Otiva.Domain.User;
+﻿using Otiva.Domain;
+using Otiva.Domain.User;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +15,7 @@ namespace Otiva.AppServeces.IRepository
 
         Task<DomainUser> FindByIdAsync(Guid id, CancellationToken cancellation);
 
-        IQueryable<DomainUser> GetAll(CancellationToken cancellation);
+        public Task<IReadOnlyCollection<DomainUser>> GetAllAsync(CancellationToken cancellation);
 
         Task Add(DomainUser model, CancellationToken cancellation);
 

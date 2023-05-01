@@ -19,19 +19,17 @@ namespace Otiva.Contracts.AdDto
 
         public Guid SubcategoryId { get; set; }
 
-        public Guid? CategoryId { get; set; }
-
         public string Region { get; set; }
 
         public DateTime CreateTime { get; set; }
 
-        public Guid? UserId { get; set; }
+        public Guid? DomainUserId { get; set; }
 
         /// <summary>
         /// Количество просмотров 
         /// </summary>
         public int? QuantityView { get; set; } 
 
-        public ICollection<InfoPhotoResponse> Photos { get; set; }
+        public ICollection<InfoPhotoResponse>? Photos { get; set; }
     }
 }

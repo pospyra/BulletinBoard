@@ -1,5 +1,6 @@
 ﻿
 using Microsoft.AspNetCore.Identity;
+using Otiva.Domain.Ads;
 using Otiva.Domain.Photos;
 using System;
 using System.Collections.Generic;

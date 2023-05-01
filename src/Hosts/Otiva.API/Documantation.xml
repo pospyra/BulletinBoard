@@ -11,12 +11,37 @@
             <param name="cancellation"></param>
             <returns></returns>
         </member>
+        <member name="M:Otiva.API.Controllers.AccountController.GetCurrenUser(System.Threading.CancellationToken)">
+            <summary>
+            Получить текущего IdentityUser
+            </summary>
+            <param name="cancellation"></param>
+            <returns></returns>
+        </member>
         <member name="M:Otiva.API.Controllers.AccountController.ConfirmEmail(System.String,System.String,System.Threading.CancellationToken)">
             <summary>
             Подтвердить почту
             </summary>
             <param name="userId"></param>
             <param name="code">Код подтверждения</param>
+            <returns></returns>
+        </member>
+        <member name="M:Otiva.API.Controllers.AccountController.SendTokenOnChangeEmaiAsync(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Изменить почту
+            </summary>
+            <param name="newEmail">Новая почта</param>
+            <param name="cancellation"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Otiva.API.Controllers.AccountController.ConfirmChangeEmail(System.String,System.String,System.String,System.Threading.CancellationToken)">
+            <summary>
+            Подтверждение смены почты
+            </summary>
+            <param name="userId"></param>
+            <param name="newEmail"></param>
+            <param name="token"></param>
+            <param name="cancellationToken"></param>
             <returns></returns>
         </member>
         <member name="M:Otiva.API.Controllers.AccountController.ChangePasswordAsync(Otiva.Contracts.UserDto.ChangePassword,System.Threading.CancellationToken)">

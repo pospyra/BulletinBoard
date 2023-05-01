@@ -15,9 +15,9 @@ namespace Otiva.Contracts.AdDto
         [CheckCurseWord]
         public string? Description { get; set; }
 
-        public Guid? SubcategoryId { get; set; }
-
         public decimal? Price { get; set; }
+
+        public Guid? SubcategoryId { get; set; }
 
         public string? Region { get; set; }
 
