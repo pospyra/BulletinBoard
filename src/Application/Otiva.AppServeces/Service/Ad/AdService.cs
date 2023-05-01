@@ -1,9 +1,14 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Org.BouncyCastle.Math.EC.Rfc7748;
 using Otiva.AppServeces.IRepository;
+using Otiva.AppServeces.Service.Category;
 using Otiva.AppServeces.Service.IdentityService;
 using Otiva.AppServeces.Service.Photo;
+using Otiva.AppServeces.Service.StatisticsAds;
 using Otiva.Contracts.AdDto;
+using Otiva.Domain.Ads;
 
 namespace Otiva.AppServeces.Service.Ad
 {
@@ -14,27 +19,43 @@ namespace Otiva.AppServeces.Service.Ad
         private readonly IPhotoService _photoService;
         private readonly IMapper _mapper;
         private readonly ILogger<AdService> _logger;
+        private readonly IStatisticsAdsRepository _statisticsAdsRepository;
+        private readonly IStatisticsAdsService _statisticsAdsService;
         public AdService(
             IAdRepository adRepository, 
-            IPhotoService photoService, 
-            IMapper mapper, 
+            IPhotoService photoService,
+            IStatisticsAdsRepository statisticsAdsRepository,
+            IMapper mapper,
+            IStatisticsAdsService statisticsAdsService,
             IIdentityUserService identityService,
             ILogger<AdService> logger)
         {
             _photoService = photoService;
             _adRepository = adRepository;
             _mapper = mapper;
+            _statisticsAdsService = statisticsAdsService;
+            _statisticsAdsRepository = statisticsAdsRepository;
             _identityService = identityService;
             _logger = logger;
         }
 
+        //!Осторожно говнокод. Переписать!
         public async Task<Guid> CreateAdAsync(CreateAdRequest createAd, CancellationToken cancellation)
         {
             _logger.LogInformation("Создание объявления");
             if (cancellation.IsCancellationRequested)
                 throw new OperationCanceledException();
 
-            var newAd = _mapper.Map<Domain.Ad>(createAd);
+            var newStatiscticsTableId = Guid.NewGuid();
+
+            var staticsTable = new StatisticsTableAds
+            {
+                Id = newStatiscticsTableId,
+            };
+            await _statisticsAdsRepository.CreateStatistics(staticsTable);
+
+            var newAd = _mapper.Map<Domain.Ads.Ad>(createAd);
+            newAd.StatisticsTableAdsId = staticsTable.Id;
             newAd.DomainUserId = Guid.Parse(await _identityService.GetCurrentUserIdAsync(cancellation));
 
             await _adRepository.Add(newAd, cancellation);
@@ -46,7 +67,8 @@ namespace Otiva.AppServeces.Service.Ad
                     await _photoService.SetAdPhotoAsync(photoId, newAd.Id, cancellation);
                 }
             }
-
+            staticsTable.AdId = newAd.Id;
+            await _statisticsAdsRepository.UpdateStatistics(staticsTable);
             return newAd.Id;
         }
 
@@ -85,7 +107,7 @@ namespace Otiva.AppServeces.Service.Ad
         {
             _logger.LogInformation("Получение всех объявлений. Этот метод тестировочный. Его надо убрать");
             var collectionAds = await _adRepository.GetAllAsync(cancellation);
-            return collectionAds.Select(x => new InfoAdResponse
+            var res =  collectionAds.Select(x => new InfoAdResponse
             {
                 Id = x.Id,
                 Name = x.Name,
@@ -97,9 +119,10 @@ namespace Otiva.AppServeces.Service.Ad
                 UserId = x.DomainUserId,
                 Photos = x.Photos?.Select(a => new Contracts.PhotoDto.InfoPhotoResponse
                 {
-                    KodBase64 = a.KodBase64,
+                    PhotoId = a.Id,
                 }).ToList(),
-            }).OrderByDescending(a=>a.CreateTime).Skip(skip).Take(take).ToList();
+            }).OrderByDescending(a=>a.CreateTime).Skip(skip).Take(take);
+            return res.ToList();
         }
 
         public async Task<IReadOnlyCollection<InfoAdResponse>> GetByFilterAsync(SearchFilterAd search, SortAdsRequest sortArguments, CancellationToken cancellation)
@@ -117,10 +140,12 @@ namespace Otiva.AppServeces.Service.Ad
                 Description = p.Description,
                 Region = p.Region,
                 Price = p.Price,
+                QuantityView = p.StatisticsAds.QuantityView,
                 Photos = p.Photos?.Select(a => new Contracts.PhotoDto.InfoPhotoResponse
                 {
                     PhotoId = a.Id,
                 }).ToList(),
+
             });
 
             if (sortArguments.ByCreatedDate)
@@ -132,6 +157,9 @@ namespace Otiva.AppServeces.Service.Ad
             else if (sortArguments.ByAscPrice) 
                res = res.OrderBy(p=>p.Price);
 
+            else if (sortArguments.ByPopular)
+                res = res.OrderBy(p => p.QuantityView);
+
             return res.Skip(search.skip).Take(search.take).ToList(); 
         }
 
@@ -139,9 +167,16 @@ namespace Otiva.AppServeces.Service.Ad
         {
             _logger.LogInformation($"Получение объявления по идентификатору {id}");
 
-            var exitAd = await _adRepository.FindByIdAsync(id, cancellation);
+            var exitAd = _adRepository.GetAll(cancellation).Include(x=>x.StatisticsAds).Where(x => x.Id == id).FirstOrDefault();
+
             if (exitAd == null)
                 throw new Exception("Объявления с таким идентификатором не сущесвует");
+
+            var statistics = exitAd.StatisticsAds;
+            statistics.QuantityView = statistics.QuantityView +1;
+            statistics.QuantityAddToFavorites = statistics.QuantityAddToFavorites +1 ;
+            _statisticsAdsRepository.UpdateStatistics(statistics);
+
             return _mapper.Map<InfoAdResponse>(exitAd);
         }
 
@@ -166,7 +201,7 @@ namespace Otiva.AppServeces.Service.Ad
                     CreateTime = p.CreateTime,
                     Photos = p.Photos?.Select(a => new Contracts.PhotoDto.InfoPhotoResponse
                     {
-                        KodBase64 = a.KodBase64,
+                        PhotoId = a.Id,
                     }).ToList(),
                 }).OrderBy(d => d.CreateTime).Skip(skip).Take(take).ToList();
         }

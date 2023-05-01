@@ -1,5 +1,5 @@
 ﻿using Otiva.Contracts.AdDto;
-using Otiva.Domain;
+using Otiva.Domain.Ads;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,10 +19,18 @@ namespace Otiva.AppServeces.IRepository
         Task<Ad> FindByIdAsync(Guid id, CancellationToken cancellation);
 
         /// <summary>
-        /// Получить все объявления
+        /// Получить IReadOnlyCollection всех объявлений
         /// </summary>
         /// <returns></returns>
         public Task<IReadOnlyCollection<Ad>> GetAllAsync( CancellationToken cancellation);
+
+
+        /// <summary>
+        /// Получить все объявления
+        /// </summary>
+        /// <param name="cancellation"></param>
+        /// <returns></returns>
+        public IQueryable<Ad> GetAll(CancellationToken cancellation);
 
         /// <summary>
         /// Добавить объявление

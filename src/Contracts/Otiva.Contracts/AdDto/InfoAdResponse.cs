@@ -27,6 +27,11 @@ namespace Otiva.Contracts.AdDto
 
         public Guid? UserId { get; set; }
 
+        /// <summary>
+        /// Количество просмотров 
+        /// </summary>
+        public int? QuantityView { get; set; } 
+
         public ICollection<InfoPhotoResponse> Photos { get; set; }
     }
 }
