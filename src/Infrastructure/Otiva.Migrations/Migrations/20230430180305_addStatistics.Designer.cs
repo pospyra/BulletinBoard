@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Otiva.Migrations;
@@ -11,9 +12,11 @@ using Otiva.Migrations;
 namespace Otiva.Migrations.Migrations
 {
     [DbContext(typeof(MigrationsDbContext))]
-    partial class MigrationsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230430180305_addStatistics")]
+    partial class addStatistics
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -410,8 +413,7 @@ namespace Otiva.Migrations.Migrations
                 {
                     b.HasOne("Otiva.Domain.Ads.Ad", "Ad")
                         .WithMany("Photos")
-                        .HasForeignKey("AdId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("AdId");
 
                     b.Navigation("Ad");
                 });

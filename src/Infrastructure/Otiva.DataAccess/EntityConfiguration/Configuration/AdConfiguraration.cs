@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Otiva.Domain;
+using Otiva.Domain.Ads;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,6 +21,16 @@ namespace Otiva.DataAccess.EntityConfiguration.Configuration
             builder.HasOne(x => x.DomainUser)
                 .WithMany(p => p.Ads)
                 .HasForeignKey(x => x.DomainUserId);
-        }
+
+            builder.HasMany(a => a.Photos)
+                .WithOne(p => p.Ad)
+                .HasForeignKey(p => p.AdId)
+                 .OnDelete(DeleteBehavior.Cascade);
+
+            builder.HasMany(a => a.Photos)
+                .WithOne(p => p.Ad)
+                .HasForeignKey(p => p.AdId)
+                 .OnDelete(DeleteBehavior.Cascade);
+        } 
     }
 }
