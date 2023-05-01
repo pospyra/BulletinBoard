@@ -24,6 +24,7 @@ namespace Otiva.API.Controllers
         /// </summary>
         /// <param name="cancellation"></param>
         /// <returns></returns>
+        [Authorize]
         [HttpGet("currentUserId")]
         [ProducesResponseType(typeof(IReadOnlyCollection<string>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetCurrenUserId(CancellationToken cancellation)
@@ -32,6 +33,11 @@ namespace Otiva.API.Controllers
             return Ok(result);
         }
 
+        /// <summary>
+        /// Получить текущего IdentityUser
+        /// </summary>
+        /// <param name="cancellation"></param>
+        /// <returns></returns>
         [HttpGet("currentUser")]
         [ProducesResponseType(typeof(IReadOnlyCollection<InfoIdentityUserResponse>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetCurrenUser(CancellationToken cancellation)
@@ -53,6 +59,36 @@ namespace Otiva.API.Controllers
             await _identityService.ConfirmEmail(userId, code, cancellation);
             return Ok();
         }
+
+        /// <summary>
+        /// Изменить почту
+        /// </summary>
+        /// <param name="newEmail">Новая почта</param>
+        /// <param name="cancellation"></param>
+        /// <returns></returns>
+        [HttpPost("sendTokenToChangeEmail")]
+        [Authorize]
+        public async Task<IActionResult> SendTokenOnChangeEmaiAsync(string newEmail, CancellationToken cancellation)
+        {
+            await _identityService.SendTokenOnChangeEmaiAsync(newEmail, cancellation);
+            return Ok();
+        }
+
+        /// <summary>
+        /// Подтверждение смены почты
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="newEmail"></param>
+        /// <param name="token"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        [HttpGet("confirmChangeEmail")]
+        public async Task<IActionResult> ConfirmChangeEmail(string userId, string newEmail, string token, CancellationToken cancellationToken)
+        {
+            await _identityService.ConfirmChangeEmail(userId, newEmail, token, cancellationToken);
+            return Ok();
+        }
+
 
         /// <summary>
         /// Изменить пароль

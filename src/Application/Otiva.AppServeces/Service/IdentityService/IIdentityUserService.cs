@@ -55,15 +55,30 @@ namespace Otiva.AppServeces.Service.IdentityService
         /// <param name="userId"></param>
         /// <param name="code"></param>
         /// <param name="cancellationToken"></param>
-        /// <returns></returns>
         public Task ConfirmEmail(string userId, string code, CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Отправить токен подтверждения на смену почты
+        /// </summary>
+        /// <param name="newEmail"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public Task SendTokenOnChangeEmaiAsync(string newEmail, CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Подтверждение смены почты пользователя
+        /// </summary>
+        /// <param name="userId">Id пользователя</param>
+        /// <param name="newEmail">новая почта пользователя</param>
+        /// <param name="token">токен подтверждения</param>
+        /// <param name="cancellationToken"></param>
+        public Task<string> ConfirmChangeEmail(string userId, string newEmail, string token, CancellationToken cancellationToken);
 
         /// <summary>
         /// Поменять пароль
         /// </summary>
         /// <param name="changePassword"></param>
         /// <param name="cancellationToken"></param>
-        /// <returns></returns>
         public Task ChangePasswordAsync(ChangePassword changePassword, CancellationToken cancellationToken);
 
         /// <summary>

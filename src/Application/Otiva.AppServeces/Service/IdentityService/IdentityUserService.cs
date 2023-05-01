@@ -52,7 +52,9 @@ namespace Otiva.AppServeces.Service.IdentityService
         public async Task EditIdentityUser(string id, UpdateUserRequest userUpdate, CancellationToken cancellation)
         {
             var existingUser = await _userManager.FindByIdAsync(id);
+
             var resUpdating = await _userManager.UpdateAsync(_mapper.Map(userUpdate, existingUser));
+
             if (!resUpdating.Succeeded)
                 throw new Exception("Данные IdentityUser не удалось обновить");
         }
@@ -183,12 +185,12 @@ namespace Otiva.AppServeces.Service.IdentityService
             var claimId = claim.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
 
             if (string.IsNullOrWhiteSpace(claimId))
-                throw new Exception("Не найдент пользователь с идентификатором");
+                throw new Exception("Пользователь не найден");
 
             var user = await _userManager.FindByIdAsync(claimId);
 
             if (user == null)
-                throw new Exception($"Не найдент пользователь с идентификаторром {claim}");
+                throw new Exception($"Не найдент пользователь с идентификаторром {claimId}");
 
             var options = new MemoryCacheEntryOptions
             {
@@ -214,6 +216,8 @@ namespace Otiva.AppServeces.Service.IdentityService
                 await emailService.SendEmailAsync(identityUser.Email, "Confirm your account",
                     $"Подтвердите регистрацию, перейдя по ссылке: <a href='{callbackUrl}'>link</a>" +
                     $"Если вы не подтвердите почту в течении двух дней, Ваш аккаунт будет удален");
+
+                _logger.LogInformation("Письмо с кодом подтверждения отправлено на почту пользователя");
             }
             catch (Exception e)
             {
@@ -232,6 +236,8 @@ namespace Otiva.AppServeces.Service.IdentityService
 
             var result = await _userManager.ConfirmEmailAsync(user, code);
 
+            if (user.EmailConfirmed)
+                throw new Exception("Ваша почта уже подтверждена");
             if (!result.Succeeded)
                 throw new Exception("Ошибка подтверждения");
 
@@ -249,6 +255,42 @@ namespace Otiva.AppServeces.Service.IdentityService
                 _logger.LogInformation("Попытка изменения пароля");
                 throw new ArgumentException("Не удалось изменить пароль. Повторите попытку");
             }
+        }
+
+        public async Task SendTokenOnChangeEmaiAsync(string newEmail, CancellationToken cancellationToken)
+        {
+            var currntUserId = await GetCurrentUserIdAsync(cancellationToken);
+            var currntUser = await _userManager.FindByIdAsync(currntUserId);
+
+            _logger.LogInformation("Отправка токена подтверждения на смену почты пользователя");
+            var token = await _userManager.GenerateChangeEmailTokenAsync(currntUser, newEmail);
+            var callbackUrl = $"https://localhost:7278/confirmChangeEmail?userId={currntUser.Id}&newEmail={newEmail}&token={HttpUtility.UrlEncode(token)}";
+
+            EmailService.EmailService emailService = new EmailService.EmailService();
+            await emailService.SendEmailAsync(newEmail, "Confirm your new Email",
+                $"Подтвердите смену почты, перейдя по ссылке: <a href='{callbackUrl}'>link</a>");
+
+            _logger.LogInformation("Письмо было отправлено пользователю");
+        }
+
+        public async Task<string> ConfirmChangeEmail(string userId, string newEmail, string token, CancellationToken cancellationToken)
+        {
+            if (userId == null || token == null)
+                throw new ArgumentException("Поля не могут быть пустыми");
+
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+                throw new Exception("Не найден пользователь");
+
+            var result = await _userManager.ChangeEmailAsync(user, newEmail, token);
+
+            if (user.EmailConfirmed)
+                throw new Exception("Вы уже сменили почту");
+            if (!result.Succeeded)
+                throw new Exception("Ошибка подтверждения");
+
+            _logger.LogInformation($"Пользователь с id {userId} подтвердил смену почту {DateTime.UtcNow}");
+            return "Ваш Email был успешно изменен";
         }
 
         public async Task<ICollection<Guid>> GetNotConfirmAccount()

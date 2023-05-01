@@ -15,8 +15,6 @@ namespace Otiva.AppServeces.Service.EmailService
     /// </summary>
     public class EmailService 
     {
-        private readonly ILogger _logger;
-
         public async Task SendEmailAsync(string email, string subject, string message)
         {
             var emailMessage = new MimeMessage();
@@ -34,8 +32,6 @@ namespace Otiva.AppServeces.Service.EmailService
                 await client.ConnectAsync("smtp.gmail.com", 465, true);
                 await client.AuthenticateAsync("pyra.pospyra@gmail.com", "ljvkgjoypypioypi");
                 await client.SendAsync(emailMessage);
-
-                _logger.LogInformation($"Письмо с кодом подтверждения отправлено на почту пользователя {DateTime.UtcNow}");
 
                 await client.DisconnectAsync(true);
             }
