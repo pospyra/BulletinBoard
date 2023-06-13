@@ -14,8 +14,10 @@ namespace Otiva.Contracts.AdDto
         public string Name { get; set; }
 
         [CheckCurseWord]
+        [MaxLength(500, ErrorMessage = "Вы превысили максимальную длину - 500 символов")]
         public string Description { get; set; }
 
+        [Required]
         public Guid SubcategoryId { get; set; }
 
         public decimal Price { get; set; }

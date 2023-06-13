@@ -13,10 +13,15 @@ namespace Otiva.API.Controllers
     [ApiController]
     public class AccountController : ControllerBase
     {
-        public readonly IIdentityUserService _identityService;
-        public AccountController(IIdentityUserService identityService)
+        private readonly IIdentityUserService _identityService;
+        private ILogger<AccountController> _logger;
+        public AccountController(
+            IIdentityUserService identityService,
+            ILogger<AccountController> logger
+            )
         {
             _identityService = identityService;
+            _logger = logger;
         }
 
         /// <summary>
@@ -56,6 +61,7 @@ namespace Otiva.API.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> ConfirmEmail(string userId, string code, CancellationToken cancellation)
         {
+            _logger.LogInformation($"Подтверждение почты пользователя {userId}");
             await _identityService.ConfirmEmail(userId, code, cancellation);
             return Ok();
         }
@@ -70,6 +76,7 @@ namespace Otiva.API.Controllers
         [Authorize]
         public async Task<IActionResult> SendTokenOnChangeEmaiAsync(string newEmail, CancellationToken cancellation)
         {
+            _logger.LogInformation("Запрос на изменение почты");
             await _identityService.SendTokenOnChangeEmaiAsync(newEmail, cancellation);
             return Ok();
         }
@@ -85,6 +92,7 @@ namespace Otiva.API.Controllers
         [HttpGet("confirmChangeEmail")]
         public async Task<IActionResult> ConfirmChangeEmail(string userId, string newEmail, string token, CancellationToken cancellationToken)
         {
+            _logger.LogInformation($"Подтверждение смены почты пользователя {userId}");
             await _identityService.ConfirmChangeEmail(userId, newEmail, token, cancellationToken);
             return Ok();
         }

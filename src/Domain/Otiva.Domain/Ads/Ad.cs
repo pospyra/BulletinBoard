@@ -16,7 +16,7 @@ namespace Otiva.Domain.Ads
 
         public string Description { get; set; }
 
-        public Guid? DomainUserId { get; set; }
+        public Guid DomainUserId { get; set; }
 
         public Guid SubcategoryId { get; set; }
 

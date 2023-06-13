@@ -13,9 +13,10 @@ using System.Net;
 namespace Otiva.API.Controllers
 {
     [ApiController]
+    [Authorize(Roles ="Admin")]
     public class StatisticsController : ControllerBase
     {
-        public readonly IStatisticsAdsService _statisticsService;
+        private readonly IStatisticsAdsService _statisticsService;
         public StatisticsController(IStatisticsAdsService statisticsService)
         {
             _statisticsService = statisticsService;

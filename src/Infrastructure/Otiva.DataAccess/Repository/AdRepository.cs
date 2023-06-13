@@ -106,7 +106,6 @@ namespace Otiva.DataAccess.Repository
             if (search.PriceTo != null)
                 query = query.Where(c => c.Price <= search.PriceTo);
 
-
             return await query.Select(p => new Ad
             {
                 Id = p.Id,

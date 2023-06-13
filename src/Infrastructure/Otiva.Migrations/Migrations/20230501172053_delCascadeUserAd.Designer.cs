@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Otiva.Migrations;
@@ -11,9 +12,11 @@ using Otiva.Migrations;
 namespace Otiva.Migrations.Migrations
 {
     [DbContext(typeof(MigrationsDbContext))]
-    partial class MigrationsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230501172053_delCascadeUserAd")]
+    partial class delCascadeUserAd
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -38,7 +41,7 @@ namespace Otiva.Migrations.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Roles", (string)null);
+                    b.ToTable("Roles");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
@@ -51,7 +54,7 @@ namespace Otiva.Migrations.Migrations
 
                     b.HasKey("UserId", "RoleId");
 
-                    b.ToTable("UserRoles", (string)null);
+                    b.ToTable("UserRoles");
                 });
 
             modelBuilder.Entity("Otiva.Domain.Ads.Ad", b =>
@@ -94,7 +97,7 @@ namespace Otiva.Migrations.Migrations
 
                     b.HasIndex("SubcategoryId");
 
-                    b.ToTable("Ad", (string)null);
+                    b.ToTable("Ad");
                 });
 
             modelBuilder.Entity("Otiva.Domain.Ads.StatisticsTableAds", b =>
@@ -117,7 +120,7 @@ namespace Otiva.Migrations.Migrations
                     b.HasIndex("AdId")
                         .IsUnique();
 
-                    b.ToTable("StatisticsTableAds", (string)null);
+                    b.ToTable("StatisticsTableAds");
                 });
 
             modelBuilder.Entity("Otiva.Domain.Category", b =>
@@ -131,7 +134,7 @@ namespace Otiva.Migrations.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Category", (string)null);
+                    b.ToTable("Category");
                 });
 
             modelBuilder.Entity("Otiva.Domain.ItemSelectedAd", b =>
@@ -153,7 +156,7 @@ namespace Otiva.Migrations.Migrations
 
                     b.HasIndex("DomainUserId");
 
-                    b.ToTable("ItemSelectedAd", (string)null);
+                    b.ToTable("ItemSelectedAd");
                 });
 
             modelBuilder.Entity("Otiva.Domain.Message", b =>
@@ -183,7 +186,7 @@ namespace Otiva.Migrations.Migrations
 
                     b.HasIndex("SenderId");
 
-                    b.ToTable("Message", (string)null);
+                    b.ToTable("Message");
                 });
 
             modelBuilder.Entity("Otiva.Domain.Photos.PhotoAds", b =>
@@ -202,7 +205,7 @@ namespace Otiva.Migrations.Migrations
 
                     b.HasIndex("AdId");
 
-                    b.ToTable("PhotoAds", (string)null);
+                    b.ToTable("PhotoAds");
                 });
 
             modelBuilder.Entity("Otiva.Domain.Photos.PhotoUsers", b =>
@@ -221,7 +224,7 @@ namespace Otiva.Migrations.Migrations
 
                     b.HasIndex("DomainUserId");
 
-                    b.ToTable("PhotoUsers", (string)null);
+                    b.ToTable("PhotoUsers");
                 });
 
             modelBuilder.Entity("Otiva.Domain.Review", b =>
@@ -247,7 +250,7 @@ namespace Otiva.Migrations.Migrations
 
                     b.HasIndex("SellerId");
 
-                    b.ToTable("Review", (string)null);
+                    b.ToTable("Review");
                 });
 
             modelBuilder.Entity("Otiva.Domain.Subcategory", b =>
@@ -266,7 +269,7 @@ namespace Otiva.Migrations.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("Subcategory", (string)null);
+                    b.ToTable("Subcategory");
                 });
 
             modelBuilder.Entity("Otiva.Domain.User.DomainUser", b =>
@@ -298,7 +301,7 @@ namespace Otiva.Migrations.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("DomainUser", (string)null);
+                    b.ToTable("DomainUser");
                 });
 
             modelBuilder.Entity("Otiva.Domain.User.IdentityUser", b =>
@@ -353,7 +356,7 @@ namespace Otiva.Migrations.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("IdentityUser", (string)null);
+                    b.ToTable("IdentityUser");
                 });
 
             modelBuilder.Entity("Otiva.Domain.Ads.Ad", b =>

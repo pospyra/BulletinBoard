@@ -29,7 +29,7 @@ namespace Otiva.AppServeces.TimeCheck
 
         public void Start()
         {
-            const int millisecond = 18000000;//5 часов !//60000 поменять на защите (1 минута)
+            const int millisecond = 18000000;//5 часов !//60000 поменять на защите (1 минута) /18000000
             _timer = new Timer(millisecond); 
             _timer.Elapsed += new ElapsedEventHandler(DeleteUnverifiedAccount);
             _timer.AutoReset = true;
@@ -38,13 +38,15 @@ namespace Otiva.AppServeces.TimeCheck
 
         private async void DeleteUnverifiedAccount(object sender, ElapsedEventArgs e)
         {
+            int k = 0;
             CancellationToken cancellation = new CancellationToken(); //заглушка, DeleteAsync ждет токен
             var delUsers = await _identityService.GetNotConfirmAccount();
             foreach (var userId in delUsers)
             {
                 await _userService.DeleteAsync(userId, cancellation);
+                k++;
             }
-            _logger.LogInformation("Из базы данных были удалены пользователи, которые не подтвердили свою почту");
+            _logger.LogInformation($"Из базы данных были удалены {k} пользователей, которые не подтвердили свою почту");
         }
     }
 }

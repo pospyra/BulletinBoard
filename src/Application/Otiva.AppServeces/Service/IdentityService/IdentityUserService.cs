@@ -234,10 +234,11 @@ namespace Otiva.AppServeces.Service.IdentityService
             if (user == null)
                 throw new Exception("Не найден пользователь");
 
-            var result = await _userManager.ConfirmEmailAsync(user, code);
-
             if (user.EmailConfirmed)
                 throw new Exception("Ваша почта уже подтверждена");
+
+            var result = await _userManager.ConfirmEmailAsync(user, code);
+           
             if (!result.Succeeded)
                 throw new Exception("Ошибка подтверждения");
 
@@ -282,10 +283,11 @@ namespace Otiva.AppServeces.Service.IdentityService
             if (user == null)
                 throw new Exception("Не найден пользователь");
 
-            var result = await _userManager.ChangeEmailAsync(user, newEmail, token);
-
             if (user.EmailConfirmed)
                 throw new Exception("Вы уже сменили почту");
+
+            var result = await _userManager.ChangeEmailAsync(user, newEmail, token);
+
             if (!result.Succeeded)
                 throw new Exception("Ошибка подтверждения");
 

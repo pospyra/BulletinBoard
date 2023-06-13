@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Otiva.AppServeces.Service.Photo;
 using Otiva.Contracts.AdDto;
+using Otiva.Contracts.PhotoDto;
 using System.Net;
 
 namespace Otiva.API.Controllers
@@ -9,10 +10,20 @@ namespace Otiva.API.Controllers
     [ApiController]
     public class PhotoController : ControllerBase
     {
-        public readonly IPhotoService _photoService;
+        private readonly IPhotoService _photoService;
         public PhotoController(IPhotoService photoService)
         {
             _photoService = photoService;
+        }
+
+        #region  фотографий объявлений 
+        [AllowAnonymous]
+        [HttpGet("photoAd/get")]
+        [ProducesResponseType(typeof(IReadOnlyCollection<>), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> GetPhotoAdAsync(Guid AdId, CancellationToken cancellation)
+        {
+            var result = await _photoService.GetPhotoAdAsync(AdId, cancellation);
+            return Ok(result);
         }
 
         /// <summary>
@@ -53,15 +64,14 @@ namespace Otiva.API.Controllers
 
             return NoContent();
         }
+        #endregion
 
-
-
+        #region  фотографий пользователей 
         /// <summary>
         /// Добавить фото пользователя в бд
         /// </summary>
         /// <param name="file"></param>
         /// <returns></returns>
-        [Authorize]
         [HttpPost("photoUser/create")]
         [ProducesResponseType(typeof(IReadOnlyCollection<>), (int)HttpStatusCode.Created)]
         public async Task<IActionResult> CreatePhotoUserAsync(IFormFile file, CancellationToken cancellation)
@@ -94,5 +104,6 @@ namespace Otiva.API.Controllers
 
             return NoContent();
         }
+        #endregion
     }
 }

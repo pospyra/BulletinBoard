@@ -13,7 +13,7 @@ namespace Otiva.API.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        public readonly IUserService _userService;
+        private readonly IUserService _userService;
         public UserController(IUserService userService)
         {
             _userService = userService;
@@ -65,7 +65,6 @@ namespace Otiva.API.Controllers
         /// Регистрация пользователя
         /// </summary>
         /// <param name="registration"></param>
-        /// <param name="file"></param>
         /// <returns></returns>
         [HttpPost("/registration")]
         [ProducesResponseType(typeof(IReadOnlyCollection<InfoUserResponse>), (int)HttpStatusCode.Created)]

@@ -17,16 +17,16 @@ namespace Otiva.DataAccess.EntityConfiguration.Configuration
             builder.HasKey(x => x.Id);
 
 
+            builder.HasMany(a => a.Photos)
+                .WithOne(p => p.DomainUser)
+                .HasForeignKey(p => p.DomainUserId)
+                 .OnDelete(DeleteBehavior.Cascade);
+
             builder.HasMany(a => a.Ads)
                 .WithOne(p => p.DomainUser)
                 .HasForeignKey(p => p.DomainUserId)
                  .OnDelete(DeleteBehavior.Cascade);
 
-
-            builder.HasMany(a => a.Photos)
-                .WithOne(p => p.DomainUser)
-                .HasForeignKey(p => p.DomainUserId)
-                 .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

@@ -12,6 +12,7 @@ namespace Otiva.Contracts.UserDto
     public class RegistrationRequest
     {
         [Required]
+        [CheckCurseWord]
         public string UserName { get; set; }
 
         [EmailAddress]

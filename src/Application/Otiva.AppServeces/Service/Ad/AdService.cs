@@ -22,26 +22,22 @@ namespace Otiva.AppServeces.Service.Ad
         private readonly IMapper _mapper;
         private readonly ILogger<AdService> _logger;
         private readonly IStatisticsAdsRepository _statisticsAdsRepository;
-        private readonly IStatisticsAdsService _statisticsAdsService;
         public AdService(
+            IStatisticsAdsRepository statisticsAdsRepository,
+            IIdentityUserService identityService,
             IAdRepository adRepository, 
             IPhotoService photoService,
-            IStatisticsAdsRepository statisticsAdsRepository,
             IMapper mapper,
-            IStatisticsAdsService statisticsAdsService,
-            IIdentityUserService identityService,
             ILogger<AdService> logger)
         {
             _photoService = photoService;
             _adRepository = adRepository;
             _mapper = mapper;
-            _statisticsAdsService = statisticsAdsService;
             _statisticsAdsRepository = statisticsAdsRepository;
             _identityService = identityService;
             _logger = logger;
         }
 
-        //!Осторожно говнокод. Переписать!
         public async Task<Guid> CreateAdAsync(CreateAdRequest createAd, CancellationToken cancellation)
         {
             _logger.LogInformation("Создание объявления");
@@ -92,37 +88,24 @@ namespace Otiva.AppServeces.Service.Ad
 
         public async Task<InfoAdResponse> EditAdAsync(Guid Id, UpdateAdRequest editAdRequest, CancellationToken cancellation)
         {
-            _logger.LogInformation("Редактирование объявления");
+            _logger.LogInformation($"Редактирование объявления {Id}");
 
             var existingAd = await _adRepository.FindByIdAsync(Id, cancellation);
             if (existingAd == null)
-                throw new Exception("Объявления с таким идентификатором не сущесвует");
+                throw new Exception("Объявления с данным идентификатором не сущесвует");
 
             await _adRepository.EditAdAsync(_mapper.Map(editAdRequest, existingAd), cancellation);
 
-            return _mapper.Map<InfoAdResponse>(existingAd);
-        }
-
-        public async Task<IReadOnlyCollection<InfoAdResponse>> GetAllAsync(int take, int skip, CancellationToken cancellation)
-        {
-            _logger.LogInformation("Получение всех объявлений. Этот метод тестировочный. Его надо убрать");
-            var collectionAds = await _adRepository.GetAllAsync(cancellation);
-            var res =  collectionAds.Select(x => new InfoAdResponse
+            if (editAdRequest.PhotoId != null)
             {
-                Id = x.Id,
-                Name = x.Name,
-                CreateTime = x.CreateTime,
-                Description = x.Description,
-                Price = x.Price,
-                Region = x.Region,
-                SubcategoryId = x.SubcategoryId,
-                DomainUserId = x.DomainUserId,
-                Photos = x.Photos?.Select(a => new Contracts.PhotoDto.InfoPhotoResponse
+                foreach (var photoId in editAdRequest.PhotoId)
                 {
-                    PhotoId = a.Id,
-                }).ToList(),
-            }).OrderByDescending(a=>a.CreateTime).Skip(skip).Take(take);
-            return res.ToList();
+                    await _photoService.SetAdPhotoAsync(photoId, existingAd.Id, cancellation);
+                }
+            }
+            //TODO удаление сущесвтующих фотографий, если их нет в дто 
+
+            return _mapper.Map<InfoAdResponse>(existingAd);
         }
 
         public async Task<IReadOnlyCollection<InfoAdResponse>> GetByFilterAsync(SearchFilterAd search, SortAdsRequest sortArguments, CancellationToken cancellation)
@@ -130,22 +113,21 @@ namespace Otiva.AppServeces.Service.Ad
             _logger.LogInformation("Получение объявлений. Получение объявлений по заданному фильтру");
 
             var query = await _adRepository.GetByFilterAsync(search, cancellation);
-            var res = query.Select(p => new InfoAdResponse
+            var res =  query.Select(p => new InfoAdResponse
             {
                 Id = p.Id,
                 Name = p.Name,
                 DomainUserId = p.DomainUserId,
                 SubcategoryId = p.SubcategoryId,
                 Description = p.Description,
-                CreateTime= p.CreateTime,
+                CreateTime = p.CreateTime,
                 Region = p.Region,
                 Price = p.Price,
                 QuantityView = p.StatisticsAds.QuantityView,
-                Photos = p.Photos?.Select(a => new Contracts.PhotoDto.InfoPhotoResponse
+                Photos = p.Photos?.Select(a => new InfoPhotoResponse
                 {
                     PhotoId = a.Id,
                 }).ToList(),
-
             });
 
             if (sortArguments.ByCreatedDate)
@@ -160,7 +142,7 @@ namespace Otiva.AppServeces.Service.Ad
             else if (sortArguments.ByPopular)
                 res = res.OrderBy(p => p.QuantityView);
 
-            return res.Skip(search.skip).Take(search.take).ToList(); 
+            return res.Skip((search.PageNumber - 1) * search.PageSize).Take(search.PageSize).ToList(); 
         }
 
         public async  Task<InfoAdResponse> GetByIdAsync(Guid id, CancellationToken cancellation)
@@ -173,11 +155,14 @@ namespace Otiva.AppServeces.Service.Ad
 
             if (existAd == null)
                 throw new Exception("Объявления с таким идентификатором не сущесвует");
+            var currentUser = Guid.Parse(await _identityService.GetCurrentUserIdAsync(cancellation));
 
-            var statistics = existAd.StatisticsAds;
-            statistics.QuantityView = statistics.QuantityView +1;
-            statistics.QuantityAddToFavorites = statistics.QuantityAddToFavorites +1 ;
-            _statisticsAdsRepository.UpdateStatistics(statistics);
+            if(existAd.DomainUserId != currentUser)
+            {
+                var statistics = existAd.StatisticsAds;
+                statistics.QuantityView = statistics.QuantityView + 1;
+                _statisticsAdsRepository.UpdateStatistics(statistics);
+            }
 
             var infoAd  = _mapper.Map<InfoAdResponse>(existAd);
             infoAd.Photos = existAd.Photos?.Select(a => new Contracts.PhotoDto.InfoPhotoResponse
@@ -185,19 +170,21 @@ namespace Otiva.AppServeces.Service.Ad
                 PhotoId = a.Id,
             }).ToList();
             infoAd.QuantityView = existAd.StatisticsAds.QuantityView;
+
             return infoAd;
         }
 
-        public async Task<IReadOnlyCollection<InfoAdResponse>> GetMyAdsAsync(int take, int skip, CancellationToken cancellation)
+        public async Task<IReadOnlyCollection<InfoAdResponse>> GetMyAdsAsync(int pageNumber, int pageSize, CancellationToken cancellation)
         {
             _logger.LogInformation("Получение объявлений принадлежавших текущему пользователя");
 
             var currentUser = await _identityService.GetCurrentUserIdAsync(cancellation);
 
-            var res = await _adRepository.GetAllAsync(cancellation);
-            return res
-                .Where(user=> user.DomainUserId == Guid.Parse(currentUser))
-                .Select(p => new InfoAdResponse
+            var res = _adRepository.GetAll(cancellation)
+                .Where(user => user.DomainUserId == Guid.Parse(currentUser))
+                .Include(x => x.StatisticsAds).Include(a => a.Photos);
+
+               return res.Select(p => new InfoAdResponse
                 {
                     Id = p.Id,
                     Name = p.Name,
@@ -206,12 +193,13 @@ namespace Otiva.AppServeces.Service.Ad
                     Description = p.Description,
                     Region = p.Region,
                     Price = p.Price,
+                    QuantityView = p.StatisticsAds.QuantityView,
                     CreateTime = p.CreateTime,
-                    Photos = p.Photos?.Select(a => new Contracts.PhotoDto.InfoPhotoResponse
+                    Photos = p.Photos.Select(a => new Contracts.PhotoDto.InfoPhotoResponse
                     {
                         PhotoId = a.Id,
                     }).ToList(),
-                }).OrderBy(d => d.CreateTime).Skip(skip).Take(take).ToList();
+                }).OrderBy(d => d.CreateTime).Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
         }
     }
 }

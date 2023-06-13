@@ -11,7 +11,7 @@ namespace Otiva.API.Controllers
     public class ReviewController : ControllerBase
     {
 
-        public readonly IReviewService _reviewService;
+        private readonly IReviewService _reviewService;
 
         public ReviewController(IReviewService reviewService)
         {

@@ -12,16 +12,16 @@ namespace Otiva.Contracts.Attributs
     {
         private string[] WordsList = new string[]
     {
-        "Баламошка ",
-        "Лободырный ",
-        "Пентюх ",
-        "Псоватый ",
-        "Маракуша ",
+        "Баламошка",
+        "Лободырный",
+        "Пентюх",
+        "Псоватый",
+        "Маракуша",
         "Белебеня",
-        "Шинора ",
-        "Ёра ",
-        "Шаврик ",
-        "Туес ",
+        "Шинора",
+        "Ёра",
+        "Шаврик",
+        "Туес",
     };
 
         protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)

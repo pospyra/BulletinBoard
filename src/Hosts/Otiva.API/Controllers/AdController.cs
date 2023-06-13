@@ -1,9 +1,14 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Newtonsoft.Json;
 using Otiva.AppServeces.Service.Ad;
 using Otiva.Contracts.AdDto;
+using System;
+using System.ComponentModel.DataAnnotations;
 using System.Net;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Otiva.API.Controllers
 {
@@ -13,34 +18,13 @@ namespace Otiva.API.Controllers
     [ApiController]
     public class AdController : ControllerBase
     {
-        public readonly IAdService _adService;
-        public readonly ILogger<AdController> _logger;
+        private readonly IAdService _adService;
+        private readonly ILogger<AdController> _logger;
 
         public AdController(IAdService adService, ILogger<AdController> logger)
         {
             _adService = adService;
             _logger = logger;
-        }
-
-        /// <summary>
-        /// Получить все объявления
-        /// </summary>
-        /// <param name="take"></param>
-        /// <param name="skip"></param>
-        /// <returns></returns>
-        /// <exception cref="Exception"></exception>
-        [AllowAnonymous]
-        [HttpGet("/ad/all")]
-        [ProducesResponseType(typeof(IReadOnlyCollection<InfoAdResponse>), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> GetAllAsync(int take, int skip, CancellationToken cancellation)
-        {
-            if (skip < 0 || take <= 0 || take == null)
-                throw new Exception("Некорректные данные. Убедитесь, что skip >= 0, take > 0 и !null ");
-
-            var result = await _adService.GetAllAsync(take, skip, cancellation);
-
-
-            return Ok(result);
         }
 
         /// <summary>
@@ -52,14 +36,14 @@ namespace Otiva.API.Controllers
         /// <returns></returns>
         /// <exception cref="Exception"></exception>
         [Authorize]
-        [HttpGet("/ad/getAdsCurrentUser")]
+        [HttpGet("/adsCurrentUser")]
         [ProducesResponseType(typeof(IReadOnlyCollection<InfoAdResponse>), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> GetMyAdsAsync(int take, int skip, CancellationToken cancellation)
+        public async Task<IActionResult> GetMyAdsAsync(int pageNumber, int pageSize, CancellationToken cancellation)
         {
-            if (skip < 0 || take <= 0 || take == null)
-                throw new Exception("Некорректные данные. Убедитесь, что skip >= 0, take > 0 и !null ");
+            if (pageSize < 0 || pageNumber <= 0 || pageNumber == null)
+                throw new Exception("Некорректные данные. Убедитесь, pageNumber не меньше 1 и не null, и pageSize не меньшее 0 ");
 
-            var result = await _adService.GetMyAdsAsync(take, skip, cancellation);
+            var result = await _adService.GetMyAdsAsync(pageNumber, pageSize, cancellation);
 
             return Ok(result);
         }
@@ -85,13 +69,10 @@ namespace Otiva.API.Controllers
         /// <returns></returns>
         /// <exception cref="Exception"></exception>
         [AllowAnonymous]
-        [HttpGet("/ad/filter")]
+        [HttpGet("/ads/filter")]
         [ProducesResponseType(typeof(IReadOnlyCollection<InfoAdResponse>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetByFilter([FromQuery] SearchFilterAd query, [FromQuery] SortAdsRequest sortArguments, CancellationToken cancellation)
         {
-            if (query.skip < 0 || query.take <= 0 || query.take == null)
-                throw new Exception("Некорректные данные. Убедитесь, что skip >= 0, take > 0 и !null ");
-
             var result = await _adService.GetByFilterAsync(query, sortArguments, cancellation);
 
             return Ok(result);
@@ -104,10 +85,11 @@ namespace Otiva.API.Controllers
         /// <param name="cancellation"></param>
         /// <returns></returns>
         [Authorize]
-        [HttpPost("ad/createAd")]
+        [HttpPost("ad")]
         [ProducesResponseType(typeof(IReadOnlyCollection<InfoAdResponse>), (int)HttpStatusCode.Created)]
-        public async Task<IActionResult> CreateAdAsync([FromQuery] CreateAdRequest createAd, CancellationToken cancellation)
+        public async Task<IActionResult> CreateAdAsync([FromBody] CreateAdRequest createAd, CancellationToken cancellation)
         {
+            _logger.LogInformation($"{JsonConvert.SerializeObject(createAd)}");
             var result = await _adService.CreateAdAsync(createAd, cancellation);
 
             return Created("", result);
@@ -119,7 +101,7 @@ namespace Otiva.API.Controllers
         /// <param name="id"></param>
         /// <param name="edit"></param>
         /// <returns></returns>
-        [HttpPut("/ad/update/{id}")]
+        [HttpPut("/ad/{id}")]
         [ProducesResponseType(typeof(IReadOnlyCollection<InfoAdResponse>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> EditAdAsync(Guid id, UpdateAdRequest edit, CancellationToken cancellation)
         {
@@ -134,11 +116,12 @@ namespace Otiva.API.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [Authorize]
-        [HttpDelete("/ad/delete/{id}")]
+        [HttpDelete("/ad/{id}")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
         public async Task<IActionResult> DeleteAdAsync(Guid id, CancellationToken cancellation)
         {
+            _logger.LogInformation($"Удаление объявления {id}");
             await _adService.DeleteAsync(id, cancellation);
 
             return NoContent();

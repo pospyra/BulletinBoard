@@ -1,4 +1,5 @@
-﻿using Otiva.Contracts.AdDto;
+﻿using Otiva.AppServeces.IRepository;
+using Otiva.Contracts.AdDto;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,7 +24,7 @@ namespace Otiva.AppServeces.Service.Ad
         /// <param name="skip"></param>
         /// <param name="cancellation"></param>
         /// <returns></returns>
-        Task<IReadOnlyCollection<InfoAdResponse>> GetMyAdsAsync(int take, int skip, CancellationToken cancellation);
+        Task<IReadOnlyCollection<InfoAdResponse>> GetMyAdsAsync(int pageNumber, int pageSize, CancellationToken cancellation);
 
         /// <summary>
         /// Создать объявление
@@ -32,14 +33,6 @@ namespace Otiva.AppServeces.Service.Ad
         /// <param name="cancellation"></param>
         /// <returns></returns>
         Task<Guid> CreateAdAsync(CreateAdRequest createAd, CancellationToken cancellation);
-
-        /// <summary>
-        /// Получить все объявления
-        /// </summary>
-        /// <param name="take">сколько объявлений взять</param>
-        /// <param name="skip">сколько пропустить</param>
-        /// <returns></returns>
-        Task<IReadOnlyCollection<InfoAdResponse>> GetAllAsync( int take, int skip, CancellationToken cancellation);
 
         /// <summary>
         /// Удалить объявление

@@ -18,15 +18,6 @@ namespace Otiva.DataAccess.EntityConfiguration.Configuration
 
             builder.Property(b => b.Description).HasMaxLength(800);
 
-            builder.HasOne(x => x.DomainUser)
-                .WithMany(p => p.Ads)
-                .HasForeignKey(x => x.DomainUserId);
-
-            builder.HasMany(a => a.Photos)
-                .WithOne(p => p.Ad)
-                .HasForeignKey(p => p.AdId)
-                 .OnDelete(DeleteBehavior.Cascade);
-
             builder.HasMany(a => a.Photos)
                 .WithOne(p => p.Ad)
                 .HasForeignKey(p => p.AdId)

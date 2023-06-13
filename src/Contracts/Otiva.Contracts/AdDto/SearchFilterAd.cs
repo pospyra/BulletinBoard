@@ -22,9 +22,12 @@ namespace Otiva.Contracts.AdDto
 
         public string? Region { get; set; }
 
-        public int take { get; set; }
+        [Required]
+        [Range(1, int.MaxValue, ErrorMessage ="Значение не может быть меньше 1")]
+        public int PageNumber { get; set; }
 
-        public int skip { get; set; }
+        [Range(0, int.MaxValue, ErrorMessage = "Значение не может быть меньше 0")]
+        public int PageSize { get; set; }
 
     }
 }

@@ -15,9 +15,9 @@ namespace Otiva.API.Modules
         {
             services.AddSwaggerGen(options =>
             {
-                // options.CustomSchemaIds(type => type.FullName.Replace("+", "_"));
+               // options.CustomSchemaIds(type => type.FullName.Replace("+", "_"));
                 options.SwaggerDoc("v1", new OpenApiInfo { Title = "Otiva Api", Version = "V1" });
-                options.IncludeXmlComments(Path.Combine(Path.Combine(AppContext.BaseDirectory, "Documentation.xml")));
+                options.IncludeXmlComments(Path.Combine(Path.Combine(AppContext.BaseDirectory, "Documantation.xml")));
                 options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
                     Description = @"JWT Authorization header using the Bearer scheme.  

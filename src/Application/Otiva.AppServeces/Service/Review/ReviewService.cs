@@ -39,6 +39,9 @@ namespace Otiva.AppServeces.Service.Review
             var newReview = _mapper.Map<Domain.Review>(createReview);
             newReview.CustomerId = Guid.Parse(await _identityService.GetCurrentUserIdAsync(cancellation));
 
+            if (createReview.SellerId == newReview.CustomerId)
+                throw new Exception("Вы не имеете права оставлять отзыв самому себе");
+
             await _reviewRepository.Add(newReview, cancellation);
             return newReview.Id;
         }

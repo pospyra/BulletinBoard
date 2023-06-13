@@ -10,7 +10,7 @@ namespace Otiva.API.Controllers
     [ApiController]
     public class SelectedAdController : ControllerBase
     {
-        public readonly ISelectedAdsService _selectedadService;
+        private readonly ISelectedAdsService _selectedadService;
 
         public SelectedAdController(ISelectedAdsService selectedadService)
         {
@@ -20,11 +20,11 @@ namespace Otiva.API.Controllers
         /// <summary>
         /// Получить избранные текущего пользоваеля
         /// </summary>
-        /// <param name="UserId"></param>
         /// <param name="take"></param>
         /// <param name="skip"></param>
         /// <returns></returns>
-        [HttpGet("/allSelectedByUserID{Id}")]
+        [HttpGet("/allSelectedCurrentUser")]
+        [Authorize]
         [ProducesResponseType(typeof(IReadOnlyCollection<InfoSelectedResponse>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetAll(int take, int skip, CancellationToken cancellation)
         {

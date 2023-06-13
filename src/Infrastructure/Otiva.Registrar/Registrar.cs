@@ -60,12 +60,12 @@ namespace Otiva.Registrar
             services.AddScoped<IAdService, AdService>();
             services.AddScoped<IAdRepository, AdRepository>();
 
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IUserRepository, UserRepository>();
+
             services.AddScoped<IPhotoService, PhotoService>();
             services.AddScoped<IPhotoAdsRepository, PhotoAdsRepository>();
             services.AddScoped<IPhotoUsersRepository, PhotoUsersRepository>();
-
-            services.AddScoped<IUserService, UserService>();
-            services.AddScoped<IUserRepository, UserRepository>();
 
             services.AddScoped<ISubcategoryService, SubcategoryService>();
             services.AddScoped<ISubcategoryRepository, SubcategoryRepository>();

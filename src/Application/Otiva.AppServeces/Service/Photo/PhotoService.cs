@@ -1,6 +1,9 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Otiva.AppServeces.IRepository.Photos;
+using Otiva.Contracts.PhotoDto;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -25,7 +28,20 @@ namespace Otiva.AppServeces.Service.Photo
             _logger = logger;
         }
 
-        //методы для работы с фотографиями объявлений
+        #region  фотографий объявлений 
+        public async Task<IReadOnlyCollection<PhotoContentResponse>> GetPhotoAdAsync(Guid AdId, CancellationToken cancellation)
+        {
+            _logger.LogInformation("Получение фотографии объявления");
+
+            var photos = _photoAdsRepository.GetAll(cancellation)
+                .Where(x=>x.AdId == AdId);
+
+            return await photos.Select(a => new PhotoContentResponse
+            {
+                KodBase64 = a.KodBase64
+            }).ToListAsync(); //TODO пагинация 
+        }
+
         public async Task<Guid> UploadPhotoAdAsync(byte[] photo, CancellationToken cancellation)
         {
             _logger.LogInformation("Добавление фотографии объявления в бд");
@@ -58,8 +74,9 @@ namespace Otiva.AppServeces.Service.Photo
             photo.AdId = AdId;
             await _photoAdsRepository.UpdatePhotoAsync(photo, cancellation);
         }
+        #endregion
 
-        //методы для работы фотографий пользователей 
+        #region  фотографий пользователей 
         public async Task<Guid> UploadPhotoUserAsync(byte[] photoUser, CancellationToken cancellation)
         {
             if (photoUser.Length > 5242880)
@@ -86,5 +103,6 @@ namespace Otiva.AppServeces.Service.Photo
             photo.DomainUserId = UserId;
             await _photoUsersRepository.UpdatePhotoAsync(photo, cancellation);
         }
+        # endregion 
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Otiva.Contracts.PhotoDto;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,14 @@ namespace Otiva.AppServeces.Service.Photo
 {
     public interface IPhotoService
     {
+        /// <summary>
+        /// Получить все фотографии объявления
+        /// </summary>
+        /// <param name="AdId"></param>
+        /// <param name="cancellation"></param>
+        /// <returns></returns>
+        public Task<IReadOnlyCollection<PhotoContentResponse>> GetPhotoAdAsync(Guid AdId, CancellationToken cancellation);
+
         /// <summary>
         /// Добавить фото пользователя в бд
         /// </summary>

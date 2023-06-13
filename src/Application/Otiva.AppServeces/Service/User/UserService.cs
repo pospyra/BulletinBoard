@@ -21,18 +21,20 @@ namespace Otiva.AppServeces.Service.User
         public UserService
             (IUserRepository userRepository, 
             IMapper mapper,
+            IPhotoService photoService,
             IIdentityUserService identityService,
             ILogger<UserService> logger)
         {
             _userRepository = userRepository;
             _mapper = mapper;
+            _photoService = photoService;
             _identityService = identityService;
             _logger = logger;
         }
 
         public async Task DeleteAsync(Guid id, CancellationToken cancellation)
         {
-            await _identityService.DeleteAsync(id.ToString(), cancellation);
+           // await _identityService.DeleteAsync(id.ToString(), cancellation);
 
             var delUser = await _userRepository.FindByIdAsync(id, cancellation);
             if (delUser == null)

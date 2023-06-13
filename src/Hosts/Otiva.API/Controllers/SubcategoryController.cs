@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Otiva.AppServeces.Service.Category;
 using Otiva.AppServeces.Service.Subcategory;
 using Otiva.Contracts.CategoryDto;
+using System.Data;
 using System.Net;
 
 namespace Otiva.API.Controllers
@@ -25,6 +27,7 @@ namespace Otiva.API.Controllers
         }
 
         [HttpPost("subcategory/create")]
+        [Authorize(Roles = "Admin")]
         [ProducesResponseType(typeof(IReadOnlyCollection<InfoCategoryResponse>), (int)HttpStatusCode.Created)]
         public async Task<IActionResult> CreateSubcategoryAsync(string name, Guid categoryId, CancellationToken cancellation)
         {
@@ -42,6 +45,7 @@ namespace Otiva.API.Controllers
         }
 
         [HttpDelete("subcategory/delete/{id}")]
+        [Authorize(Roles = "Admin")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
         public async Task<IActionResult> DeleteCategoryAsync(Guid id, CancellationToken cancellation)

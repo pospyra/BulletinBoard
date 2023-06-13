@@ -12,9 +12,9 @@ namespace Otiva.API.Controllers
     [ApiController]
     public class MessageController : ControllerBase
     {
-        public readonly IMessageService _messageService;
-        public readonly IUserService _userService;
-        public readonly IIdentityUserService _identityService;
+        private readonly IMessageService _messageService;
+        private readonly IUserService _userService;
+        private readonly IIdentityUserService _identityService;
         public MessageController(IMessageService messageService, IUserService userService, IIdentityUserService identityService)
         {
             _messageService = messageService;
