@@ -208,6 +208,7 @@ namespace Otiva.AppServeces.Service.IdentityService
                 _logger.LogInformation("Отправка кода подтверждения на почту пользователя");
                 var identityUser = await _userManager.FindByIdAsync(userId);
                 var code = await _userManager.GenerateEmailConfirmationTokenAsync(identityUser);
+                
                 var callbackUrl = $"https://localhost:7278/confirmEmail?userId={identityUser.Id}&code={HttpUtility.UrlEncode(code)}";
 
                 _logger.LogInformation("Отправка кода подтверждения на почту пользователя");
@@ -299,7 +300,7 @@ namespace Otiva.AppServeces.Service.IdentityService
         {
             //TODO переписать под ProjectTo. настроить конфигурацию мапера
             return await _userManager.Users
-             .Where(u => !u.EmailConfirmed && u.DateRegistration < DateTime.UtcNow.AddDays(-2)) 
+             .Where(u => !u.EmailConfirmed && u.DateRegistration < DateTime.UtcNow.AddDays(-1)) 
              .Select(u => Guid.Parse(u.Id))
              .ToListAsync();
         }

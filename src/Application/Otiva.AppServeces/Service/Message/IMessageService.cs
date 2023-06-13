@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace Otiva.AppServeces.Service.Message
 {
+    /// <summary>
+    /// Сервер сообщений
+    /// </summary>
     public interface IMessageService
     {
         /// <summary>
@@ -30,7 +33,7 @@ namespace Otiva.AppServeces.Service.Message
         /// <param name="id"></param>
         /// <param name="text"></param>
         /// <returns></returns>
-        public Task<InfoMessageResponse> EditMessageAsync(Guid id, TextMessageRequest text, CancellationToken cancellation);
+        public Task<InfoMessageResponse> EditMessageAsync(Guid id, ContentMessage text, CancellationToken cancellation);
 
         /// <summary>
         /// Получить все сообщения с пользователем user2
@@ -38,6 +41,6 @@ namespace Otiva.AppServeces.Service.Message
         /// <param name="user2_Id">Пользователь с которым общается текущий пользователь</param>
         /// <param name="cancellation"></param>
         /// <returns></returns>
-        public Task<IReadOnlyCollection<InfoMessageResponse>> GetMessageFromChatAsync(Guid user2_Id, CancellationToken cancellation);
+        public Task<IReadOnlyCollection<InfoMessageResponse>> GetMessagesFromChatAsync(Guid user2_Id, CancellationToken cancellation);
     }
 }

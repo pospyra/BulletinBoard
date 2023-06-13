@@ -164,7 +164,7 @@
             <param name="cancellation"></param>
             <returns></returns>
         </member>
-        <member name="M:Otiva.API.Controllers.MessageController.EditMessageAsync(System.Guid,Otiva.Contracts.MessageDto.TextMessageRequest,System.Threading.CancellationToken)">
+        <member name="M:Otiva.API.Controllers.MessageController.EditMessageAsync(System.Guid,Otiva.Contracts.MessageDto.ContentMessage,System.Threading.CancellationToken)">
             <summary>
             Редактировать сообщение
             </summary>

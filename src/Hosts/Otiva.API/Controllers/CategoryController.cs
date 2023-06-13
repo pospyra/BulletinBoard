@@ -20,7 +20,7 @@ namespace Otiva.API.Controllers
         /// Получить все категории
         /// </summary>
         /// <returns></returns>
-        [HttpGet("category/all")]
+        [HttpGet("categories")]
         [ProducesResponseType(typeof(IReadOnlyCollection<InfoCategoryResponse>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetAllCategory(CancellationToken cancellation)
         {
@@ -33,7 +33,7 @@ namespace Otiva.API.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpGet("category/getById/{id}")]
+        [HttpGet("category/{id}")]
         [ProducesResponseType(typeof(IReadOnlyCollection<InfoCategoryResponse>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetByIdCategory(Guid id, CancellationToken cancellation)
         {
@@ -47,7 +47,7 @@ namespace Otiva.API.Controllers
         /// <param name="name"></param>
         /// <returns></returns>
         [Authorize(Roles = "Admin")]
-        [HttpPost("category/create")]
+        [HttpPost("category")]
         [ProducesResponseType(typeof(IReadOnlyCollection<InfoCategoryResponse>), (int)HttpStatusCode.Created)]
         public async Task<IActionResult> CreateCategoryAsync(string name, CancellationToken cancellation)
         {
@@ -63,7 +63,7 @@ namespace Otiva.API.Controllers
         /// <param name="name"></param>
         /// <returns></returns>
         [Authorize(Roles = "Admin")]
-        [HttpPut("category/put/{id}")]
+        [HttpPut("category/{id}")]
         [ProducesResponseType(typeof(IReadOnlyCollection<InfoCategoryResponse>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> EditCategoryAsync(Guid id, string name, CancellationToken cancellation)
         {
@@ -77,7 +77,7 @@ namespace Otiva.API.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [Authorize(Roles = "Admin")]
-        [HttpDelete("category/delete/{id}")]
+        [HttpDelete("category/{id}")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
         public async Task<IActionResult> DeleteCategoryAsync(Guid id, CancellationToken cancellation)

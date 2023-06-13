@@ -57,7 +57,7 @@ namespace Otiva.API.Controllers
         /// <param name="userId"></param>
         /// <param name="code">Код подтверждения</param>
         /// <returns></returns>
-        [HttpGet("confirmEmail")]
+        [HttpGet("user/confirmEmail")]
         [AllowAnonymous]
         public async Task<IActionResult> ConfirmEmail(string userId, string code, CancellationToken cancellation)
         {
@@ -72,7 +72,7 @@ namespace Otiva.API.Controllers
         /// <param name="newEmail">Новая почта</param>
         /// <param name="cancellation"></param>
         /// <returns></returns>
-        [HttpPost("sendTokenToChangeEmail")]
+        [HttpPost("user/sendTokenToChangeEmail")]
         [Authorize]
         public async Task<IActionResult> SendTokenOnChangeEmaiAsync(string newEmail, CancellationToken cancellation)
         {
@@ -89,7 +89,7 @@ namespace Otiva.API.Controllers
         /// <param name="token"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        [HttpGet("confirmChangeEmail")]
+        [HttpGet("user/confirmChangeEmail")]
         public async Task<IActionResult> ConfirmChangeEmail(string userId, string newEmail, string token, CancellationToken cancellationToken)
         {
             _logger.LogInformation($"Подтверждение смены почты пользователя {userId}");

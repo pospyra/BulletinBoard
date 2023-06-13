@@ -11,6 +11,9 @@ using Timer = System.Timers.Timer;
 
 namespace Otiva.AppServeces.TimeCheck
 {
+    /// <summary>
+    /// Таймер приложения
+    /// </summary>
     public class TimerService
     {
         private static Timer _timer;
@@ -29,13 +32,18 @@ namespace Otiva.AppServeces.TimeCheck
 
         public void Start()
         {
-            const int millisecond = 18000000;//5 часов !//60000 поменять на защите (1 минута) /18000000
+            const int millisecond = 18000000;//5 часов 
             _timer = new Timer(millisecond); 
             _timer.Elapsed += new ElapsedEventHandler(DeleteUnverifiedAccount);
             _timer.AutoReset = true;
             _timer.Enabled = true;
         }
 
+        /// <summary>
+        /// Удалит аккаунты пользователей, которые не подтвердили свою почту в течении 24 часов 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private async void DeleteUnverifiedAccount(object sender, ElapsedEventArgs e)
         {
             int k = 0;

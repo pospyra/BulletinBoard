@@ -26,9 +26,9 @@ namespace Otiva.API.Controllers
         [HttpGet("/allSelectedCurrentUser")]
         [Authorize]
         [ProducesResponseType(typeof(IReadOnlyCollection<InfoSelectedResponse>), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> GetAll(int take, int skip, CancellationToken cancellation)
+        public async Task<IActionResult> GetAll(int pageNumber, int pageSize, CancellationToken cancellation)
         {
-            var result = await _selectedadService.GetSelectedUsersAsync(take, skip, cancellation);
+            var result = await _selectedadService.GetSelectedUsersAsync(pageNumber, pageSize, cancellation);
 
             return Ok(result);
         }
@@ -40,7 +40,7 @@ namespace Otiva.API.Controllers
         /// <param name="cancellation"></param>
         /// <returns></returns>
         [Authorize]
-        [HttpPost("selectedAd/add")]
+        [HttpPost("selectedAd")]
         [ProducesResponseType(typeof(IReadOnlyCollection<InfoSelectedResponse>), (int)HttpStatusCode.Created)]
         public async Task<IActionResult> CreateAdAsync(Guid AdId, CancellationToken cancellation)
         {
@@ -55,7 +55,7 @@ namespace Otiva.API.Controllers
         /// <param name="Id"></param>
         /// <returns></returns>
         [Authorize]
-        [HttpDelete("/selected/delete")]
+        [HttpDelete("/selected")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
         public async Task<IActionResult> DeleteAdAsync(Guid Id, CancellationToken cancellation)

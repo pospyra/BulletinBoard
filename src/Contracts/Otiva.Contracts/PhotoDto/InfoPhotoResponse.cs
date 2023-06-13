@@ -6,8 +6,14 @@ using System.Threading.Tasks;
 
 namespace Otiva.Contracts.PhotoDto
 {
+    /// <summary>
+    /// Инормация о фотографии
+    /// </summary>
     public class InfoPhotoResponse
     {
+        /// <summary>
+        /// Идентификатор фотографии
+        /// </summary>
         public Guid PhotoId { get; set; }
     }
 }

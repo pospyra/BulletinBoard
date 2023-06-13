@@ -6,8 +6,11 @@ using System.Threading.Tasks;
 
 namespace Otiva.Contracts.MessageDto
 {
-    public class TextMessageRequest
+    public class ContentMessage
     {
-        public string Text { get; set; }
+        /// <summary>
+        /// Текст сообщения
+        /// </summary>
+        public string Content { get; set; }
     }
 }

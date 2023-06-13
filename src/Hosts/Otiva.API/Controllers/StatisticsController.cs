@@ -27,7 +27,7 @@ namespace Otiva.API.Controllers
         /// </summary>
         /// <param name="cancellation"></param>
         /// <returns></returns>
-        [HttpGet("statisticsByAdId")]
+        [HttpGet("statisticsAd{adId}")]
         [ProducesResponseType(typeof(InfoAdStatisticsResponse), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetStatisticsByAdIdId(Guid adId, CancellationToken cancellation)
         {
@@ -35,7 +35,7 @@ namespace Otiva.API.Controllers
             return Ok(result);
         }
 
-        [HttpGet("statisticsAllAds")]
+        [HttpGet("statisticsAds")]
         [ProducesResponseType(typeof(IReadOnlyCollection<InfoAdStatisticsResponse>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetAllStatisticsAd (CancellationToken cancellation)
         {

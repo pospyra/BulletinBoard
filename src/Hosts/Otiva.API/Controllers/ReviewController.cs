@@ -55,7 +55,7 @@ namespace Otiva.API.Controllers
         /// <param name="cancellation"></param>
         /// <returns></returns>
         [Authorize]
-        [HttpPost("review/create")]
+        [HttpPost("review")]
         [ProducesResponseType(typeof(IReadOnlyCollection<InfoReviewResponse>), (int)HttpStatusCode.Created)]
         public async Task<IActionResult> CreateReviewAsync(CreateReviewRequest createReview, CancellationToken cancellation)
         {
@@ -71,7 +71,7 @@ namespace Otiva.API.Controllers
         /// <param name="content"></param>
         /// <returns></returns>
         [Authorize]
-        [HttpPut("/review/update/{id}")]
+        [HttpPut("/review/{id}")]
         [ProducesResponseType(typeof(IReadOnlyCollection<InfoReviewResponse>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> EditReviewAsync(Guid id, string content, CancellationToken cancellation)
         {
@@ -86,7 +86,7 @@ namespace Otiva.API.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [Authorize]
-        [HttpDelete("/review/delete/{id}")]
+        [HttpDelete("/review/{id}")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
         public async Task<IActionResult> DeleteAsync(Guid id, CancellationToken cancellation)

@@ -52,31 +52,31 @@ namespace Otiva.AppServeces.Service.Message
             await _messageRepository.DeleteAsync(mesDel, cancellation);
         }
 
-        public async Task<InfoMessageResponse> EditMessageAsync(Guid id, TextMessageRequest text, CancellationToken cancellation)
+        public async Task<InfoMessageResponse> EditMessageAsync(Guid id, ContentMessage text, CancellationToken cancellation)
         {
-            var existingMessage = await _messageRepository.FindByIdAsync(id, cancellation);
+            var message = await _messageRepository.FindByIdAsync(id, cancellation);
 
-            if (existingMessage == null)
+            if (message == null)
                 throw new InvalidOperationException("Сообщения с таким идентификатором не найдено");
 
             var existingUser = Guid.Parse(await _identityService.GetCurrentUserIdAsync(cancellation));
 
-            if (existingMessage.SenderId != existingUser)
+            if (message.SenderId != existingUser)
             {
                 _logger.LogWarning("Попытка редактировать сообщение другого пользователя");
                 throw new InvalidOperationException("Пользователь не имеет права редактировать не свои сообщения");
             } 
 
-            if (existingMessage.SendingTime > DateTime.UtcNow.AddDays(-1))
+            if (message.SendingTime > DateTime.UtcNow.AddDays(-1))
                 throw new ApplicationException("Редактировать сообщение можно было только в течении одного дня после отправки");
 
-            existingMessage.Content = text.Text;
-            await _messageRepository.EditAdAsync(existingMessage, cancellation);
+            message.Content = text.Content;
+            await _messageRepository.EditAdAsync(message, cancellation);
 
-            return _mapper.Map<InfoMessageResponse>(existingMessage);
+            return _mapper.Map<InfoMessageResponse>(message);
         }
 
-        public async Task<IReadOnlyCollection<InfoMessageResponse>> GetMessageFromChatAsync(Guid user2_Id, CancellationToken cancellation)
+        public async Task<IReadOnlyCollection<InfoMessageResponse>> GetMessagesFromChatAsync(Guid user2_Id, CancellationToken cancellation)
         {
             var user1_Id = Guid.Parse(await _identityService.GetCurrentUserIdAsync(cancellation));
 

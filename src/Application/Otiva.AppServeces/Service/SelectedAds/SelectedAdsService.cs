@@ -54,7 +54,7 @@ namespace Otiva.AppServeces.Service.SelectedAds
             await _selectedadRepository.DeleteAsync(selectedDel, cancellation);
         }
 
-        public async Task<IReadOnlyCollection<InfoSelectedResponse>> GetSelectedUsersAsync(int take, int skip, CancellationToken cancellation)
+        public async Task<IReadOnlyCollection<InfoSelectedResponse>> GetSelectedUsersAsync(int pageNumber, int pageSize, CancellationToken cancellation)
         {
             var currentUserId = Guid.Parse(await _identityService.GetCurrentUserIdAsync(cancellation));
             return await _selectedadRepository.GetAll(cancellation)
@@ -65,7 +65,7 @@ namespace Otiva.AppServeces.Service.SelectedAds
                    DomainUserId = a.DomainUserId,
                    AdId= a.AdId,
                    DateAdded= a.DateAdded,
-               }).OrderBy(x =>x.DateAdded).Skip(skip).Take(take).ToListAsync();
+               }).OrderBy(x =>x.DateAdded).Skip((pageNumber - 1) * pageSize).Take(pageSize).ToListAsync();
         }
     }
 }

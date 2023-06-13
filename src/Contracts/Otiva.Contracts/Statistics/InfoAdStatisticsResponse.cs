@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace Otiva.Contracts.Statistics
 {
+    /// <summary>
+    /// Статистика объявления
+    /// </summary>
     public class InfoAdStatisticsResponse
     {
         /// <summary>

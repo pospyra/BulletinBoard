@@ -18,7 +18,7 @@ namespace Otiva.API.Controllers
             _subcategoryService = subcategoryService;
         }
 
-        [HttpGet("subcategory/all")]
+        [HttpGet("subcategories")]
         [ProducesResponseType(typeof(IReadOnlyCollection<InfoCategoryResponse>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetAllSubategory(CancellationToken cancellation)
         {
@@ -26,7 +26,7 @@ namespace Otiva.API.Controllers
             return Ok(result);
         }
 
-        [HttpPost("subcategory/create")]
+        [HttpPost("subcategory")]
         [Authorize(Roles = "Admin")]
         [ProducesResponseType(typeof(IReadOnlyCollection<InfoCategoryResponse>), (int)HttpStatusCode.Created)]
         public async Task<IActionResult> CreateSubcategoryAsync(string name, Guid categoryId, CancellationToken cancellation)
@@ -36,7 +36,7 @@ namespace Otiva.API.Controllers
             return Created("", new { result});
         }
 
-        [HttpPut("subcategory/put/{id}")]
+        [HttpPut("subcategory/{id}")]
         [ProducesResponseType(typeof(IReadOnlyCollection<InfoCategoryResponse>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> EditSubategory(Guid id, string name, Guid categoryId, CancellationToken cancellation)
         {
@@ -44,7 +44,7 @@ namespace Otiva.API.Controllers
             return NoContent();
         }
 
-        [HttpDelete("subcategory/delete/{id}")]
+        [HttpDelete("subcategory/{id}")]
         [Authorize(Roles = "Admin")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]

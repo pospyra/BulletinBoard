@@ -18,7 +18,7 @@ namespace Otiva.API.Controllers
 
         #region  фотографий объявлений 
         [AllowAnonymous]
-        [HttpGet("photoAd/get")]
+        [HttpGet("photoAd")]
         [ProducesResponseType(typeof(IReadOnlyCollection<>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetPhotoAdAsync(Guid AdId, CancellationToken cancellation)
         {
@@ -32,7 +32,7 @@ namespace Otiva.API.Controllers
         /// <param name="file"></param>
         /// <returns></returns>
         [Authorize]
-        [HttpPost("photoAd/create")]
+        [HttpPost("photoAd")]
         [ProducesResponseType(typeof(IReadOnlyCollection<>), (int)HttpStatusCode.Created)]
         public async Task<IActionResult> CreatePhotoAsync(IFormFile file, CancellationToken cancellation)
         {
@@ -55,7 +55,7 @@ namespace Otiva.API.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [Authorize]
-        [HttpDelete("/photoAd/delete/{id}")]
+        [HttpDelete("/photoAd/{id}")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
         public async Task<IActionResult> DeletePhotoAsync(Guid id, CancellationToken cancellation)
@@ -72,7 +72,7 @@ namespace Otiva.API.Controllers
         /// </summary>
         /// <param name="file"></param>
         /// <returns></returns>
-        [HttpPost("photoUser/create")]
+        [HttpPost("photoUser")]
         [ProducesResponseType(typeof(IReadOnlyCollection<>), (int)HttpStatusCode.Created)]
         public async Task<IActionResult> CreatePhotoUserAsync(IFormFile file, CancellationToken cancellation)
         {
@@ -95,7 +95,7 @@ namespace Otiva.API.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [Authorize]
-        [HttpDelete("/photoUser/delete/{id}")]
+        [HttpDelete("/photoUser/{id}")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
         public async Task<IActionResult> DeletePhotoUserAsync(Guid id, CancellationToken cancellation)
